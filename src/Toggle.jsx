@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import './Toggle.css'
 
-const spring = { type: 'spring', stiffness: 500, damping: 32 }
+const spring = { type: 'spring', stiffness: 500, damping: 26 }
 
 function Toggle({ checked, onChange }) {
   const [pressed, setPressed] = useState(false)
