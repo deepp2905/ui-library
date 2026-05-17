@@ -11,6 +11,7 @@ function App() {
       <Tile>
         <Toggle checked={on} onChange={setOn} />
       </Tile>
+      <br/>
       <Tile>
         <Counter initial={0} />
       </Tile>
