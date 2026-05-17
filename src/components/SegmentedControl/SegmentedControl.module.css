@@ -1,0 +1,51 @@
+.root {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+}
+
+.segment {
+  position: relative;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-fg-muted);
+  cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.segment:hover {
+  color: var(--color-fg);
+}
+
+.selected {
+  color: var(--color-fg);
+}
+
+.sm .segment {
+  height: 28px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-xs);
+}
+.md .segment {
+  height: 34px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.thumb {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+}
