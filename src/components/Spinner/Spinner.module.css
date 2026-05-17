@@ -1,0 +1,36 @@
+.spinner {
+  display: inline-block;
+  border-radius: var(--radius-pill);
+  border-style: solid;
+  border-color: var(--color-border);
+  animation: spinner-rotate 0.65s linear infinite;
+}
+
+.primary {
+  border-top-color: var(--color-primary);
+}
+.neutral {
+  border-top-color: var(--color-fg-muted);
+}
+
+.sm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+.md {
+  width: 22px;
+  height: 22px;
+  border-width: 2.5px;
+}
+.lg {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
