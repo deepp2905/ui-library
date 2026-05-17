@@ -1,7 +1,7 @@
 .track {
   display: inline-flex;
   align-items: center;
-  padding: 6px;
+  padding: 4.5px;
   border: none;
   border-radius: var(--c-radius-pill);
   background: var(--color-neutral-300);
@@ -19,12 +19,12 @@
 }
 
 .md {
-  width: 88px;
-  height: 52px;
+  width: 66px;
+  height: 39px;
 }
 .sm {
-  width: 72px;
-  height: 44px;
+  width: 54px;
+  height: 33px;
 }
 
 .thumbWrap {
@@ -43,10 +43,10 @@
   box-shadow: var(--shadow-xs);
 }
 .md .thumb {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 .sm .thumb {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }

@@ -76,6 +76,7 @@ function Showcase() {
           <Button variant="danger">Danger</Button>
           <Button loading>Loading</Button>
           <Button disabled>Disabled</Button>
+          <Button cornerStyle="squircle">Squircle</Button>
         </div>
       </Section>
 
@@ -166,13 +167,13 @@ function Showcase() {
 
       <Section title="Layout & content">
         <div className={styles.grid}>
-          <Card>
+          <Card cornerStyle="squircle">
             <CardHeader>
               <CardTitle>Project Atlas</CardTitle>
               <CardDescription>Updated 2 hours ago</CardDescription>
             </CardHeader>
             <div className={styles.row}>
-              <Avatar name="Deephem Patel" />
+              <Avatar name="Deephem Patel" shape="squircle" />
               <Avatar name="Ada Lovelace" size="sm" />
             </div>
             <CardFooter>
@@ -182,10 +183,10 @@ function Showcase() {
               </Button>
             </CardFooter>
           </Card>
-          <Tile>
+          <Tile cornerStyle="squircle">
             <Counter initial={0} />
           </Tile>
-          <Card variant="elevated">
+          <Card variant="elevated" cornerStyle="squircle">
             <CardHeader>
               <CardTitle>Loading</CardTitle>
             </CardHeader>
@@ -229,6 +230,7 @@ function Showcase() {
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
+        cornerStyle="squircle"
         title="Delete project?"
         description="This action cannot be undone."
         footer={

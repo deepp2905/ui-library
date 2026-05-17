@@ -16,9 +16,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--color-border-strong);
+  width: 30px;
+  height: 30px;
+  border: 2.25px solid var(--color-border-strong);
   border-radius: var(--c-radius-sm);
   background: var(--color-surface);
   transition:
@@ -40,8 +40,8 @@
 }
 
 .tick {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   color: var(--color-fg-on-primary);
 }
 

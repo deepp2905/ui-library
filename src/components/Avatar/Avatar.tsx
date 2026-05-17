@@ -10,6 +10,8 @@ export interface AvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Used to derive initials and the fallback when no image is given. */
   name?: string;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  /** Outline shape. 'squircle' is an iOS app-icon style. */
+  shape?: 'circle' | 'squircle';
 }
 
 function initials(name?: string): string {
@@ -27,6 +29,7 @@ export function Avatar({
   alt,
   name,
   size = 'md',
+  shape = 'circle',
   className,
   ...props
 }: AvatarProps) {
@@ -35,7 +38,12 @@ export function Avatar({
 
   return (
     <span
-      className={cn(styles.avatar, styles[size], className)}
+      className={cn(
+        styles.avatar,
+        styles[size],
+        shape === 'squircle' && styles.squircle,
+        className,
+      )}
       role="img"
       aria-label={alt ?? name ?? 'avatar'}
       {...props}

@@ -4,6 +4,12 @@
   color: var(--color-fg);
 }
 
+/* iOS-style continuous corners. Browsers without `corner-shape`
+   ignore it and fall back to the plain border-radius above. */
+.squircle {
+  corner-shape: superellipse(2);
+}
+
 .outlined {
   border: 2px solid var(--color-border);
 }

@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--c-space-2);
-  width: min(1020px, calc(100vw - var(--c-space-8)));
+  width: min(765px, calc(100vw - var(--c-space-8)));
 }
 
 .toast {
@@ -28,7 +28,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 6px;
+  width: 4.5px;
 }
 
 .toast[data-tone='neutral'] .accent {
@@ -57,7 +57,7 @@
 .description {
   font-size: var(--c-text-xs);
   color: var(--color-fg-muted);
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .close {
@@ -66,7 +66,7 @@
   color: var(--color-fg-subtle);
   font-size: var(--c-text-xs);
   cursor: pointer;
-  padding: 4px;
+  padding: 3px;
   line-height: 1;
 }
 

@@ -21,6 +21,8 @@ export interface ButtonProps
   /** Icon rendered after the label. */
   trailingIcon?: React.ReactNode;
   loading?: boolean;
+  /** Corner geometry. 'squircle' uses iOS-style continuous corners. */
+  cornerStyle?: 'rounded' | 'squircle';
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -32,6 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       leadingIcon,
       trailingIcon,
       loading = false,
+      cornerStyle = 'rounded',
       disabled,
       className,
       children,
@@ -50,6 +53,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           styles[variant],
           styles[size],
           fullWidth && styles.fullWidth,
+          cornerStyle === 'squircle' && styles.squircle,
           className,
         )}
         disabled={isDisabled}

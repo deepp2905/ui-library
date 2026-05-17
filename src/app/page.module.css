@@ -2,9 +2,9 @@
    Demo page layout — spacing & hierarchy.
 
    Rhythm, from largest gap to smallest:
-     page padding        160px   breathing room around everything
-     hero -> content     120px   clear separation after the title band
-     section -> section    96px  + a hairline rule = distinct regions
+     page padding         160px  breathing room around everything
+     hero -> content      160px  clear separation after the title band
+     section -> section   256px  (128 + 128) + a hairline = distinct regions
      label -> content      40px  groups a label with what it describes
      items within a row    32px  loosely related siblings
    ============================================================ */
@@ -23,8 +23,8 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding-bottom: 120px;
-  margin-bottom: 96px;
+  padding-bottom: 160px;
+  margin-bottom: 128px;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -48,9 +48,10 @@
   flex-direction: column;
   gap: 40px;
   /* equal padding both sides of the section so the divider rule
-     sits in whitespace, not flush against the content above it */
-  padding-top: 80px;
-  padding-bottom: 80px;
+     sits in whitespace, not flush against the content above it.
+     128 + 128 = 256px of air between adjacent sections. */
+  padding-top: 128px;
+  padding-bottom: 128px;
 }
 
 /* first section sits right under the hero — its top air comes

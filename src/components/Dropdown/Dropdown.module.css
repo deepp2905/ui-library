@@ -10,9 +10,9 @@
 
 .menu {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 9px);
   z-index: 60;
-  min-width: 360px;
+  min-width: 270px;
   padding: var(--c-space-1);
   background: var(--color-surface-raised);
   border: 2px solid var(--color-border);
@@ -20,7 +20,7 @@
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .start {

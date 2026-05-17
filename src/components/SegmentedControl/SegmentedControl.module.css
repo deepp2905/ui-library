@@ -1,7 +1,7 @@
 .root {
   display: inline-flex;
-  gap: 4px;
-  padding: 6px;
+  gap: 3px;
+  padding: 4.5px;
   border-radius: var(--c-radius-md);
   background: var(--color-surface-sunken);
   border: 2px solid var(--color-border);
@@ -27,12 +27,12 @@
 }
 
 .sm .segment {
-  height: 56px;
+  height: 42px;
   padding: 0 var(--c-space-3);
   font-size: var(--c-text-xs);
 }
 .md .segment {
-  height: 68px;
+  height: 51px;
   padding: 0 var(--c-space-4);
   font-size: var(--c-text-sm);
 }

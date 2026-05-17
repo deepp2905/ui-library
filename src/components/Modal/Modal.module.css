@@ -12,7 +12,7 @@
   position: absolute;
   inset: 0;
   background: var(--color-overlay);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(3px);
 }
 
 .dialog {
@@ -25,15 +25,21 @@
   padding: var(--c-space-6);
 }
 
-/* 2x widths, capped so the dialog stays inside the viewport. */
+/* iOS-style continuous corners. Browsers without `corner-shape`
+   ignore it and fall back to the plain border-radius above. */
+.squircle {
+  corner-shape: superellipse(2);
+}
+
+/* 1.5x widths, capped so the dialog stays inside the viewport. */
 .sm {
-  max-width: min(720px, calc(100vw - var(--c-space-8)));
+  max-width: min(540px, calc(100vw - var(--c-space-8)));
 }
 .md {
-  max-width: min(920px, calc(100vw - var(--c-space-8)));
+  max-width: min(690px, calc(100vw - var(--c-space-8)));
 }
 .lg {
-  max-width: min(1280px, calc(100vw - var(--c-space-8)));
+  max-width: min(960px, calc(100vw - var(--c-space-8)));
 }
 
 .header {

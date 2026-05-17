@@ -13,12 +13,15 @@ export interface CardProps
   padding?: 'none' | 'sm' | 'md' | 'lg';
   /** Lift slightly on hover — use for clickable cards. */
   interactive?: boolean;
+  /** Corner geometry. 'squircle' uses iOS-style continuous corners. */
+  cornerStyle?: 'rounded' | 'squircle';
 }
 
 export function Card({
   variant = 'outlined',
   padding = 'md',
   interactive = false,
+  cornerStyle = 'rounded',
   className,
   children,
   ...props
@@ -30,6 +33,7 @@ export function Card({
         styles[variant],
         styles[`pad-${padding}`],
         interactive && styles.interactive,
+        cornerStyle === 'squircle' && styles.squircle,
         className,
       )}
       whileHover={interactive ? { y: -3 } : undefined}

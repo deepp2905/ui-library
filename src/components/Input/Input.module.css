@@ -25,19 +25,19 @@
 
 .wrap:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 6px var(--color-primary-soft);
+  box-shadow: 0 0 0 4.5px var(--color-primary-soft);
 }
 
 .sm {
-  height: 68px;
+  height: 51px;
   padding: 0 var(--c-space-3);
 }
 .md {
-  height: 80px;
+  height: 60px;
   padding: 0 var(--c-space-3);
 }
 .lg {
-  height: 96px;
+  height: 72px;
   padding: 0 var(--c-space-4);
 }
 
@@ -64,7 +64,7 @@
 }
 .invalid:focus-within {
   border-color: var(--color-danger);
-  box-shadow: 0 0 0 6px rgba(179, 64, 47, 0.14);
+  box-shadow: 0 0 0 4.5px rgba(179, 64, 47, 0.14);
 }
 
 .disabled {

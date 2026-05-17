@@ -17,6 +17,8 @@ export interface ModalProps {
   /** Close when the backdrop is clicked. Default true. */
   dismissable?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  /** Corner geometry. 'squircle' uses iOS-style continuous corners. */
+  cornerStyle?: 'rounded' | 'squircle';
   children?: React.ReactNode;
 }
 
@@ -28,6 +30,7 @@ export function Modal({
   footer,
   dismissable = true,
   size = 'md',
+  cornerStyle = 'rounded',
   children,
 }: ModalProps) {
   useEffect(() => {
@@ -60,7 +63,11 @@ export function Modal({
           <motion.div
             role="dialog"
             aria-modal="true"
-            className={cn(styles.dialog, styles[size])}
+            className={cn(
+              styles.dialog,
+              styles[size],
+              cornerStyle === 'squircle' && styles.squircle,
+            )}
             variants={fadeLift}
             initial="hidden"
             animate="visible"

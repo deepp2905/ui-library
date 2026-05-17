@@ -5,9 +5,15 @@
   padding: var(--c-space-8);
 }
 
+/* iOS-style continuous corners. Browsers without `corner-shape`
+   ignore it and fall back to the plain border-radius above. */
+.squircle {
+  corner-shape: superellipse(2);
+}
+
 .center {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 280px;
+  min-height: 210px;
 }

@@ -14,19 +14,19 @@
 }
 
 .sm {
-  width: 32px;
-  height: 32px;
-  border-width: 4px;
+  width: 24px;
+  height: 24px;
+  border-width: 3px;
 }
 .md {
-  width: 44px;
-  height: 44px;
-  border-width: 5px;
+  width: 33px;
+  height: 33px;
+  border-width: 3.75px;
 }
 .lg {
-  width: 64px;
-  height: 64px;
-  border-width: 6px;
+  width: 48px;
+  height: 48px;
+  border-width: 4.5px;
 }
 
 @keyframes spinner-rotate {
