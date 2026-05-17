@@ -5,7 +5,9 @@ import { cn } from '@/lib/cn';
 import { springSoft } from '@/lib/motion';
 import styles from './Card.module.css';
 
-export interface CardProps extends Omit<HTMLMotionProps<'div'>, 'ref'> {
+export interface CardProps
+  extends Omit<HTMLMotionProps<'div'>, 'ref' | 'children'> {
+  children?: React.ReactNode;
   /** Visual treatment of the card border/elevation. */
   variant?: 'outlined' | 'elevated';
   padding?: 'none' | 'sm' | 'md' | 'lg';

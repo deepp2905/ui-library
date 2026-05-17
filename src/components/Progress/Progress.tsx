@@ -6,15 +6,15 @@ import { springSoft } from '@/lib/motion';
 import styles from './Progress.module.css';
 
 export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 0–100. */
-  value: number;
+  /** 0–100. Optional when `indeterminate` is set. */
+  value?: number;
   size?: 'sm' | 'md';
   /** Render an indeterminate looping bar (ignores value). */
   indeterminate?: boolean;
 }
 
 export function Progress({
-  value,
+  value = 0,
   size = 'md',
   indeterminate = false,
   className,

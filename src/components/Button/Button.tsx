@@ -10,7 +10,8 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps
-  extends Omit<HTMLMotionProps<'button'>, 'ref'> {
+  extends Omit<HTMLMotionProps<'button'>, 'ref' | 'children'> {
+  children?: React.ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
   /** Stretch to fill the container width. */
