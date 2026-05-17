@@ -1,14 +1,14 @@
 .accordion {
   display: flex;
   flex-direction: column;
-  border: 3px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--c-radius-lg);
   overflow: hidden;
   background: var(--color-surface);
 }
 
 .item:not(:last-child) {
-  border-bottom: 3px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .trigger {

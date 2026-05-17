@@ -5,10 +5,10 @@
 }
 
 .outlined {
-  border: 3px solid var(--color-border);
+  border: 2px solid var(--color-border);
 }
 .elevated {
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   box-shadow: var(--shadow-md);
 }
 

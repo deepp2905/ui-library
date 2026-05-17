@@ -3,7 +3,7 @@
   align-items: center;
   gap: var(--c-space-2);
   padding: var(--c-space-1);
-  border: 3px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--c-radius-pill);
   background: var(--color-surface);
 }
@@ -12,8 +12,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 96px;
-  height: 96px;
+  width: 64px;
+  height: 64px;
   border: none;
   border-radius: var(--c-radius-pill);
   background: var(--color-surface-sunken);
@@ -37,7 +37,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
+  min-width: 80px;
   font-variant-numeric: tabular-nums;
   font-size: var(--c-text-lg);
   font-weight: var(--weight-semibold);

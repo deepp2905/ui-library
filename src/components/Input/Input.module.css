@@ -16,7 +16,7 @@
   align-items: center;
   gap: var(--c-space-2);
   background: var(--color-surface);
-  border: 3px solid var(--color-border-strong);
+  border: 2px solid var(--color-border-strong);
   border-radius: var(--c-radius-md);
   transition:
     border-color var(--motion-fast) var(--ease-out),
@@ -25,19 +25,19 @@
 
 .wrap:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 9px var(--color-primary-soft);
+  box-shadow: 0 0 0 6px var(--color-primary-soft);
 }
 
 .sm {
-  height: 102px;
+  height: 68px;
   padding: 0 var(--c-space-3);
 }
 .md {
-  height: 120px;
+  height: 80px;
   padding: 0 var(--c-space-3);
 }
 .lg {
-  height: 144px;
+  height: 96px;
   padding: 0 var(--c-space-4);
 }
 
@@ -64,7 +64,7 @@
 }
 .invalid:focus-within {
   border-color: var(--color-danger);
-  box-shadow: 0 0 0 9px rgba(179, 64, 47, 0.14);
+  box-shadow: 0 0 0 6px rgba(179, 64, 47, 0.14);
 }
 
 .disabled {

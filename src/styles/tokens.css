@@ -94,37 +94,37 @@
   --weight-semibold: 600;
 
   /* ==============================================================
-     Component-scaled tokens (--c-*) — 3x the base values.
-     Components reference THESE so they render at 3x size, while
+     Component-scaled tokens (--c-*) — 2x the base values.
+     Components reference THESE so they render at 2x size, while
      page/layout text keeps using the base tokens above.
      ============================================================== */
 
-  /* Radius x3 */
-  --c-radius-xs: 12px;
-  --c-radius-sm: 18px;
-  --c-radius-md: 30px;
-  --c-radius-lg: 42px;
-  --c-radius-xl: 60px;
+  /* Radius x2 */
+  --c-radius-xs: 8px;
+  --c-radius-sm: 12px;
+  --c-radius-md: 20px;
+  --c-radius-lg: 28px;
+  --c-radius-xl: 40px;
   --c-radius-pill: 999px;
 
-  /* Spacing x3 */
-  --c-space-1: 12px;
-  --c-space-2: 24px;
-  --c-space-3: 36px;
-  --c-space-4: 48px;
-  --c-space-5: 60px;
-  --c-space-6: 72px;
-  --c-space-8: 96px;
-  --c-space-10: 120px;
-  --c-space-12: 144px;
+  /* Spacing x2 */
+  --c-space-1: 8px;
+  --c-space-2: 16px;
+  --c-space-3: 24px;
+  --c-space-4: 32px;
+  --c-space-5: 40px;
+  --c-space-6: 48px;
+  --c-space-8: 64px;
+  --c-space-10: 80px;
+  --c-space-12: 96px;
 
-  /* Typography x3 */
-  --c-text-xs: 2.25rem;
-  --c-text-sm: 2.625rem;
-  --c-text-base: 3rem;
-  --c-text-lg: 3.375rem;
-  --c-text-xl: 4.125rem;
-  --c-text-2xl: 5.25rem;
+  /* Typography x2 */
+  --c-text-xs: 1.5rem;
+  --c-text-sm: 1.75rem;
+  --c-text-base: 2rem;
+  --c-text-lg: 2.25rem;
+  --c-text-xl: 2.75rem;
+  --c-text-2xl: 3.5rem;
 
   /* --- Elevation --------------------------------------------------- */
   --shadow-xs: 0 1px 2px rgba(12, 10, 9, 0.06);

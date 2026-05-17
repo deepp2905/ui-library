@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--c-space-1);
-  height: 66px;
+  height: 44px;
   padding: 0 var(--c-space-2);
   border-radius: var(--c-radius-pill);
   font-size: var(--c-text-xs);
@@ -11,8 +11,8 @@
 }
 
 .dot {
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   border-radius: var(--c-radius-pill);
   background: currentColor;
 }

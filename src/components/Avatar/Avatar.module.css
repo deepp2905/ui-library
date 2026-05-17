@@ -22,27 +22,27 @@
 }
 
 .xs {
-  width: 72px;
-  height: 72px;
-  font-size: 1.875rem;
+  width: 48px;
+  height: 48px;
+  font-size: 1.25rem;
 }
 .sm {
-  width: 96px;
-  height: 96px;
+  width: 64px;
+  height: 64px;
   font-size: var(--c-text-xs);
 }
 .md {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   font-size: var(--c-text-sm);
 }
 .lg {
-  width: 168px;
-  height: 168px;
+  width: 112px;
+  height: 112px;
   font-size: var(--c-text-lg);
 }
 .xl {
-  width: 240px;
-  height: 240px;
+  width: 160px;
+  height: 160px;
   font-size: var(--c-text-2xl);
 }

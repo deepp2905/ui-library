@@ -7,7 +7,7 @@
 .list {
   display: inline-flex;
   gap: var(--c-space-1);
-  border-bottom: 3px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .tab {
@@ -44,8 +44,8 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -3px;
-  height: 6px;
+  bottom: -2px;
+  height: 4px;
   background: var(--color-primary);
   border-radius: var(--c-radius-pill);
 }

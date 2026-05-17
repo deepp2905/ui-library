@@ -1,6 +1,6 @@
 .tile {
   background: var(--color-surface);
-  border: 3px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--c-radius-lg);
   padding: var(--c-space-8);
 }
@@ -9,5 +9,5 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 420px;
+  min-height: 280px;
 }

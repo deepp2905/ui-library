@@ -12,28 +12,28 @@
   position: absolute;
   inset: 0;
   background: var(--color-overlay);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(4px);
 }
 
 .dialog {
   position: relative;
   width: 100%;
   background: var(--color-surface-raised);
-  border: 3px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--c-radius-xl);
   box-shadow: var(--shadow-lg);
   padding: var(--c-space-6);
 }
 
-/* 3x widths, capped so the dialog stays inside the viewport. */
+/* 2x widths, capped so the dialog stays inside the viewport. */
 .sm {
-  max-width: min(1080px, calc(100vw - var(--c-space-8)));
+  max-width: min(720px, calc(100vw - var(--c-space-8)));
 }
 .md {
-  max-width: min(1380px, calc(100vw - var(--c-space-8)));
+  max-width: min(920px, calc(100vw - var(--c-space-8)));
 }
 .lg {
-  max-width: min(1920px, calc(100vw - var(--c-space-8)));
+  max-width: min(1280px, calc(100vw - var(--c-space-8)));
 }
 
 .header {
