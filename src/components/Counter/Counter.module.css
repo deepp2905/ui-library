@@ -1,10 +1,10 @@
 .counter {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
+  gap: var(--c-space-2);
+  padding: var(--c-space-1);
+  border: 3px solid var(--color-border);
+  border-radius: var(--c-radius-pill);
   background: var(--color-surface);
 }
 
@@ -12,13 +12,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 96px;
+  height: 96px;
   border: none;
-  border-radius: var(--radius-pill);
+  border-radius: var(--c-radius-pill);
   background: var(--color-surface-sunken);
   color: var(--color-fg);
-  font-size: var(--text-lg);
+  font-size: var(--c-text-lg);
   line-height: 1;
   cursor: pointer;
 }
@@ -37,9 +37,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
+  min-width: 120px;
   font-variant-numeric: tabular-nums;
-  font-size: var(--text-lg);
+  font-size: var(--c-text-lg);
   font-weight: var(--weight-semibold);
 }
 

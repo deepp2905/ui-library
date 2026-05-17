@@ -5,61 +5,62 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-4);
+  padding: var(--c-space-4);
 }
 
 .backdrop {
   position: absolute;
   inset: 0;
   background: var(--color-overlay);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(6px);
 }
 
 .dialog {
   position: relative;
   width: 100%;
   background: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border: 3px solid var(--color-border);
+  border-radius: var(--c-radius-xl);
   box-shadow: var(--shadow-lg);
-  padding: var(--space-6);
+  padding: var(--c-space-6);
 }
 
+/* 3x widths, capped so the dialog stays inside the viewport. */
 .sm {
-  max-width: 360px;
+  max-width: min(1080px, calc(100vw - var(--c-space-8)));
 }
 .md {
-  max-width: 460px;
+  max-width: min(1380px, calc(100vw - var(--c-space-8)));
 }
 .lg {
-  max-width: 640px;
+  max-width: min(1920px, calc(100vw - var(--c-space-8)));
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: var(--space-4);
+  gap: var(--c-space-1);
+  margin-bottom: var(--c-space-4);
 }
 
 .title {
-  font-size: var(--text-xl);
+  font-size: var(--c-text-xl);
   font-weight: var(--weight-semibold);
 }
 
 .description {
-  font-size: var(--text-sm);
+  font-size: var(--c-text-sm);
   color: var(--color-fg-muted);
 }
 
 .body {
-  font-size: var(--text-sm);
+  font-size: var(--c-text-sm);
   color: var(--color-fg);
 }
 
 .footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-2);
-  margin-top: var(--space-6);
+  gap: var(--c-space-2);
+  margin-top: var(--c-space-6);
 }

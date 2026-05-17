@@ -1,14 +1,14 @@
 .card {
   background: var(--color-surface-raised);
-  border-radius: var(--radius-lg);
+  border-radius: var(--c-radius-lg);
   color: var(--color-fg);
 }
 
 .outlined {
-  border: 1px solid var(--color-border);
+  border: 3px solid var(--color-border);
 }
 .elevated {
-  border: 1px solid transparent;
+  border: 3px solid transparent;
   box-shadow: var(--shadow-md);
 }
 
@@ -20,35 +20,35 @@
   padding: 0;
 }
 .pad-sm {
-  padding: var(--space-3);
+  padding: var(--c-space-3);
 }
 .pad-md {
-  padding: var(--space-5);
+  padding: var(--c-space-5);
 }
 .pad-lg {
-  padding: var(--space-8);
+  padding: var(--c-space-8);
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: var(--space-4);
+  gap: var(--c-space-1);
+  margin-bottom: var(--c-space-4);
 }
 
 .title {
-  font-size: var(--text-lg);
+  font-size: var(--c-text-lg);
   font-weight: var(--weight-semibold);
 }
 
 .description {
-  font-size: var(--text-sm);
+  font-size: var(--c-text-sm);
   color: var(--color-fg-muted);
 }
 
 .footer {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-5);
+  gap: var(--c-space-2);
+  margin-top: var(--c-space-5);
 }

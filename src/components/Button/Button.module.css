@@ -2,9 +2,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  gap: var(--c-space-2);
+  border: 3px solid transparent;
+  border-radius: var(--c-radius-md);
   font-weight: var(--weight-medium);
   cursor: pointer;
   white-space: nowrap;
@@ -22,19 +22,19 @@
 
 /* --- Sizes --- */
 .sm {
-  height: 32px;
-  padding: 0 var(--space-3);
-  font-size: var(--text-sm);
+  height: 96px;
+  padding: 0 var(--c-space-3);
+  font-size: var(--c-text-sm);
 }
 .md {
-  height: 40px;
-  padding: 0 var(--space-4);
-  font-size: var(--text-sm);
+  height: 120px;
+  padding: 0 var(--c-space-4);
+  font-size: var(--c-text-sm);
 }
 .lg {
-  height: 48px;
-  padding: 0 var(--space-6);
-  font-size: var(--text-base);
+  height: 144px;
+  padding: 0 var(--c-space-6);
+  font-size: var(--c-text-base);
 }
 
 .fullWidth {
@@ -89,10 +89,10 @@
 }
 .spinner {
   position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-pill);
-  border: 2px solid currentColor;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--c-radius-pill);
+  border: 6px solid currentColor;
   border-top-color: transparent;
   animation: button-spin 0.6s linear infinite;
 }

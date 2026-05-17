@@ -93,6 +93,39 @@
   --weight-medium: 500;
   --weight-semibold: 600;
 
+  /* ==============================================================
+     Component-scaled tokens (--c-*) — 3x the base values.
+     Components reference THESE so they render at 3x size, while
+     page/layout text keeps using the base tokens above.
+     ============================================================== */
+
+  /* Radius x3 */
+  --c-radius-xs: 12px;
+  --c-radius-sm: 18px;
+  --c-radius-md: 30px;
+  --c-radius-lg: 42px;
+  --c-radius-xl: 60px;
+  --c-radius-pill: 999px;
+
+  /* Spacing x3 */
+  --c-space-1: 12px;
+  --c-space-2: 24px;
+  --c-space-3: 36px;
+  --c-space-4: 48px;
+  --c-space-5: 60px;
+  --c-space-6: 72px;
+  --c-space-8: 96px;
+  --c-space-10: 120px;
+  --c-space-12: 144px;
+
+  /* Typography x3 */
+  --c-text-xs: 2.25rem;
+  --c-text-sm: 2.625rem;
+  --c-text-base: 3rem;
+  --c-text-lg: 3.375rem;
+  --c-text-xl: 4.125rem;
+  --c-text-2xl: 5.25rem;
+
   /* --- Elevation --------------------------------------------------- */
   --shadow-xs: 0 1px 2px rgba(12, 10, 9, 0.06);
   --shadow-sm: 0 2px 6px rgba(12, 10, 9, 0.07);

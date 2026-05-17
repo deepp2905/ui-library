@@ -2,21 +2,21 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: var(--radius-pill);
+  border-radius: var(--c-radius-pill);
   background: var(--color-surface-sunken);
 }
 
 .sm {
-  height: 6px;
+  height: 18px;
 }
 .md {
-  height: 10px;
+  height: 30px;
 }
 
 .fill {
   display: block;
   height: 100%;
-  border-radius: var(--radius-pill);
+  border-radius: var(--c-radius-pill);
   background: var(--color-primary);
 }
 

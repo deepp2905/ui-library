@@ -1,19 +1,19 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  height: 22px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-pill);
-  font-size: var(--text-xs);
+  gap: var(--c-space-1);
+  height: 66px;
+  padding: 0 var(--c-space-2);
+  border-radius: var(--c-radius-pill);
+  font-size: var(--c-text-xs);
   font-weight: var(--weight-medium);
   white-space: nowrap;
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-pill);
+  width: 18px;
+  height: 18px;
+  border-radius: var(--c-radius-pill);
   background: currentColor;
 }
 

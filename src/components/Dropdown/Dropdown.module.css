@@ -10,17 +10,17 @@
 
 .menu {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 18px);
   z-index: 60;
-  min-width: 180px;
-  padding: var(--space-1);
+  min-width: 540px;
+  padding: var(--c-space-1);
   background: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: 3px solid var(--color-border);
+  border-radius: var(--c-radius-md);
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
 .start {
@@ -34,11 +34,11 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--c-space-2) var(--c-space-3);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--c-radius-sm);
   background: transparent;
-  font-size: var(--text-sm);
+  font-size: var(--c-text-sm);
   color: var(--color-fg);
   text-align: left;
   cursor: pointer;

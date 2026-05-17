@@ -4,7 +4,7 @@
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: var(--radius-pill);
+  border-radius: var(--c-radius-pill);
   background: var(--color-primary-soft);
   color: var(--color-primary-soft-fg);
   font-weight: var(--weight-semibold);
@@ -22,27 +22,27 @@
 }
 
 .xs {
-  width: 24px;
-  height: 24px;
-  font-size: 0.625rem;
+  width: 72px;
+  height: 72px;
+  font-size: 1.875rem;
 }
 .sm {
-  width: 32px;
-  height: 32px;
-  font-size: var(--text-xs);
+  width: 96px;
+  height: 96px;
+  font-size: var(--c-text-xs);
 }
 .md {
-  width: 40px;
-  height: 40px;
-  font-size: var(--text-sm);
+  width: 120px;
+  height: 120px;
+  font-size: var(--c-text-sm);
 }
 .lg {
-  width: 56px;
-  height: 56px;
-  font-size: var(--text-lg);
+  width: 168px;
+  height: 168px;
+  font-size: var(--c-text-lg);
 }
 .xl {
-  width: 80px;
-  height: 80px;
-  font-size: var(--text-2xl);
+  width: 240px;
+  height: 240px;
+  font-size: var(--c-text-2xl);
 }

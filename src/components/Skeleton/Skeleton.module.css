@@ -12,13 +12,13 @@
 
 .text {
   height: 0.8em;
-  border-radius: var(--radius-xs);
+  border-radius: var(--c-radius-xs);
 }
 .rect {
-  border-radius: var(--radius-md);
+  border-radius: var(--c-radius-md);
 }
 .circle {
-  border-radius: var(--radius-pill);
+  border-radius: var(--c-radius-pill);
 }
 
 @keyframes skeleton-shimmer {
