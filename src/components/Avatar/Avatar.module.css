@@ -12,11 +12,11 @@
 }
 
 /* iOS app-icon shape — swaps the circle for a continuous-corner
-   squircle. Falls back to a rounded square where `corner-shape`
-   is unsupported. */
+   squircle. A high exponent gives the signature flat-sided icon
+   curve. Falls back to a rounded square where unsupported. */
 .squircle {
-  border-radius: 28%;
-  corner-shape: superellipse(2.2);
+  border-radius: 42%;
+  corner-shape: superellipse(4);
 }
 
 .image {

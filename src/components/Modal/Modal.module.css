@@ -25,10 +25,12 @@
   padding: var(--c-space-6);
 }
 
-/* iOS-style continuous corners. Browsers without `corner-shape`
-   ignore it and fall back to the plain border-radius above. */
+/* iOS-style continuous corners. A larger radius + a high
+   superellipse exponent makes the squircle clearly visible.
+   Browsers without `corner-shape` fall back to the radius. */
 .squircle {
-  corner-shape: superellipse(2);
+  border-radius: 44px;
+  corner-shape: superellipse(4);
 }
 
 /* 1.5x widths, capped so the dialog stays inside the viewport. */

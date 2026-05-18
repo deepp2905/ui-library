@@ -5,10 +5,12 @@
   padding: var(--c-space-8);
 }
 
-/* iOS-style continuous corners. Browsers without `corner-shape`
-   ignore it and fall back to the plain border-radius above. */
+/* iOS-style continuous corners. A larger radius + a high
+   superellipse exponent makes the squircle clearly visible.
+   Browsers without `corner-shape` fall back to the radius. */
 .squircle {
-  corner-shape: superellipse(2);
+  border-radius: var(--c-radius-xl);
+  corner-shape: superellipse(4);
 }
 
 .center {
