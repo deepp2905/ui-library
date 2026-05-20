@@ -37,11 +37,13 @@
   max-width: 60ch;
 }
 
-/* --- Grid: always 2 columns, equal width, uniform gaps --- */
+/* --- Grid: always 2 columns, equal width.
+   Gap matches the tile corner radius so the negative space and
+   the inner curves share the same rhythm. */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
+  gap: 18px;
 }
 
 /* --- Tile: a framed stage for one component, always 1:1 --- */

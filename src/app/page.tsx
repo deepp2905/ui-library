@@ -81,9 +81,9 @@ function Showcase() {
         <Tile stretch>
           <Tabs
             items={[
-              { id: 'overview', label: 'Overview', content: 'Overview panel.' },
-              { id: 'specs', label: 'Specs', content: 'Specs panel.' },
-              { id: 'history', label: 'History', content: 'History panel.' },
+              { id: 'overview', label: 'Overview', content: null },
+              { id: 'specs', label: 'Specs', content: null },
+              { id: 'history', label: 'History', content: null },
             ]}
             value={tab}
             onChange={setTab}
