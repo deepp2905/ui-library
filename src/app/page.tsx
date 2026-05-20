@@ -15,24 +15,17 @@ import {
 import styles from './page.module.css';
 
 function Tile({
-  title,
   stretch = false,
   children,
 }: {
-  title: string;
   stretch?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div className={styles.tileGroup}>
-      <div
-        className={
-          stretch ? `${styles.tile} ${styles.tileStretch}` : styles.tile
-        }
-      >
-        {children}
-      </div>
-      <h2 className={styles.tileTitle}>{title}</h2>
+    <div
+      className={stretch ? `${styles.tile} ${styles.tileStretch}` : styles.tile}
+    >
+      {children}
     </div>
   );
 }
@@ -53,19 +46,19 @@ function Showcase() {
       </header>
 
       <div className={styles.grid}>
-        <Tile title="Button">
+        <Tile>
           <Button>Continue</Button>
         </Tile>
 
-        <Tile title="Input" stretch>
+        <Tile stretch>
           <Input label="Email" placeholder="you@example.com" />
         </Tile>
 
-        <Tile title="Switch">
+        <Tile>
           <Switch checked={on} onChange={setOn} aria-label="Toggle" />
         </Tile>
 
-        <Tile title="Checkbox">
+        <Tile>
           <Checkbox
             checked={agree}
             onChange={setAgree}
@@ -73,19 +66,19 @@ function Showcase() {
           />
         </Tile>
 
-        <Tile title="Slider" stretch>
+        <Tile stretch>
           <Slider value={volume} onChange={setVolume} showValue label="Volume" />
         </Tile>
 
-        <Tile title="Counter">
+        <Tile>
           <Counter initial={3} min={0} max={10} />
         </Tile>
 
-        <Tile title="Spinner">
+        <Tile>
           <Spinner />
         </Tile>
 
-        <Tile title="Tabs" stretch>
+        <Tile stretch>
           <Tabs
             items={[
               { id: 'overview', label: 'Overview', content: 'Overview panel.' },

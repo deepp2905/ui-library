@@ -37,22 +37,11 @@
   max-width: 60ch;
 }
 
-/* --- Grid: always 2 columns, equal width.
-   Row gap is tighter than column gap because each row already
-   ends with a label (16px gap + label height) under each tile. */
+/* --- Grid: always 2 columns, equal width, uniform gaps --- */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 32px;
-  row-gap: 48px;
-}
-
-/* --- Tile group: the square stage + its label below --- */
-.tileGroup {
-  display: flex;
-  flex-direction: column;
-  /* breathing room between the tile and its label */
-  gap: 16px;
+  gap: 32px;
 }
 
 /* --- Tile: a framed stage for one component, always 1:1 --- */
@@ -74,14 +63,4 @@
   align-items: stretch;
   flex-direction: column;
   padding: 48px;
-}
-
-/* --- Label below the tile --- */
-.tileTitle {
-  /* a quiet, well-spaced caption — not a heading */
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  color: var(--color-fg-muted);
-  letter-spacing: 0;
-  padding-left: 4px;
 }
