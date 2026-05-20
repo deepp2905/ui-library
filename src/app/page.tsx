@@ -47,7 +47,7 @@ function Showcase() {
 
       <div className={styles.grid}>
         <Tile>
-          <Button>Continue</Button>
+          <Button confetti>Click me</Button>
         </Tile>
 
         <Tile stretch>
