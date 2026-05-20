@@ -1,31 +1,26 @@
 /* ============================================================
-   Demo page layout — spacing & hierarchy.
+   Demo page layout — 2-column tile grid.
 
-   Rhythm, from largest gap to smallest:
-     page padding         160px  breathing room around everything
-     hero -> content      160px  clear separation after the title band
-     section -> section   256px  (128 + 128) + a hairline = distinct regions
-     label -> content      40px  groups a label with what it describes
-     items within a row    32px  loosely related siblings
+   Parent container caps at 60vw; each tile shows one component
+   centred, with its name as a quiet title above. Generous gaps
+   keep the grid feeling crisp, not crowded.
    ============================================================ */
 
 .page {
-  /* widened: components render at 2x, 960px clipped them */
-  max-width: 1200px;
+  width: 60%;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 128px 64px 160px;
+  padding: 128px 0 160px;
   display: flex;
   flex-direction: column;
 }
 
-/* --- Hero: its own band, set apart from the sections below --- */
+/* --- Hero --- */
 .hero {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding-bottom: 160px;
-  margin-bottom: 128px;
-  border-bottom: 1px solid var(--color-border);
+  gap: 16px;
+  margin-bottom: 96px;
 }
 
 .heroTitle {
@@ -42,59 +37,51 @@
   max-width: 60ch;
 }
 
-/* --- Sections: large outer gap, generous label-to-content gap --- */
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  /* equal padding both sides of the section so the divider rule
-     sits in whitespace, not flush against the content above it.
-     128 + 128 = 256px of air between adjacent sections. */
-  padding-top: 128px;
-  padding-bottom: 128px;
-}
-
-/* first section sits right under the hero — its top air comes
-   from the hero's margin-bottom, so no extra top padding */
-.section:first-of-type {
-  padding-top: 0;
-}
-
-/* last section needs no trailing rule padding */
-.section:last-of-type {
-  padding-bottom: 0;
-}
-
-/* a hairline between regions reinforces the gap */
-.section:not(:first-of-type) {
-  border-top: 1px solid var(--color-border);
-}
-
-.sectionTitle {
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-fg-subtle);
-}
-
-/* --- Content groupings inside a section --- */
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 32px;
-}
-
-.col {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  max-width: 560px;
-}
-
+/* --- Grid: always 2 columns, equal width.
+   Row gap is tighter than column gap because each row already
+   ends with a label (16px gap + label height) under each tile. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  row-gap: 48px;
+}
+
+/* --- Tile group: the square stage + its label below --- */
+.tileGroup {
+  display: flex;
+  flex-direction: column;
+  /* breathing room between the tile and its label */
+  gap: 16px;
+}
+
+/* --- Tile: a framed stage for one component, always 1:1 --- */
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  padding: 48px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+/* tiles whose component needs the full width inside (Input, Slider,
+   Tabs) — items stretch instead of centring horizontally */
+.tileStretch {
+  align-items: stretch;
+  flex-direction: column;
+  padding: 48px;
+}
+
+/* --- Label below the tile --- */
+.tileTitle {
+  /* a quiet, well-spaced caption — not a heading */
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-fg-muted);
+  letter-spacing: 0;
+  padding-left: 4px;
 }
