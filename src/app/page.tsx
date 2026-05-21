@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Checkbox,
@@ -35,6 +35,20 @@ function Showcase() {
   const [agree, setAgree] = useState(false);
   const [volume, setVolume] = useState(60);
   const [tab, setTab] = useState('overview');
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY === 0) return;
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      el.scrollLeft += delta;
+      e.preventDefault();
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
 
   return (
     <main className={styles.page}>
@@ -45,7 +59,7 @@ function Showcase() {
         </p>
       </header>
 
-      <div className={styles.grid}>
+      <div className={styles.grid} ref={gridRef}>
         <Tile>
           <Button confetti>Click me</Button>
         </Tile>

@@ -7,12 +7,13 @@
    ============================================================ */
 
 .page {
-  width: 60%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 128px 0 160px;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 96px 0 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* --- Hero --- */
@@ -20,7 +21,9 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 96px;
+  margin-bottom: 64px;
+  padding: 0 64px;
+  flex-shrink: 0;
 }
 
 .heroTitle {
@@ -41,9 +44,16 @@
    Gap matches the tile corner radius so the negative space and
    the inner curves share the same rhythm. */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 18px;
+  padding: 0 64px 64px;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
 
 /* --- Tile: a framed stage for one component, always 1:1 --- */
@@ -51,17 +61,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1;
+  width: 360px;
+  height: 360px;
   padding: 48px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 18px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 /* tiles whose component needs the full width inside (Input, Slider,
    Tabs) — items stretch instead of centring horizontally */
 .tileStretch {
+  width: 560px;
   align-items: stretch;
   flex-direction: column;
   padding: 48px;
