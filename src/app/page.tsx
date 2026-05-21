@@ -7,7 +7,6 @@ import {
   Counter,
   Input,
   Slider,
-  Spinner,
   Switch,
   Tabs,
   ToastProvider,
@@ -70,10 +69,6 @@ function Showcase() {
           <Button confetti>Click me</Button>
         </Tile>
 
-        <Tile stretch>
-          <Input label="Email" placeholder="you@example.com" />
-        </Tile>
-
         <Tile>
           <Switch checked={on} onChange={setOn} aria-label="Toggle" />
         </Tile>
@@ -94,21 +89,11 @@ function Showcase() {
           <Counter initial={3} min={0} max={10} />
         </Tile>
 
-        <Tile>
-          <Spinner />
-        </Tile>
-
         <Tile stretch>
-          <Tabs
-            items={[
-              { id: 'overview', label: 'Overview', content: null },
-              { id: 'specs', label: 'Specs', content: null },
-              { id: 'history', label: 'History', content: null },
-            ]}
-            value={tab}
-            onChange={setTab}
-          />
+          <Input label="Email" placeholder="you@example.com" />
         </Tile>
+        
+
       </div>
     </main>
   );
