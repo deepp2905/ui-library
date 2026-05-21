@@ -36,7 +36,7 @@ export function Switch({
       return;
     }
     trackControls.start({
-      scaleX: [1, 1.5, 1],
+      scaleX: [1, 1.125, 1],
       transition: {
         duration: 0.4,
         times: [0, 0.4, 1],
