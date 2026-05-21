@@ -52,17 +52,18 @@
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
-  scroll-behavior: smooth;
   scrollbar-width: thin;
 }
 
-/* --- Tile: a framed stage for one component, always 1:1 --- */
+/* --- Tile: a framed stage for one component, always 1:1 ---
+   Size is large enough that any component fits with 48px padding
+   on every side, so the tile is the same size regardless of content. */
 .tile {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 360px;
-  height: 360px;
+  width: 500px;
+  height: 500px;
   padding: 48px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -71,11 +72,9 @@
   flex-shrink: 0;
 }
 
-/* tiles whose component needs the full width inside (Input, Slider,
-   Tabs) — items stretch instead of centring horizontally */
+/* Stretch variant for components that need full inner width
+   (Input, Slider, Tabs). Same tile size — only inner alignment changes. */
 .tileStretch {
-  width: 560px;
   align-items: stretch;
   flex-direction: column;
-  padding: 48px;
 }

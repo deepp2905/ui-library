@@ -41,13 +41,19 @@ function Showcase() {
     const el = gridRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
+      // If the user is already scrolling horizontally (shift+wheel or
+      // horizontal trackpad swipe), let the native handler do it.
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
       if (e.deltaY === 0) return;
-      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-      el.scrollLeft += delta;
+      // deltaMode 0 = pixels (trackpad / precision wheel),
+      // deltaMode 1 = lines (classic mouse wheel — multiply to match
+      // the browser's own line-to-pixel conversion of ~16px/line).
+      const pixels = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+      el.scrollLeft += pixels;
       e.preventDefault();
     };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel);
   }, []);
 
   return (
