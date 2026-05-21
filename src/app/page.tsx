@@ -74,11 +74,7 @@ function Showcase() {
         </Tile>
 
         <Tile>
-          <Checkbox
-            checked={agree}
-            onChange={setAgree}
-            label="I agree to the terms"
-          />
+          <Counter initial={0} min={-10} max={10} />
         </Tile>
 
         <Tile stretch>
@@ -86,7 +82,11 @@ function Showcase() {
         </Tile>
 
         <Tile>
-          <Counter initial={3} min={0} max={10} />
+          <Checkbox
+            checked={agree}
+            onChange={setAgree}
+            label="I agree to the terms"
+          />
         </Tile>
 
         <Tile stretch>
