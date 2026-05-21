@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useAnimationControls } from 'framer-motion';
 import { cn } from '@/lib/cn';
-import { springSoft } from '@/lib/motion';
 import styles from './Switch.module.css';
 
 export interface SwitchProps {
@@ -29,8 +28,25 @@ export function Switch({
   const [pressed, setPressed] = useState(false);
   const release = () => setPressed(false);
 
+  const trackControls = useAnimationControls();
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    trackControls.start({
+      scaleX: [1, 1.5, 1],
+      transition: {
+        duration: 0.4,
+        times: [0, 0.4, 1],
+        ease: [0.22, 1, 0.36, 1],
+      },
+    });
+  }, [checked, trackControls]);
+
   return (
-    <button
+    <motion.button
       id={id}
       type="button"
       role="switch"
@@ -47,6 +63,8 @@ export function Switch({
         checked && styles.on,
         className,
       )}
+      style={{ transformOrigin: checked ? 'left center' : 'right center' }}
+      animate={trackControls}
       {...props}
     >
       <span className={styles.thumbWrap}>
@@ -54,9 +72,14 @@ export function Switch({
           className={styles.thumb}
           layout
           animate={{ scale: pressed && !disabled ? 0.86 : 1 }}
-          transition={{ ...springSoft, stiffness: 500, damping: 18, mass: 0.6 }}
+          transition={{
+            type: 'spring',
+            stiffness: 800,
+            damping: 32,
+            mass: 0.75,
+          }}
         />
       </span>
-    </button>
+    </motion.button>
   );
 }
