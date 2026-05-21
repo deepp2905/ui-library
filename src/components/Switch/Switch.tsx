@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
-import { springStiff } from '@/lib/motion';
+import { springSoft } from '@/lib/motion';
 import styles from './Switch.module.css';
 
 export interface SwitchProps {
@@ -49,17 +49,14 @@ export function Switch({
       )}
       {...props}
     >
-      <motion.span
-        className={styles.thumbWrap}
-        layout
-        transition={springStiff}
-      >
+      <span className={styles.thumbWrap}>
         <motion.span
           className={styles.thumb}
+          layout
           animate={{ scale: pressed && !disabled ? 0.86 : 1 }}
-          transition={springStiff}
+          transition={{ ...springSoft, stiffness: 500, damping: 18, mass: 0.6 }}
         />
-      </motion.span>
+      </span>
     </button>
   );
 }
