@@ -1,7 +1,7 @@
 .counter {
   display: inline-flex;
   align-items: center;
-  gap: var(--c-space-4);
+  gap: var(--c-space-6);
   padding: var(--c-space-1);
   border-radius: var(--c-radius-pill);
   background: var(--color-surface);
@@ -17,7 +17,6 @@
   border-radius: var(--c-radius-pill);
   background: var(--color-surface-sunken);
   color: var(--color-primary);
-  font-size: var(--c-text-lg);
   line-height: 1;
   cursor: pointer;
 }
@@ -36,12 +35,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 60px;
+  min-width: 80px;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: var(--c-text-2xl);
   font-weight: var(--weight-bold);
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   color: var(--color-fg);
   user-select: none;
   -webkit-user-select: none;
