@@ -58,9 +58,9 @@ function Showcase() {
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
-        <h1 className={styles.heroTitle}>UI Library</h1>
+        <h1 className={styles.heroTitle}>UI Component Library</h1>
         <p className={styles.heroSub}>
-          A tasteful, neutral component set — primary #F0660D.
+          Orange and some fun interactions.
         </p>
       </header>
 
