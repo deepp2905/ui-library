@@ -74,7 +74,7 @@ function Showcase() {
         </Tile>
 
         <Tile>
-          <Counter initial={0} min={-10} max={10} />
+          <Counter initial={0} min={0} max={50} />
         </Tile>
 
         <Tile stretch>

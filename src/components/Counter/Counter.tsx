@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
-import { springSnappy, tapSmall } from '@/lib/motion';
+import { springSnappy } from '@/lib/motion';
 import styles from './Counter.module.css';
 
 export interface CounterProps {
@@ -32,9 +32,9 @@ function Digit({ char }: { char: string }) {
         <motion.span
           key={char}
           className={styles.digitChar}
-          initial={{ filter: 'blur(8px)', opacity: 0, y: -12 }}
+          initial={{ filter: 'blur(3px)', opacity: 0, y: -12 }}
           animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
-          exit={{ filter: 'blur(8px)', opacity: 0, y: 12 }}
+          exit={{ filter: 'blur(3px)', opacity: 0, y: 12 }}
           transition={digitTransition}
         >
           {char}
@@ -77,9 +77,9 @@ export function Counter({
         type="button"
         className={styles.btn}
         onClick={() => set(value - step)}
-        disabled={value - step < min}
-        whileTap={tapSmall}
-        transition={springSnappy}
+        disabled={value <= min}
+        whileTap={value <= min ? undefined : { scale: 0.96 }}
+        transition={{ ...springSnappy, damping: 8 }}
         aria-label="Decrement"
       >
         &#8722;
@@ -107,9 +107,9 @@ export function Counter({
         type="button"
         className={styles.btn}
         onClick={() => set(value + step)}
-        disabled={value + step > max}
-        whileTap={tapSmall}
-        transition={springSnappy}
+        disabled={value >= max}
+        whileTap={value >= max ? undefined : { scale: 0.96 }}
+        transition={{ ...springSnappy, damping: 8 }}
         aria-label="Increment"
       >
         +
