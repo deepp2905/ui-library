@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap');
 @import './tokens.css';
 
 *,
@@ -18,7 +19,7 @@ body {
 body {
   background: var(--color-bg);
   color: var(--color-fg);
-  font-family: var(--font-sans), var(--font-sans-fallback);
+  font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: 1.5;
   letter-spacing: -0.011em;
