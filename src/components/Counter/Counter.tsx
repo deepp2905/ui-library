@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
+import { MinusIcon, PlusIcon } from './icons';
 import styles from './Counter.module.css';
 
 export interface CounterProps {
@@ -82,7 +83,7 @@ export function Counter({
         transition={{ ...springSnappy, damping: 8 }}
         aria-label="Decrement"
       >
-        &#8722;
+        <MinusIcon />
       </motion.button>
 
       <div className={styles.value} aria-live="polite">
@@ -90,11 +91,10 @@ export function Counter({
           {items.map(({ key, char }) => (
             <motion.span
               key={key}
-              layout
               className={styles.slot}
-              initial={{ filter: 'blur(8px)', opacity: 0, scale: 0.6 }}
+              initial={{ filter: 'blur(3px)', opacity: 0, scale: 0.6 }}
               animate={{ filter: 'blur(0px)', opacity: 1, scale: 1 }}
-              exit={{ filter: 'blur(8px)', opacity: 0, scale: 0.6 }}
+              exit={{ filter: 'blur(3px)', opacity: 0, scale: 0.6 }}
               transition={digitTransition}
             >
               <Digit char={char} />
@@ -112,7 +112,7 @@ export function Counter({
         transition={{ ...springSnappy, damping: 8 }}
         aria-label="Increment"
       >
-        +
+        <PlusIcon />
       </motion.button>
     </div>
   );

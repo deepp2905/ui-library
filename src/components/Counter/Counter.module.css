@@ -38,8 +38,10 @@
   justify-content: center;
   min-width: 60px;
   font-variant-numeric: tabular-nums;
-  font-size: var(--c-text-lg);
-  font-weight: var(--weight-semibold);
+  font-size: var(--c-text-2xl);
+  font-weight: var(--weight-bold);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .slot {
@@ -49,9 +51,16 @@
 .digit {
   position: relative;
   display: inline-flex;
+  align-items: center;
   justify-content: center;
+  width: 1ch;
+  height: 1em;
 }
 
 .digitChar {
-  display: inline-block;
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
