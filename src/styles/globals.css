@@ -18,9 +18,10 @@ body {
 body {
   background: var(--color-bg);
   color: var(--color-fg);
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), var(--font-sans-fallback);
   font-size: var(--text-base);
   line-height: 1.5;
+  letter-spacing: -0.011em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
