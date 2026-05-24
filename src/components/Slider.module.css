@@ -49,7 +49,7 @@
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--motion-fast) var(--ease-out);
+  transition: opacity 0.6s ease-out;
   z-index: 2;
 }
 
@@ -93,21 +93,25 @@
   transform: scaleY(var(--edge-fade, 1));
   transform-origin: center;
   transition:
-    opacity var(--motion-fast) var(--ease-out),
+    opacity 0.6s ease-out,
     transform var(--motion-fast) var(--ease-out);
   z-index: 2;
 }
 
-/* Resting (hover) state: 50% fill opacity, still clamped by edge-fade. */
+/* Resting (hover) state: 50% normally, 100% in the outer 10% bands. */
 .track:hover .thumb {
-  opacity: calc(0.5 * var(--edge-fade, 1));
+  opacity: var(--rest-opacity, 0.5);
 }
 
-/* Dragging: switch to white at 75% opacity, still clamped by edge-fade
-   so the outer 10% bands keep their fade-out. */
+/* Dragging: white crossfading to tick gray near the edges; 75% normally,
+   100% in the outer 10% bands. */
 .track:has(.range:active) .thumb {
-  background: #fff;
-  opacity: calc(0.75 * var(--edge-fade, 1));
+  background: color-mix(
+    in srgb,
+    var(--color-border-strong, var(--color-border)) var(--edge-mix, 0%),
+    #fff
+  );
+  opacity: var(--active-opacity, 0.75);
 }
 
 .track:hover .ticks {

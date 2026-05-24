@@ -63,6 +63,19 @@ export function Slider({
                 : pct >= 90
                   ? 0.5 + ((100 - pct) / 10) * 0.5
                   : 1,
+            /* 0 in the middle (pure thumb color), 1 at the very edge
+               (fully blended toward gray). Used to crossfade the
+               dragging-white thumb back to the tick gray near 0/100. */
+            '--edge-mix':
+              pct <= 10
+                ? `${(1 - pct / 10) * 100}%`
+                : pct >= 90
+                  ? `${(1 - (100 - pct) / 10) * 100}%`
+                  : '0%',
+            /* Bump opacity to 100% in the outer 10% bands so the shorter
+               edge-state pill stays clearly visible. */
+            '--rest-opacity': pct <= 10 || pct >= 90 ? 1 : 0.5,
+            '--active-opacity': pct <= 10 || pct >= 90 ? 1 : 0.75,
           } as React.CSSProperties
         }
       >
