@@ -80,14 +80,12 @@
 .thumb {
   position: absolute;
   top: 9px;
-  bottom: 9px;
-  width: 4px;
-  /* Anchor right edge of thumb to fill's right edge minus 4px padding,
-     but clamp so the thumb stays at least 4px inside the track on the
-     left when the fill goes to 0. */
-  left: max(4px, calc(var(--pct) - 4px - 4px));
-  border-radius: var(--c-radius-pill);
-  background: var(--color-border-strong, var(--color-border));
+  /* SVG has 2.5px slack on each side for the bow path (SVG_PAD_X).
+     Pill's right edge sits at (SVG_PAD_X + THUMB_WIDTH) = 5.5px inside
+     the SVG. Shift left so the pill's visual right edge sits 4px in
+     from the fill's right edge, and clamp so the pill stays at least
+     4px inside the track on the left when fill is 0. */
+  left: max(1.5px, calc(var(--pct) - 4px - 5.5px));
   pointer-events: none;
   opacity: 0;
   transform: scaleY(var(--edge-fade, 1));
@@ -96,6 +94,11 @@
     opacity 0.6s ease-out,
     transform var(--motion-fast) var(--ease-out);
   z-index: 2;
+  overflow: visible;
+}
+
+.thumb path {
+  fill: var(--color-border-strong, var(--color-border));
 }
 
 /* Resting (hover) state: 50% normally, 100% in the outer 10% bands. */
@@ -105,12 +108,15 @@
 
 /* Dragging: white crossfading to tick gray near the edges; 75% normally,
    100% in the outer 10% bands. */
-.track:has(.range:active) .thumb {
-  background: color-mix(
+.track:has(.range:active) .thumb path {
+  fill: color-mix(
     in srgb,
     var(--color-border-strong, var(--color-border)) var(--edge-mix, 0%),
     #fff
   );
+}
+
+.track:has(.range:active) .thumb {
   opacity: var(--active-opacity, 0.75);
 }
 
