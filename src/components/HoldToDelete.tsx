@@ -24,17 +24,16 @@ export interface HoldToDeleteProps {
   className?: string;
 }
 
-const SHRINK_MS = 300; // scale down to nothing
-const INVISIBLE_WAIT_MS = 450; // time the button stays invisible
-const EXPAND_MS = 300; // fade back to full size
-
-/* TEMP: scrub-debug UI for fine-tuning the animation. Set to false to
-   restore normal hold-to-trigger behavior. */
-const SCRUB_DEBUG = true;
+const SHRINK_MS = 200; // scale down to nothing
+const INVISIBLE_WAIT_MS = 1000; // time the button stays invisible
 
 /* Reverse (release-early) animation duration. Independent of hold
    duration so a release always feels snappy regardless of fill speed. */
 const REVERSE_MS = 220;
+
+/* Chards: independent of the shrink/expand timings. */
+const CHARDS_DELAY_MS = 150; // wait after shrink starts before launching
+const CHARDS_DURATION_MS = 900; // how long each chard's fly-out animation lasts
 
 /* Cubic-bezier ease-out: fast start, slow finish. The fill bar accelerates
    in then eases into completion — and because the animation's own end is
@@ -72,7 +71,7 @@ const makeShards = (): Shard[] => {
 export function HoldToDelete({
   children = 'Hold to delete',
   onConfirm,
-  holdMs = 1200,
+  holdMs = 900,
   className,
 }: HoldToDeleteProps) {
   const progress = useMotionValue(0);
@@ -108,21 +107,26 @@ export function HoldToDelete({
     onConfirm?.();
     setSequenceActive(true);
 
-    /* Spawn the confetti burst at the same instant the shrink begins. */
-    const id = burstIdRef.current++;
-    setBursts((prev) => [...prev, { id, shards: makeShards() }]);
+    /* Spawn the confetti burst after a delay so the chards launch as
+       the button is mid-dissolve, not at the start. */
+    setTimeout(() => {
+      const id = burstIdRef.current++;
+      setBursts((prev) => [...prev, { id, shards: makeShards() }]);
+    }, CHARDS_DELAY_MS);
 
-    /* 1. Scale down to 1%, fade opacity to 0, blur to 3px — all over
-       the full shrink duration. Blur adds a dissolving/evaporating
-       feel that pairs naturally with a delete action. */
+    /* 1. Shrink with anticipation: scale briefly grows past 1 (wind-up)
+       then plunges to 0.01. Opacity fades to 0 and blur grows to 5px
+       linearly across the full duration. */
     await controls.start({
       scale: [1, 0.01],
       opacity: 0,
-      filter: 'blur(5px)',
       transition: {
-        type: 'spring',
+        // Slow wind-up, fast crash: first control point pulls the
+        // curve into a slow rise above 1 (scale grows past from-value),
+        // second control point yanks it sharply down to target in the
+        // back end. Lingers at the top, then plunges.
+        ease: [1, -0.2, 0.9, 1],
         duration: SHRINK_MS / 1000,
-        bounce: 0.25,
       },
     });
     /* Reset the fill while the button is invisible so the reappear
@@ -130,29 +134,13 @@ export function HoldToDelete({
     progress.set(0);
     // 2. Hold at invisible briefly.
     await new Promise((r) => setTimeout(r, INVISIBLE_WAIT_MS));
-    /* 3. Expand scale back to 1; fade opacity in over the first
-       quarter so the button doesn't pop in invisibly. Plain tween on
-       scale (not spring) so there's no possibility of overshoot — a
-       0.01 → 1 jump under spring physics overshoots even with
-       bounce: 0 because the duration is interpreted as settle time. */
+    /* 3. Expand back to scale 1, opacity 1, blur 0 — with a bouncy
+       spring so the button pops back into existence. */
     await controls.start({
       scale: 1,
       opacity: 1,
       filter: 'blur(0px)',
-      transition: {
-        scale: {
-          duration: EXPAND_MS / 1000,
-          ease: FILL_EASE,
-        },
-        opacity: {
-          duration: EXPAND_MS / 1000,
-          ease: FILL_EASE,
-        },
-        filter: {
-          duration: EXPAND_MS / 1000,
-          ease: FILL_EASE,
-        },
-      },
+      transition: { ...springSnappy, damping: 48 },
     });
     completedRef.current = false;
     setSequenceActive(false);
@@ -189,63 +177,6 @@ export function HoldToDelete({
 
   useEffect(() => () => stopProgressAnim(), []);
 
-  /* --- Scrub debug ---
-     Maps a normalized 0..1 slider position to the visual state at the
-     corresponding moment in the full timeline (fill → shrink → wait →
-     expand). Bypasses the async sequence — applies state directly via
-     controls.set and progress.set. Shards spawn the first time the
-     scrub crosses the shrink-start threshold; they animate in real
-     time from there (can't be scrubbed retroactively). */
-  const scrubBurstFiredRef = useRef(false);
-  const TOTAL_MS = holdMs + SHRINK_MS + INVISIBLE_WAIT_MS + EXPAND_MS;
-  const scrubTo = (norm: number) => {
-    const t = norm * TOTAL_MS;
-    // Phase 1: fill (0 .. holdMs)
-    if (t <= holdMs) {
-      progress.set(t / holdMs);
-      controls.set({ scale: 1, opacity: 1, filter: 'blur(0px)' });
-      // Clear any leftover shards from a previous scrub past this point.
-      if (scrubBurstFiredRef.current) {
-        setBursts([]);
-        scrubBurstFiredRef.current = false;
-      }
-      return;
-    }
-    // Spawn burst the moment we cross into the shrink phase.
-    if (!scrubBurstFiredRef.current) {
-      scrubBurstFiredRef.current = true;
-      const id = burstIdRef.current++;
-      setBursts([{ id, shards: makeShards() }]);
-    }
-    // Phase 2: shrink (holdMs .. holdMs + SHRINK_MS)
-    if (t <= holdMs + SHRINK_MS) {
-      const p = (t - holdMs) / SHRINK_MS;
-      // Same shrink curve: scale 1→0.01, opacity 1→0, blur 0→5px.
-      progress.set(1);
-      controls.set({
-        scale: 1 - p * (1 - 0.01),
-        opacity: 1 - p,
-        filter: `blur(${p * 5}px)`,
-      });
-      return;
-    }
-    // Phase 3: invisible wait (constant invisible state)
-    if (t <= holdMs + SHRINK_MS + INVISIBLE_WAIT_MS) {
-      progress.set(0);
-      controls.set({ scale: 0.01, opacity: 0, filter: 'blur(5px)' });
-      return;
-    }
-    // Phase 4: expand (back to scale 1, opacity 1, blur 0)
-    const p =
-      (t - holdMs - SHRINK_MS - INVISIBLE_WAIT_MS) / EXPAND_MS;
-    progress.set(0);
-    controls.set({
-      scale: 0.01 + p * (1 - 0.01),
-      opacity: p,
-      filter: `blur(${(1 - p) * 5}px)`,
-    });
-  };
-
   return (
     <span className={styles.shell}>
       <span className={styles.confettiLayer} aria-hidden>
@@ -275,11 +206,7 @@ export function HoldToDelete({
             ? undefined
             : {
                 scale: 0.96,
-                /* High damping (32 = springSnappy default) so the press
-                   settles to 0.96 without oscillating past it. damping=16
-                   was bouncy and visibly oscillated when the gesture
-                   re-engaged after the delete sequence. */
-                transition: springSnappy,
+                transition: { ...springSnappy, damping: 16 },
               }
         }
       >
@@ -300,39 +227,6 @@ export function HoldToDelete({
           </span>
         </motion.button>
       </motion.span>
-      {SCRUB_DEBUG && (
-        <div
-          style={{
-            position: 'fixed',
-            left: 16,
-            right: 16,
-            bottom: 16,
-            zIndex: 9999,
-            padding: 12,
-            background: 'rgba(0,0,0,0.85)',
-            color: '#fff',
-            fontFamily: 'monospace',
-            fontSize: 12,
-            borderRadius: 8,
-            display: 'flex',
-            gap: 12,
-            alignItems: 'center',
-          }}
-        >
-          <span style={{ whiteSpace: 'nowrap' }}>
-            scrub: hold={holdMs}ms shrink={SHRINK_MS}ms wait=
-            {INVISIBLE_WAIT_MS}ms expand={EXPAND_MS}ms
-          </span>
-          <input
-            type="range"
-            min={0}
-            max={1000}
-            defaultValue={0}
-            style={{ flex: 1 }}
-            onChange={(e) => scrubTo(Number(e.target.value) / 1000)}
-          />
-        </div>
-      )}
     </span>
   );
 }
@@ -352,7 +246,10 @@ function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
             style={{ width: s.w, height: s.h }}
             initial={{ x: cx, y: cy, opacity: 1, rotate: 0, scale: 0.6 }}
             animate={{ x, y, opacity: 0, rotate: s.rotation, scale: 1 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: CHARDS_DURATION_MS / 1000,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             onAnimationComplete={i === 0 ? onDone : undefined}
           />
         );
