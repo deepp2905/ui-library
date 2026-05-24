@@ -3,17 +3,17 @@
  * Import everything from here: import { Button, Card } from '@/components';
  */
 
-export { Accordion } from './Accordion/Accordion';
-export type { AccordionProps, AccordionItem } from './Accordion/Accordion';
+export { Accordion } from './Accordion';
+export type { AccordionProps, AccordionItem } from './Accordion';
 
-export { Avatar } from './Avatar/Avatar';
-export type { AvatarProps } from './Avatar/Avatar';
+export { Avatar } from './Avatar';
+export type { AvatarProps } from './Avatar';
 
-export { Badge } from './Badge/Badge';
-export type { BadgeProps, BadgeVariant } from './Badge/Badge';
+export { Badge } from './Badge';
+export type { BadgeProps, BadgeVariant } from './Badge';
 
-export { Button } from './Button/Button';
-export type { ButtonProps, ButtonVariant, ButtonSize } from './Button/Button';
+export { Button } from './Button';
+export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
 
 export {
   Card,
@@ -21,53 +21,53 @@ export {
   CardTitle,
   CardDescription,
   CardFooter,
-} from './Card/Card';
-export type { CardProps } from './Card/Card';
+} from './Card';
+export type { CardProps } from './Card';
 
-export { Checkbox } from './Checkbox/Checkbox';
-export type { CheckboxProps } from './Checkbox/Checkbox';
+export { Checkbox } from './Checkbox';
+export type { CheckboxProps } from './Checkbox';
 
-export { Counter } from './Counter/Counter';
-export type { CounterProps } from './Counter/Counter';
+export { Counter } from './Counter';
+export type { CounterProps } from './Counter';
 
-export { Dropdown } from './Dropdown/Dropdown';
-export type { DropdownProps, DropdownItem } from './Dropdown/Dropdown';
+export { Dropdown } from './Dropdown';
+export type { DropdownProps, DropdownItem } from './Dropdown';
 
-export { Input } from './Input/Input';
-export type { InputProps } from './Input/Input';
+export { Input } from './Input';
+export type { InputProps } from './Input';
 
-export { Modal } from './Modal/Modal';
-export type { ModalProps } from './Modal/Modal';
+export { Modal } from './Modal';
+export type { ModalProps } from './Modal';
 
-export { Progress } from './Progress/Progress';
-export type { ProgressProps } from './Progress/Progress';
+export { Progress } from './Progress';
+export type { ProgressProps } from './Progress';
 
-export { SegmentedControl } from './SegmentedControl/SegmentedControl';
+export { SegmentedControl } from './SegmentedControl';
 export type {
   SegmentedControlProps,
   SegmentOption,
-} from './SegmentedControl/SegmentedControl';
+} from './SegmentedControl';
 
-export { Skeleton } from './Skeleton/Skeleton';
-export type { SkeletonProps } from './Skeleton/Skeleton';
+export { Skeleton } from './Skeleton';
+export type { SkeletonProps } from './Skeleton';
 
-export { Slider } from './Slider/Slider';
-export type { SliderProps } from './Slider/Slider';
+export { Slider } from './Slider';
+export type { SliderProps } from './Slider';
 
-export { Spinner } from './Spinner/Spinner';
-export type { SpinnerProps } from './Spinner/Spinner';
+export { Spinner } from './Spinner';
+export type { SpinnerProps } from './Spinner';
 
-export { Switch } from './Switch/Switch';
-export type { SwitchProps } from './Switch/Switch';
+export { Switch } from './Switch';
+export type { SwitchProps } from './Switch';
 
-export { Tabs } from './Tabs/Tabs';
-export type { TabsProps, TabItem } from './Tabs/Tabs';
+export { Tabs } from './Tabs';
+export type { TabsProps, TabItem } from './Tabs';
 
-export { Tile } from './Tile/Tile';
-export type { TileProps } from './Tile/Tile';
+export { Tile } from './Tile';
+export type { TileProps } from './Tile';
 
-export { ToastProvider, useToast } from './Toast/Toast';
-export type { ToastOptions, ToastTone } from './Toast/Toast';
+export { ToastProvider, useToast } from './Toast';
+export type { ToastOptions, ToastTone } from './Toast';
 
-export { Tooltip } from './Tooltip/Tooltip';
-export type { TooltipProps, TooltipSide } from './Tooltip/Tooltip';
+export { Tooltip } from './Tooltip';
+export type { TooltipProps, TooltipSide } from './Tooltip';
