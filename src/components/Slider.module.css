@@ -40,41 +40,54 @@
   bottom: 0;
   width: var(--pct);
   background: var(--color-primary);
-  border-radius: 0 2px 2px 0;
+  border-radius: 0 4px 4px 0;
   z-index: 1;
 }
 
 .ticks {
   position: absolute;
-  inset: 8px 0;
-  display: flex;
-  justify-content: space-between;
+  inset: 0;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-out);
 }
 
 .tick {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
   width: 2px;
-  background: var(--color-border);
+  margin-left: -1px;
+  background: var(--color-border-strong, var(--color-border));
   border-radius: 2px;
 }
 
 .thumb {
   position: absolute;
-  top: 4px;
-  bottom: 4px;
+  top: 9px;
+  bottom: 9px;
   width: 4.5px;
-  /* Anchor right edge of thumb to fill's right edge minus 4px padding. */
-  left: calc(var(--pct) - 4px - 4.5px);
+  /* Anchor right edge of thumb to fill's right edge minus 4px padding,
+     but clamp so the thumb stays at least 4px inside the track on the
+     left when the fill goes to 0. */
+  left: max(4px, calc(var(--pct) - 4px - 4.5px));
   border-radius: var(--c-radius-pill);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--color-border-strong, var(--color-border));
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--motion-fast) var(--ease-out);
+  transform: scaleY(var(--edge-fade, 1));
+  transform-origin: center;
+  transition:
+    opacity var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
   z-index: 2;
 }
 
-.track:hover .thumb,
-.track:focus-within .thumb {
+.track:hover .thumb {
+  opacity: var(--edge-fade, 1);
+}
+
+.track:hover .ticks {
   opacity: 1;
 }
 
@@ -85,12 +98,8 @@
   height: 100%;
   margin: 0;
   opacity: 0;
-  cursor: grab;
+  cursor: pointer;
   z-index: 3;
-}
-
-.range:active {
-  cursor: grabbing;
 }
 
 .track:has(.range:disabled) {
