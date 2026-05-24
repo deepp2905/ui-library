@@ -1,7 +1,9 @@
 'use client';
 
 import { useId, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
+import { springSnappy } from '@/lib/motion';
 import styles from './Slider.module.css';
 
 export interface SliderProps {
@@ -30,7 +32,7 @@ export function Slider({
   onChange,
   min = 0,
   max = 100,
-  step = 1,
+  step = 0.01,
   label,
   showValue = false,
   disabled = false,
@@ -38,6 +40,7 @@ export function Slider({
 }: SliderProps) {
   const id = useId();
   const pct = ((value - min) / (max - min)) * 100;
+  const inEdgeZone = pct <= 7 || pct >= 95;
 
   /* Brief ease-in when the user clicks the track without dragging.
      `animating` is set true on pointerdown and cleared on the first
@@ -82,47 +85,10 @@ export function Slider({
         style={
           {
             '--pct': `${pct}%`,
-            /* Fade thumb height at the edges: full size between 10–90%,
-               25% at 0 or 100, linearly interpolated in the outer 10%
-               bands on each side. */
-            '--edge-fade':
-              pct <= 10
-                ? 0.25 + (pct / 10) * 0.75
-                : pct >= 90
-                  ? 0.25 + ((100 - pct) / 10) * 0.75
-                  : 1,
-            /* Padding from the fill edge: 6px in the middle, expanding
-               to 8px at the extremes so the shrunk pill sits further
-               from the rounded cap. */
-            '--edge-pad':
-              pct <= 10
-                ? `${8 - (pct / 10) * 2}px`
-                : pct >= 90
-                  ? `${8 - ((100 - pct) / 10) * 2}px`
-                  : '6px',
-            /* 0 in the middle (pure thumb color), 1 at the very edge
-               (fully blended toward gray). Used to crossfade the
-               dragging-white thumb back to the tick gray near 0/100. */
-            '--edge-mix':
-              pct <= 10
-                ? `${(1 - pct / 10) * 100}%`
-                : pct >= 90
-                  ? `${(1 - (100 - pct) / 10) * 100}%`
-                  : '0%',
-            /* Fade opacity to 50% in the outer 10% bands so the shrunk
-               pill quietly recedes near the edges. */
-            '--rest-opacity':
-              pct <= 10
-                ? 0.5 + (pct / 10) * 0.25
-                : pct >= 90
-                  ? 0.5 + ((100 - pct) / 10) * 0.25
-                  : 0.75,
-            '--active-opacity':
-              pct <= 10
-                ? 0.5 + (pct / 10) * 0.5
-                : pct >= 90
-                  ? 0.5 + ((100 - pct) / 10) * 0.5
-                  : 1,
+            /* 0 in the middle (pure thumb color), 1 in the edge zone.
+               Used to crossfade the dragging-white thumb to the tick
+               gray. Binary — the motion spring handles the smoothing. */
+            '--edge-mix': inEdgeZone ? '100%' : '0%',
           } as React.CSSProperties
         }
       >
@@ -154,7 +120,15 @@ export function Slider({
             />
           ))}
         </div>
-        <div className={styles.thumb} aria-hidden />
+        <motion.div
+          className={styles.thumb}
+          aria-hidden
+          animate={{
+            scaleY: inEdgeZone ? 0.25 : 1,
+            opacity: inEdgeZone ? 0.5 : 0.75,
+          }}
+          transition={springSnappy}
+        />
         <input
           id={id}
           type="range"

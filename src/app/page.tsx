@@ -31,7 +31,7 @@ function Tile({
 function Showcase() {
   const [on, setOn] = useState(true);
   const [agree, setAgree] = useState(false);
-  const [volume, setVolume] = useState(60);
+  const [volume, setVolume] = useState(64);
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,17 +62,11 @@ function Showcase() {
         </p>
       </header>
 
+
+
       <div className={styles.grid} ref={gridRef}>
         <Tile>
           <Button confetti>Click me</Button>
-        </Tile>
-
-        <Tile>
-          <Switch checked={on} onChange={setOn} aria-label="Toggle" />
-        </Tile>
-
-        <Tile>
-          <Counter initial={0} min={0} max={50} />
         </Tile>
 
         <Tile stretch>
@@ -80,10 +74,15 @@ function Showcase() {
         </Tile>
 
         <Tile>
+          <Switch checked={on} onChange={setOn} aria-label="Toggle" />
+        </Tile>
+
+
+        <Tile>
           <Checkbox
             checked={agree}
             onChange={setAgree}
-            label="I agree to the terms"
+            label="Checkbox"
           />
         </Tile>
 
