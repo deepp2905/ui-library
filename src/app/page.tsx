@@ -8,7 +8,6 @@ import {
   Input,
   Slider,
   Switch,
-  Tabs,
   ToastProvider,
 } from '@/components';
 import styles from './page.module.css';
@@ -33,7 +32,6 @@ function Showcase() {
   const [on, setOn] = useState(true);
   const [agree, setAgree] = useState(false);
   const [volume, setVolume] = useState(60);
-  const [tab, setTab] = useState('overview');
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
