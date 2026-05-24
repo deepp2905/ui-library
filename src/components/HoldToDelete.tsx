@@ -25,8 +25,8 @@ export interface HoldToDeleteProps {
 }
 
 const SHRINK_MS = 300; // scale down to nothing
-const INVISIBLE_WAIT_MS = 1500; // time the button stays invisible
-const EXPAND_MS = 800; // fade back to full size
+const INVISIBLE_WAIT_MS = 450; // time the button stays invisible
+const EXPAND_MS = 300; // fade back to full size
 
 /* Reverse (release-early) animation duration. Independent of hold
    duration so a release always feels snappy regardless of fill speed. */
@@ -54,13 +54,13 @@ interface Shard {
 }
 
 const makeShards = (): Shard[] => {
-  const count = 16 + Math.floor(Math.random() * 6);
+  const count = 24 + Math.floor(Math.random() * 16);
   return Array.from({ length: count }, (_, i) => ({
     id: i,
     w: 3 + Math.random() * 5,
     h: 3 + Math.random() * 7,
     angle: Math.random() * Math.PI * 2,
-    distance: 90 + Math.random() * 40,
+    distance: 90 + Math.random() * 45,
     rotation: (Math.random() - 0.5) * 180,
   }));
 };
@@ -80,6 +80,10 @@ export function HoldToDelete({
 
   const [bursts, setBursts] = useState<{ id: number; shards: Shard[] }[]>([]);
   const burstIdRef = useRef(0);
+  /* Suppress the press-springback `whileTap` on the outer wrapper while
+     the delete sequence is running. Otherwise a release mid-sequence
+     re-triggers the gesture's scale spring and overrides the controls. */
+  const [sequenceActive, setSequenceActive] = useState(false);
 
   const removeBurst = useCallback((id: number) => {
     setBursts((prev) => prev.filter((b) => b.id !== id));
@@ -98,14 +102,13 @@ export function HoldToDelete({
 
   const runDeleteSequence = useCallback(async () => {
     onConfirm?.();
-    /* Spawn the confetti burst at the same instant the shrink begins —
-       fill just reached 100%, so this is the "delete confirmed" moment. */
+    setSequenceActive(true);
+
+    /* Spawn the confetti burst at the same instant the shrink begins. */
     const id = burstIdRef.current++;
     setBursts((prev) => [...prev, { id, shards: makeShards() }]);
 
-    /* 1. Scale down to 1%, fading the opacity only in the last 25% of
-       the shrink (held at 1, then drops to 0 in the final quarter).
-       Duration-based spring gives the snap without dropping keyframes. */
+    /* 1. Scale down to 1%, fading opacity only in the last 25%. */
     await controls.start({
       scale: [1, 0.01],
       opacity: [1, 1, 0],
@@ -119,29 +122,29 @@ export function HoldToDelete({
     /* Reset the fill while the button is invisible so the reappear
        shows the outline state, not the filled state. */
     progress.set(0);
-    // 2. Hold at invisible briefly before bringing the button back.
+    // 2. Hold at invisible briefly.
     await new Promise((r) => setTimeout(r, INVISIBLE_WAIT_MS));
-    /* 3. Expand scale back to 1 over the full duration (so the size
-       growth is clearly visible), and fade opacity in over the first
-       quarter so the button doesn't pop in invisibly. Per-property
-       transitions so the spring drives scale and a fast linear ramp
-       handles opacity independently. */
+    /* 3. Expand scale back to 1; fade opacity in over the first
+       quarter so the button doesn't pop in invisibly. Plain tween on
+       scale (not spring) so there's no possibility of overshoot — a
+       0.01 → 1 jump under spring physics overshoots even with
+       bounce: 0 because the duration is interpreted as settle time. */
     await controls.start({
       scale: 1,
       opacity: 1,
       transition: {
         scale: {
-          type: 'spring',
           duration: EXPAND_MS / 1000,
-          bounce: 0.25,
+          ease: FILL_EASE,
         },
         opacity: {
-          duration: (EXPAND_MS / 1000) * 0.25,
+          duration: (EXPAND_MS / 1000),
           ease: FILL_EASE,
         },
       },
     });
     completedRef.current = false;
+    setSequenceActive(false);
   }, [controls, progress, onConfirm]);
 
   const startHold = () => {
@@ -188,26 +191,47 @@ export function HoldToDelete({
           ))}
         </AnimatePresence>
       </span>
-      <motion.button
-        ref={rootRef}
-        type="button"
-        className={cn(styles.root, className)}
-        onPointerDown={startHold}
-        onPointerUp={releaseHold}
-        onPointerLeave={releaseHold}
-        onPointerCancel={releaseHold}
-        animate={controls}
-        whileTap={{
-          scale: 0.96,
-          transition: { ...springSnappy, damping: 16 },
-        }}
+      {/* Outer wrapper owns the press-springback (whileTap). Inner
+          button owns the delete sequence (animate={controls}). Splitting
+          them onto two elements stops the two animation systems from
+          fighting over the same scale + opacity values. */}
+      <motion.span
+        className={styles.tapTarget}
+        animate={{ scale: 1 }}
+        /* Explicit non-spring transition for the springback so it can't
+           overshoot when the gesture deactivates (Framer's default
+           spring is bouncy). */
+        transition={{ duration: 0.15, ease: FILL_EASE }}
+        whileTap={
+          sequenceActive
+            ? undefined
+            : {
+                scale: 0.96,
+                /* High damping (32 = springSnappy default) so the press
+                   settles to 0.96 without oscillating past it. damping=16
+                   was bouncy and visibly oscillated when the gesture
+                   re-engaged after the delete sequence. */
+                transition: springSnappy,
+              }
+        }
       >
-        <span className={styles.fill} aria-hidden />
-        <span className={styles.label}>{children}</span>
-        <span className={styles.labelOverlay} aria-hidden>
-          {children}
-        </span>
-      </motion.button>
+        <motion.button
+          ref={rootRef}
+          type="button"
+          className={cn(styles.root, className)}
+          onPointerDown={startHold}
+          onPointerUp={releaseHold}
+          onPointerLeave={releaseHold}
+          onPointerCancel={releaseHold}
+          animate={controls}
+        >
+          <span className={styles.fill} aria-hidden />
+          <span className={styles.label}>{children}</span>
+          <span className={styles.labelOverlay} aria-hidden>
+            {children}
+          </span>
+        </motion.button>
+      </motion.span>
     </span>
   );
 }

@@ -3,6 +3,11 @@
   display: inline-flex;
 }
 
+.tapTarget {
+  display: inline-flex;
+  transform-origin: center;
+}
+
 /* Confetti overlay — sits behind the button so shards can fly outward
    without being clipped by the button's `overflow: hidden`. */
 .confettiLayer {
