@@ -42,7 +42,6 @@
   bottom: 0;
   width: var(--pct);
   background: var(--color-primary);
-  border-radius: 0 4px 4px 0;
   z-index: 1;
 }
 

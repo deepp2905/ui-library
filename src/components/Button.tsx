@@ -37,13 +37,13 @@ interface Shard {
 }
 
 const makeShards = (): Shard[] => {
-  const count = 16 + Math.floor(Math.random() * 6); // 8..13
+  const count = 12 + Math.floor(Math.random() * 16);
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    w: 3 + Math.random() * 5, // 3..8
-    h: 3 + Math.random() * 7, // 3..10
+    w: 3 + Math.random() * 5,
+    h: 3 + Math.random() * 7,
     angle: Math.random() * Math.PI * 2,
-    distance: 90 + Math.random() * 40, // 90..150
+    distance: 90 + Math.random() * 45,
     rotation: (Math.random() - 0.5) * 180,
   }));
 };
