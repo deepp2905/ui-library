@@ -50,6 +50,21 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity var(--motion-fast) var(--ease-out);
+  z-index: 2;
+}
+
+/* Portion of the ticks sitting over the orange fill — render at 50%. */
+.ticksOverFill {
+  clip-path: inset(0 calc(100% - var(--pct)) 0 0);
+}
+
+.ticksOverFill .tick {
+  opacity: 0.5;
+}
+
+/* Portion sitting over the unfilled track — render at 100%. */
+.ticksOverTrack {
+  clip-path: inset(0 0 0 var(--pct));
 }
 
 .tick {
@@ -66,11 +81,11 @@
   position: absolute;
   top: 9px;
   bottom: 9px;
-  width: 4.5px;
+  width: 4px;
   /* Anchor right edge of thumb to fill's right edge minus 4px padding,
      but clamp so the thumb stays at least 4px inside the track on the
      left when the fill goes to 0. */
-  left: max(4px, calc(var(--pct) - 4px - 4.5px));
+  left: max(4px, calc(var(--pct) - 4px - 4px));
   border-radius: var(--c-radius-pill);
   background: var(--color-border-strong, var(--color-border));
   pointer-events: none;
@@ -83,8 +98,16 @@
   z-index: 2;
 }
 
+/* Resting (hover) state: 50% fill opacity, still clamped by edge-fade. */
 .track:hover .thumb {
-  opacity: var(--edge-fade, 1);
+  opacity: calc(0.5 * var(--edge-fade, 1));
+}
+
+/* Dragging: switch to white at 75% opacity, still clamped by edge-fade
+   so the outer 10% bands keep their fade-out. */
+.track:has(.range:active) .thumb {
+  background: #fff;
+  opacity: calc(0.75 * var(--edge-fade, 1));
 }
 
 .track:hover .ticks {

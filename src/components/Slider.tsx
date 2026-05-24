@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useId } from 'react';
 import { cn } from '@/lib/cn';
 import styles from './Slider.module.css';
 
@@ -17,19 +17,12 @@ export interface SliderProps {
   className?: string;
 }
 
-/* 10 evenly-spaced snap positions across the track. The first and last
-   are hidden visually (they sit on the rounded end caps) but the value
-   can still snap to them so min/max remain reachable. */
-const SNAP_POSITIONS = Array.from({ length: 10 }, (_, i) => (i / 9) * 100);
-const TICK_POSITIONS = SNAP_POSITIONS.slice(1, -1);
-
-function snapToTick(value: number, min: number, max: number) {
-  const ratio = (value - min) / (max - min);
-  const nearest = SNAP_POSITIONS.reduce((best, p) =>
-    Math.abs(p / 100 - ratio) < Math.abs(best / 100 - ratio) ? p : best,
-  );
-  return min + (nearest / 100) * (max - min);
-}
+/* Visible tick positions — 10 evenly-spaced, with the first and last
+   hidden since they sit on the rounded end caps. */
+const TICK_POSITIONS = Array.from({ length: 10 }, (_, i) => (i / 9) * 100).slice(
+  1,
+  -1,
+);
 
 export function Slider({
   value,
@@ -43,25 +36,7 @@ export function Slider({
   className,
 }: SliderProps) {
   const id = useId();
-
-  /* Track the raw (un-snapped) drag value locally so the fill slides
-     smoothly while the user drags. Commit a snapped value to the parent
-     only on release. */
-  const [dragValue, setDragValue] = useState<number | null>(null);
-  const displayValue = dragValue ?? value;
-
-  // If the controlled value changes externally, drop any in-flight drag.
-  useEffect(() => {
-    setDragValue(null);
-  }, [value]);
-
-  const commit = () => {
-    if (dragValue === null) return;
-    onChange(snapToTick(dragValue, min, max));
-    setDragValue(null);
-  };
-
-  const pct = ((displayValue - min) / (max - min)) * 100;
+  const pct = ((value - min) / (max - min)) * 100;
 
   return (
     <div className={cn(styles.field, className)}>
@@ -72,9 +47,7 @@ export function Slider({
               {label}
             </label>
           )}
-          {showValue && (
-            <span className={styles.value}>{Math.round(displayValue)}</span>
-          )}
+          {showValue && <span className={styles.value}>{value}</span>}
         </div>
       )}
       <div
@@ -94,7 +67,25 @@ export function Slider({
         }
       >
         <div className={styles.fill} />
-        <div className={styles.ticks} aria-hidden>
+        {/* Two layers with opposite clips: ticks over the orange fill
+            render at 50% opacity, ticks over the unfilled track stay at
+            100%. Both layers receive the visibility from `.track:hover`. */}
+        <div
+          className={cn(styles.ticks, styles.ticksOverFill)}
+          aria-hidden
+        >
+          {TICK_POSITIONS.map((pos) => (
+            <span
+              key={pos}
+              className={styles.tick}
+              style={{ left: `${pos}%` }}
+            />
+          ))}
+        </div>
+        <div
+          className={cn(styles.ticks, styles.ticksOverTrack)}
+          aria-hidden
+        >
           {TICK_POSITIONS.map((pos) => (
             <span
               key={pos}
@@ -111,13 +102,9 @@ export function Slider({
           min={min}
           max={max}
           step={step}
-          value={displayValue}
+          value={value}
           disabled={disabled}
-          onChange={(e) => setDragValue(Number(e.target.value))}
-          onMouseUp={commit}
-          onTouchEnd={commit}
-          onKeyUp={commit}
-          onBlur={commit}
+          onChange={(e) => onChange(Number(e.target.value))}
         />
       </div>
     </div>
