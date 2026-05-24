@@ -26,7 +26,7 @@ export interface HoldToDeleteProps {
 
 const SHRINK_MS = 300; // scale down to nothing
 const INVISIBLE_WAIT_MS = 1500; // time the button stays invisible
-const EXPAND_MS = 400; // scale back to full size
+const EXPAND_MS = 800; // fade back to full size
 
 /* Reverse (release-early) animation duration. Independent of hold
    duration so a release always feels snappy regardless of fill speed. */
@@ -121,15 +121,24 @@ export function HoldToDelete({
     progress.set(0);
     // 2. Hold at invisible briefly before bringing the button back.
     await new Promise((r) => setTimeout(r, INVISIBLE_WAIT_MS));
-    // 3. Scale back up to full size with opacity rising at the start.
+    /* 3. Expand scale back to 1 over the full duration (so the size
+       growth is clearly visible), and fade opacity in over the first
+       quarter so the button doesn't pop in invisibly. Per-property
+       transitions so the spring drives scale and a fast linear ramp
+       handles opacity independently. */
     await controls.start({
       scale: 1,
-      opacity: [0, 1, 1],
+      opacity: 1,
       transition: {
-        type: 'spring',
-        duration: EXPAND_MS / 1000,
-        bounce: 0.25,
-        times: [0, 0.25, 1],
+        scale: {
+          type: 'spring',
+          duration: EXPAND_MS / 1000,
+          bounce: 0.25,
+        },
+        opacity: {
+          duration: (EXPAND_MS / 1000) * 0.25,
+          ease: FILL_EASE,
+        },
       },
     });
     completedRef.current = false;
@@ -188,8 +197,10 @@ export function HoldToDelete({
         onPointerLeave={releaseHold}
         onPointerCancel={releaseHold}
         animate={controls}
-        whileTap={{ scale: 0.96 }}
-        transition={{ ...springSnappy, damping: 16 }}
+        whileTap={{
+          scale: 0.96,
+          transition: { ...springSnappy, damping: 16 },
+        }}
       >
         <span className={styles.fill} aria-hidden />
         <span className={styles.label}>{children}</span>
@@ -216,7 +227,7 @@ function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
             style={{ width: s.w, height: s.h }}
             initial={{ x: cx, y: cy, opacity: 1, rotate: 0, scale: 0.6 }}
             animate={{ x, y, opacity: 0, rotate: s.rotation, scale: 1 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             onAnimationComplete={i === 0 ? onDone : undefined}
           />
         );
