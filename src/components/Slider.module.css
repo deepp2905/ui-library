@@ -51,11 +51,17 @@
   background: var(--color-surface);
   border: 3px solid var(--color-primary);
   box-shadow: var(--shadow-sm);
+  cursor: grab;
   transition: transform var(--motion-fast) var(--ease-out);
 }
 
 .range::-webkit-slider-thumb:active {
+  cursor: grabbing;
   transform: scale(1.15);
+}
+
+.range:active {
+  cursor: grabbing;
 }
 
 .range::-moz-range-thumb {
@@ -65,4 +71,9 @@
   background: var(--color-surface);
   border: 3px solid var(--color-primary);
   box-shadow: var(--shadow-sm);
+  cursor: grab;
+}
+
+.range::-moz-range-thumb:active {
+  cursor: grabbing;
 }

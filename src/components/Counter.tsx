@@ -108,7 +108,7 @@ export function Counter({
         className={styles.btn}
         onClick={() => set(value + step)}
         disabled={value >= max}
-        whileTap={value >= max ? undefined : { scale: 0.96 }}
+        whileTap={value >= max ? undefined : { scale: 0.9 }}
         transition={{ ...springSnappy, damping: 8 }}
         aria-label="Increment"
       >
