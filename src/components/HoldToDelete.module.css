@@ -1,0 +1,61 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  padding: 0 var(--c-space-4);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--c-radius-md);
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: var(--weight-medium);
+  font-size: var(--c-text-sm);
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+  isolation: isolate;
+  transform-origin: center;
+}
+
+/* Orange fill bar that slides in from the left as the user holds. */
+.fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: var(--color-primary);
+  transform-origin: left center;
+  /* width animates via scaleX, controlled by --progress (0..1). */
+  transform: scaleX(var(--progress, 0));
+  z-index: 0;
+}
+
+/* Two stacked label layers so the text color can invert as the fill
+   sweeps underneath. */
+.labelStack {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.labelBase {
+  color: var(--color-primary);
+}
+
+/* White copy of the label, clipped to only show where the fill bar is. */
+.labelOverlay {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-fg-on-primary, #fff);
+  clip-path: inset(0 calc(100% - var(--progress, 0) * 100%) 0 0);
+}

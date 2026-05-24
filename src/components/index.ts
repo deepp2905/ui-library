@@ -12,6 +12,9 @@ export type { CheckboxProps } from './Checkbox';
 export { Counter } from './Counter';
 export type { CounterProps } from './Counter';
 
+export { HoldToDelete } from './HoldToDelete';
+export type { HoldToDeleteProps } from './HoldToDelete';
+
 export { Input } from './Input';
 export type { InputProps } from './Input';
 

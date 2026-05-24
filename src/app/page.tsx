@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   Counter,
+  HoldToDelete,
   Input,
   Slider,
   Switch,
@@ -89,7 +90,10 @@ function Showcase() {
         <Tile stretch>
           <Input label="Email" placeholder="you@example.com" />
         </Tile>
-        
+
+        <Tile>
+          <HoldToDelete />
+        </Tile>
 
       </div>
     </main>
