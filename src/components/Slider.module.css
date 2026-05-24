@@ -105,18 +105,18 @@
   position: absolute;
   top: 12px;
   bottom: 12px;
-  width: 3px;
-  /* Anchor pill's right edge `--edge-pad` (default 4px) in from the
+  width: 4px;
+  /* Anchor pill's right edge `--edge-pad` (default 6px) in from the
      fill's right edge. Clamp so the pill stays at least the same
      distance inside the track on the left when the fill goes to 0. */
   left: max(
-    var(--edge-pad, 4px),
-    calc(var(--pct) - var(--edge-pad, 4px) - 3px)
+    var(--edge-pad, 6px),
+    calc(var(--pct) - var(--edge-pad, 6px) - 4px)
   );
   border-radius: var(--c-radius-pill);
-  background: var(--color-border-strong, var(--color-border));
+  background: #fff;
   pointer-events: none;
-  opacity: 0;
+  opacity: var(--rest-opacity, 0.75);
   transform: scaleY(var(--edge-fade, 1));
   transform-origin: center;
   transition:

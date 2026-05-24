@@ -91,15 +91,15 @@ export function Slider({
                 : pct >= 90
                   ? 0.25 + ((100 - pct) / 10) * 0.75
                   : 1,
-            /* Padding from the fill edge: 4px in the middle, expanding
+            /* Padding from the fill edge: 6px in the middle, expanding
                to 8px at the extremes so the shrunk pill sits further
                from the rounded cap. */
             '--edge-pad':
               pct <= 10
-                ? `${8 - (pct / 10) * 4}px`
+                ? `${8 - (pct / 10) * 2}px`
                 : pct >= 90
-                  ? `${8 - ((100 - pct) / 10) * 4}px`
-                  : '4px',
+                  ? `${8 - ((100 - pct) / 10) * 2}px`
+                  : '6px',
             /* 0 in the middle (pure thumb color), 1 at the very edge
                (fully blended toward gray). Used to crossfade the
                dragging-white thumb back to the tick gray near 0/100. */
