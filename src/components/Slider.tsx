@@ -1,6 +1,6 @@
 'use client';
 
-import { useId } from 'react';
+import { useId, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import styles from './Slider.module.css';
 
@@ -39,6 +39,32 @@ export function Slider({
   const id = useId();
   const pct = ((value - min) / (max - min)) * 100;
 
+  /* Brief ease-in when the user clicks the track without dragging.
+     `animating` is set true on pointerdown and cleared on the first
+     pointermove (so dragging stays 1:1) or after the transition
+     completes following pointerup. */
+  const [animating, setAnimating] = useState(false);
+  const dragStarted = useRef(false);
+  const animTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handlePointerDown = () => {
+    dragStarted.current = false;
+    setAnimating(true);
+    if (animTimeout.current) clearTimeout(animTimeout.current);
+  };
+  const handlePointerMove = () => {
+    if (!dragStarted.current) {
+      dragStarted.current = true;
+      setAnimating(false);
+    }
+  };
+  const handlePointerUp = () => {
+    if (!dragStarted.current) {
+      // Pure click — let the transition play out before clearing.
+      animTimeout.current = setTimeout(() => setAnimating(false), 220);
+    }
+  };
+
   return (
     <div className={cn(styles.field, className)}>
       {(label || showValue) && (
@@ -52,7 +78,7 @@ export function Slider({
         </div>
       )}
       <div
-        className={styles.track}
+        className={cn(styles.track, animating && styles.animating)}
         style={
           {
             '--pct': `${pct}%`,
@@ -139,6 +165,9 @@ export function Slider({
           value={value}
           disabled={disabled}
           onChange={(e) => onChange(Number(e.target.value))}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
         />
       </div>
     </div>

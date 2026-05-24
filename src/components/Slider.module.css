@@ -44,6 +44,21 @@
   z-index: 1;
 }
 
+/* Click-to-jump: ease fill width and thumb position over 0.2s. The
+   class is only applied for the duration of a non-dragging click so
+   active dragging stays 1:1 with the pointer. */
+.track.animating .fill,
+.track.animating .thumb,
+.track.animating .ticksOverFill,
+.track.animating .ticksOverTrack {
+  transition:
+    width 0.2s ease,
+    left 0.2s ease,
+    clip-path 0.2s ease,
+    transform var(--motion-fast) var(--ease-out),
+    opacity 0.6s ease-out;
+}
+
 .ticks {
   position: absolute;
   inset: 0;
@@ -112,6 +127,7 @@
 
 /* Resting (hover) state: 75% normally, 100% in the outer 10% bands. */
 .track:hover .thumb {
+  background: #fff;
   opacity: var(--rest-opacity, 0.75);
 }
 
