@@ -25,7 +25,7 @@
 .track {
   position: relative;
   width: 100%;
-  height: 48px;
+  height: 64px;
   border: 1px solid var(--color-border);
   border-radius: var(--c-radius-pill);
   background: var(--color-surface-sunken);
@@ -62,30 +62,42 @@
   opacity: 0.5;
 }
 
-/* Portion sitting over the unfilled track — render at 100%. */
+/* Portion sitting over the unfilled track — render at 100% with a
+   darker color so the marks read clearly against the gray track. */
 .ticksOverTrack {
   clip-path: inset(0 0 0 var(--pct));
 }
 
+.ticksOverTrack .tick {
+  background: var(--color-border-strong, var(--color-border));
+}
+
 .tick {
   position: absolute;
-  top: 16px;
-  bottom: 16px;
+  top: 24px;
+  bottom: 24px;
   width: 2px;
   margin-left: -1px;
-  background: var(--color-border-strong, var(--color-border));
+  background: color-mix(
+    in srgb,
+    var(--color-border) 50%,
+    var(--color-surface-sunken)
+  );
   border-radius: 2px;
 }
 
 .thumb {
   position: absolute;
-  top: 9px;
-  bottom: 9px;
+  top: 12px;
+  bottom: 12px;
   width: 3px;
-  /* Anchor pill's right edge 4px in from the fill's right edge.
-     Clamp so the pill stays at least 4px inside the track on the left
-     when the fill goes to 0. */
-  left: max(4px, calc(var(--pct) - 4px - 3px));
+  /* Anchor pill's right edge `--edge-pad` (default 4px) in from the
+     fill's right edge. Clamp so the pill stays at least the same
+     distance inside the track on the left when the fill goes to 0. */
+  left: max(
+    var(--edge-pad, 4px),
+    calc(var(--pct) - var(--edge-pad, 4px) - 3px)
+  );
   border-radius: var(--c-radius-pill);
   background: var(--color-border-strong, var(--color-border));
   pointer-events: none;

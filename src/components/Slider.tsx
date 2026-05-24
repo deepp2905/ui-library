@@ -57,14 +57,23 @@ export function Slider({
           {
             '--pct': `${pct}%`,
             /* Fade thumb height at the edges: full size between 10–90%,
-               75% at 0 or 100, linearly interpolated in the outer 10%
+               25% at 0 or 100, linearly interpolated in the outer 10%
                bands on each side. */
             '--edge-fade':
               pct <= 10
-                ? 0.75 + (pct / 10) * 0.25
+                ? 0.25 + (pct / 10) * 0.75
                 : pct >= 90
-                  ? 0.75 + ((100 - pct) / 10) * 0.25
+                  ? 0.25 + ((100 - pct) / 10) * 0.75
                   : 1,
+            /* Padding from the fill edge: 4px in the middle, expanding
+               to 8px at the extremes so the shrunk pill sits further
+               from the rounded cap. */
+            '--edge-pad':
+              pct <= 10
+                ? `${8 - (pct / 10) * 4}px`
+                : pct >= 90
+                  ? `${8 - ((100 - pct) / 10) * 4}px`
+                  : '4px',
             /* 0 in the middle (pure thumb color), 1 at the very edge
                (fully blended toward gray). Used to crossfade the
                dragging-white thumb back to the tick gray near 0/100. */
@@ -74,10 +83,20 @@ export function Slider({
                 : pct >= 90
                   ? `${(1 - (100 - pct) / 10) * 100}%`
                   : '0%',
-            /* Bump opacity to 100% in the outer 10% bands so the shorter
-               edge-state pill stays clearly visible. */
-            '--rest-opacity': pct <= 10 || pct >= 90 ? 1 : 0.75,
-            '--active-opacity': pct <= 10 || pct >= 90 ? 1 : 1,
+            /* Fade opacity to 50% in the outer 10% bands so the shrunk
+               pill quietly recedes near the edges. */
+            '--rest-opacity':
+              pct <= 10
+                ? 0.5 + (pct / 10) * 0.25
+                : pct >= 90
+                  ? 0.5 + ((100 - pct) / 10) * 0.25
+                  : 0.75,
+            '--active-opacity':
+              pct <= 10
+                ? 0.5 + (pct / 10) * 0.5
+                : pct >= 90
+                  ? 0.5 + ((100 - pct) / 10) * 0.5
+                  : 1,
           } as React.CSSProperties
         }
       >
