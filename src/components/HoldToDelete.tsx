@@ -28,6 +28,10 @@ const SHRINK_MS = 300; // scale down to nothing
 const INVISIBLE_WAIT_MS = 450; // time the button stays invisible
 const EXPAND_MS = 300; // fade back to full size
 
+/* TEMP: scrub-debug UI for fine-tuning the animation. Set to false to
+   restore normal hold-to-trigger behavior. */
+const SCRUB_DEBUG = true;
+
 /* Reverse (release-early) animation duration. Independent of hold
    duration so a release always feels snappy regardless of fill speed. */
 const REVERSE_MS = 220;
@@ -108,15 +112,17 @@ export function HoldToDelete({
     const id = burstIdRef.current++;
     setBursts((prev) => [...prev, { id, shards: makeShards() }]);
 
-    /* 1. Scale down to 1%, fading opacity only in the last 25%. */
+    /* 1. Scale down to 1%, fade opacity to 0, blur to 3px — all over
+       the full shrink duration. Blur adds a dissolving/evaporating
+       feel that pairs naturally with a delete action. */
     await controls.start({
       scale: [1, 0.01],
-      opacity: [1, 1, 0],
+      opacity: 0,
+      filter: 'blur(5px)',
       transition: {
         type: 'spring',
         duration: SHRINK_MS / 1000,
         bounce: 0.25,
-        times: [0, 0.75, 1],
       },
     });
     /* Reset the fill while the button is invisible so the reappear
@@ -132,13 +138,18 @@ export function HoldToDelete({
     await controls.start({
       scale: 1,
       opacity: 1,
+      filter: 'blur(0px)',
       transition: {
         scale: {
           duration: EXPAND_MS / 1000,
           ease: FILL_EASE,
         },
         opacity: {
-          duration: (EXPAND_MS / 1000),
+          duration: EXPAND_MS / 1000,
+          ease: FILL_EASE,
+        },
+        filter: {
+          duration: EXPAND_MS / 1000,
           ease: FILL_EASE,
         },
       },
@@ -177,6 +188,63 @@ export function HoldToDelete({
   };
 
   useEffect(() => () => stopProgressAnim(), []);
+
+  /* --- Scrub debug ---
+     Maps a normalized 0..1 slider position to the visual state at the
+     corresponding moment in the full timeline (fill → shrink → wait →
+     expand). Bypasses the async sequence — applies state directly via
+     controls.set and progress.set. Shards spawn the first time the
+     scrub crosses the shrink-start threshold; they animate in real
+     time from there (can't be scrubbed retroactively). */
+  const scrubBurstFiredRef = useRef(false);
+  const TOTAL_MS = holdMs + SHRINK_MS + INVISIBLE_WAIT_MS + EXPAND_MS;
+  const scrubTo = (norm: number) => {
+    const t = norm * TOTAL_MS;
+    // Phase 1: fill (0 .. holdMs)
+    if (t <= holdMs) {
+      progress.set(t / holdMs);
+      controls.set({ scale: 1, opacity: 1, filter: 'blur(0px)' });
+      // Clear any leftover shards from a previous scrub past this point.
+      if (scrubBurstFiredRef.current) {
+        setBursts([]);
+        scrubBurstFiredRef.current = false;
+      }
+      return;
+    }
+    // Spawn burst the moment we cross into the shrink phase.
+    if (!scrubBurstFiredRef.current) {
+      scrubBurstFiredRef.current = true;
+      const id = burstIdRef.current++;
+      setBursts([{ id, shards: makeShards() }]);
+    }
+    // Phase 2: shrink (holdMs .. holdMs + SHRINK_MS)
+    if (t <= holdMs + SHRINK_MS) {
+      const p = (t - holdMs) / SHRINK_MS;
+      // Same shrink curve: scale 1→0.01, opacity 1→0, blur 0→5px.
+      progress.set(1);
+      controls.set({
+        scale: 1 - p * (1 - 0.01),
+        opacity: 1 - p,
+        filter: `blur(${p * 5}px)`,
+      });
+      return;
+    }
+    // Phase 3: invisible wait (constant invisible state)
+    if (t <= holdMs + SHRINK_MS + INVISIBLE_WAIT_MS) {
+      progress.set(0);
+      controls.set({ scale: 0.01, opacity: 0, filter: 'blur(5px)' });
+      return;
+    }
+    // Phase 4: expand (back to scale 1, opacity 1, blur 0)
+    const p =
+      (t - holdMs - SHRINK_MS - INVISIBLE_WAIT_MS) / EXPAND_MS;
+    progress.set(0);
+    controls.set({
+      scale: 0.01 + p * (1 - 0.01),
+      opacity: p,
+      filter: `blur(${(1 - p) * 5}px)`,
+    });
+  };
 
   return (
     <span className={styles.shell}>
@@ -232,6 +300,39 @@ export function HoldToDelete({
           </span>
         </motion.button>
       </motion.span>
+      {SCRUB_DEBUG && (
+        <div
+          style={{
+            position: 'fixed',
+            left: 16,
+            right: 16,
+            bottom: 16,
+            zIndex: 9999,
+            padding: 12,
+            background: 'rgba(0,0,0,0.85)',
+            color: '#fff',
+            fontFamily: 'monospace',
+            fontSize: 12,
+            borderRadius: 8,
+            display: 'flex',
+            gap: 12,
+            alignItems: 'center',
+          }}
+        >
+          <span style={{ whiteSpace: 'nowrap' }}>
+            scrub: hold={holdMs}ms shrink={SHRINK_MS}ms wait=
+            {INVISIBLE_WAIT_MS}ms expand={EXPAND_MS}ms
+          </span>
+          <input
+            type="range"
+            min={0}
+            max={1000}
+            defaultValue={0}
+            style={{ flex: 1 }}
+            onChange={(e) => scrubTo(Number(e.target.value) / 1000)}
+          />
+        </div>
+      )}
     </span>
   );
 }
