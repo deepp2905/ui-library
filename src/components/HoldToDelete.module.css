@@ -1,11 +1,36 @@
+.shell {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Confetti overlay — sits behind the button so shards can fly outward
+   without being clipped by the button's `overflow: hidden`. */
+.confettiLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+}
+
+.confettiPiece {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: var(--color-primary);
+  border-radius: 1px;
+  will-change: transform, opacity;
+}
+
 .root {
   position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 60px;
   padding: 0 var(--c-space-4);
-  border: 2px solid var(--color-primary);
+  border: 1px solid var(--color-primary);
   border-radius: var(--c-radius-md);
   background: transparent;
   color: var(--color-primary);
@@ -21,41 +46,41 @@
   transform-origin: center;
 }
 
-/* Orange fill bar that slides in from the left as the user holds. */
+/* Orange fill bar that slides in from the left as the user holds.
+   Extended 1px beyond the button on all sides so it sits *under* the
+   border — prevents a hairline of bare background showing at the
+   fill's right edge. */
 .fill {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 100%;
+  top: -1px;
+  left: -1px;
+  bottom: -1px;
+  right: -1px;
   background: var(--color-primary);
   transform-origin: left center;
-  /* width animates via scaleX, controlled by --progress (0..1). */
   transform: scaleX(var(--progress, 0));
   z-index: 0;
 }
 
-/* Two stacked label layers so the text color can invert as the fill
-   sweeps underneath. */
-.labelStack {
+/* Orange label — the resting state. */
+.label {
   position: relative;
   z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
-}
-
-.labelBase {
   color: var(--color-primary);
 }
 
-/* White copy of the label, clipped to only show where the fill bar is. */
+/* White copy of the same label, absolutely positioned over the button
+   so its bounds match the button's bounds. Clipped to only show in
+   the region the orange fill has covered. The clip is relative to the
+   button width, not the text width, so the two layers stay in sync. */
 .labelOverlay {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--color-fg-on-primary, #fff);
+  pointer-events: none;
   clip-path: inset(0 calc(100% - var(--progress, 0) * 100%) 0 0);
 }

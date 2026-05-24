@@ -75,6 +75,10 @@ function Showcase() {
         </Tile>
 
         <Tile>
+          <HoldToDelete />
+        </Tile>
+
+        <Tile>
           <Switch checked={on} onChange={setOn} aria-label="Toggle" />
         </Tile>
 
@@ -89,10 +93,6 @@ function Showcase() {
 
         <Tile stretch>
           <Input label="Email" placeholder="you@example.com" />
-        </Tile>
-
-        <Tile>
-          <HoldToDelete />
         </Tile>
 
       </div>

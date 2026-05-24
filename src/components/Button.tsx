@@ -100,7 +100,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         disabled={isDisabled}
         whileTap={isDisabled ? undefined : { scale: 0.96 }}
-        transition={{ ...springSnappy, damping: 8 }}
+        transition={{ ...springSnappy, damping: 16 }}
         onClick={handleClick}
         {...props}
       >
