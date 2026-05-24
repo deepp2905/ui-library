@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
-import { MinusIcon, PlusIcon } from './icons';
+import { MinusIcon, PlusIcon } from '@/styles/icons';
 import styles from './Counter.module.css';
 
 export interface CounterProps {
