@@ -227,7 +227,7 @@ function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
             style={{ width: s.w, height: s.h }}
             initial={{ x: cx, y: cy, opacity: 1, rotate: 0, scale: 0.6 }}
             animate={{ x, y, opacity: 0, rotate: s.rotation, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             onAnimationComplete={i === 0 ? onDone : undefined}
           />
         );
