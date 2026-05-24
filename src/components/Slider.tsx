@@ -25,55 +25,6 @@ const TICK_POSITIONS = Array.from({ length: 11 }, (_, i) => (i / 10) * 100).slic
   -1,
 );
 
-/* Thumb geometry. The SVG viewport is sized to fit the maximum bow so
-   the pill can curve without clipping. */
-const THUMB_WIDTH = 3;
-const THUMB_HEIGHT = 30;
-const THUMB_RADIUS = 2;
-/* How far the pill bows at the extreme edge. Both edges bow in the
-   same direction (away from the wall), making the pill into a thin
-   banana whose concave side faces the cap — echoing the cap's interior
-   curvature. Depth = sagitta of the 24px cap radius across the pill's
-   edge-state height (22.5px after scaleY 0.75):
-       sag = R - sqrt(R^2 - (h/2)^2)
-           = 24 - sqrt(576 - 126.5)
-           ≈ 2.8 */
-const MAX_BOW = 2.8;
-/* SVG box adds horizontal slack for the bow on either side. */
-const SVG_PAD_X = MAX_BOW + 1;
-const SVG_WIDTH = THUMB_WIDTH + SVG_PAD_X * 2;
-const SVG_HEIGHT = THUMB_HEIGHT;
-
-/* Build the pill's outline as an SVG path. `bow` is signed horizontal
-   offset of the pill's vertical edges' midpoints — positive bows right,
-   negative bows left. Both edges bow together so the pill keeps its
-   uniform width while curving. */
-function buildThumbPath(bow: number): string {
-  const left = SVG_PAD_X;
-  const right = SVG_PAD_X + THUMB_WIDTH;
-  const top = 0;
-  const bottom = THUMB_HEIGHT;
-  const r = THUMB_RADIUS;
-  const midY = THUMB_HEIGHT / 2;
-  /* Control point Y is the vertical midpoint; control point X is
-     pushed by 2× bow because a quadratic curve passes through a point
-     at half the control offset. */
-  const ctrlOffset = bow * 2;
-
-  return [
-    `M ${left} ${top + r}`,
-    `Q ${left} ${top} ${left + r} ${top}`, // top-left corner
-    `L ${right - r} ${top}`,
-    `Q ${right} ${top} ${right} ${top + r}`, // top-right corner
-    `Q ${right + ctrlOffset} ${midY} ${right} ${bottom - r}`, // right edge bow
-    `Q ${right} ${bottom} ${right - r} ${bottom}`, // bottom-right corner
-    `L ${left + r} ${bottom}`,
-    `Q ${left} ${bottom} ${left} ${bottom - r}`, // bottom-left corner
-    `Q ${left + ctrlOffset} ${midY} ${left} ${top + r}`, // left edge bow
-    'Z',
-  ].join(' ');
-}
-
 export function Slider({
   value,
   onChange,
@@ -87,17 +38,6 @@ export function Slider({
 }: SliderProps) {
   const id = useId();
   const pct = ((value - min) / (max - min)) * 100;
-
-  /* Both edges bow in the same direction in the outer 5% bands so the
-     pill's concave side faces the cap and its convex side faces away:
-       pct=0   → bow positive  → both edges push right → concave-left
-       pct=100 → bow negative  → both edges push left  → concave-right */
-  const bow =
-    pct <= 5
-      ? (1 - pct / 5) * MAX_BOW
-      : pct >= 95
-        ? -((pct - 95) / 5) * MAX_BOW
-        : 0;
 
   return (
     <div className={cn(styles.field, className)}>
@@ -116,27 +56,28 @@ export function Slider({
         style={
           {
             '--pct': `${pct}%`,
-            /* Fade thumb at the edges: 1 between 5–95%, 0.75 at 0 or 100,
-               linearly interpolated in the outer 5% bands on each side. */
+            /* Fade thumb height at the edges: full size between 10–90%,
+               75% at 0 or 100, linearly interpolated in the outer 10%
+               bands on each side. */
             '--edge-fade':
-              pct <= 5
-                ? 0.75 + (pct / 5) * 0.25
-                : pct >= 95
-                  ? 0.75 + ((100 - pct) / 5) * 0.25
+              pct <= 10
+                ? 0.75 + (pct / 10) * 0.25
+                : pct >= 90
+                  ? 0.75 + ((100 - pct) / 10) * 0.25
                   : 1,
             /* 0 in the middle (pure thumb color), 1 at the very edge
                (fully blended toward gray). Used to crossfade the
                dragging-white thumb back to the tick gray near 0/100. */
             '--edge-mix':
-              pct <= 5
-                ? `${(1 - pct / 5) * 100}%`
-                : pct >= 95
-                  ? `${(1 - (100 - pct) / 5) * 100}%`
+              pct <= 10
+                ? `${(1 - pct / 10) * 100}%`
+                : pct >= 90
+                  ? `${(1 - (100 - pct) / 10) * 100}%`
                   : '0%',
-            /* Bump opacity to 100% in the outer 5% bands so the shorter
+            /* Bump opacity to 100% in the outer 10% bands so the shorter
                edge-state pill stays clearly visible. */
-            '--rest-opacity': pct <= 5 || pct >= 95 ? 1 : 0.75,
-            '--active-opacity': pct <= 5 || pct >= 95 ? 1 : 1,
+            '--rest-opacity': pct <= 10 || pct >= 90 ? 1 : 0.75,
+            '--active-opacity': pct <= 10 || pct >= 90 ? 1 : 1,
           } as React.CSSProperties
         }
       >
@@ -168,15 +109,7 @@ export function Slider({
             />
           ))}
         </div>
-        <svg
-          className={styles.thumb}
-          width={SVG_WIDTH}
-          height={SVG_HEIGHT}
-          viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
-          aria-hidden
-        >
-          <path d={buildThumbPath(bow)} />
-        </svg>
+        <div className={styles.thumb} aria-hidden />
         <input
           id={id}
           type="range"
