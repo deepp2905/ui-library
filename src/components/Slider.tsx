@@ -17,6 +17,8 @@ export interface SliderProps {
   className?: string;
 }
 
+const TICK_COUNT = 5;
+
 export function Slider({
   value,
   onChange,
@@ -43,18 +45,29 @@ export function Slider({
           {showValue && <span className={styles.value}>{value}</span>}
         </div>
       )}
-      <input
-        id={id}
-        type="range"
-        className={styles.range}
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        disabled={disabled}
-        onChange={(e) => onChange(Number(e.target.value))}
+      <div
+        className={styles.track}
         style={{ '--pct': `${pct}%` } as React.CSSProperties}
-      />
+      >
+        <div className={styles.fill} />
+        <div className={styles.ticks} aria-hidden>
+          {Array.from({ length: TICK_COUNT }, (_, i) => (
+            <span key={i} className={styles.tick} />
+          ))}
+        </div>
+        <div className={styles.thumb} aria-hidden />
+        <input
+          id={id}
+          type="range"
+          className={styles.range}
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          disabled={disabled}
+          onChange={(e) => onChange(Number(e.target.value))}
+        />
+      </div>
     </div>
   );
 }

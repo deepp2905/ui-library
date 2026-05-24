@@ -76,7 +76,7 @@ function Showcase() {
         </Tile>
 
         <Tile stretch>
-          <Slider value={volume} onChange={setVolume} showValue label="Volume" />
+          <Slider value={volume} onChange={setVolume} />
         </Tile>
 
         <Tile>
