@@ -25,7 +25,7 @@ export interface HoldToDeleteProps {
 }
 
 const SHRINK_MS = 200; // scale down to nothing
-const INVISIBLE_WAIT_MS = 1000; // time the button stays invisible
+const INVISIBLE_WAIT_MS = 1200; // time the button stays invisible
 
 /* Reverse (release-early) animation duration. Independent of hold
    duration so a release always feels snappy regardless of fill speed. */
