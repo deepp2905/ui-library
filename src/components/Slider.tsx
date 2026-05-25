@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
 import styles from './Slider.module.css';
@@ -29,6 +29,13 @@ const TICK_POSITIONS = Array.from({ length: 11 }, (_, i) => (i / 10) * 100).slic
   -1,
 );
 
+/* Maximum stretch factor on either end (additive to scale 1).
+   Rubberband formula damps overshoot so it asymptotes here. */
+const MAX_STRETCH = 0.12;
+/* Resistance: how many pixels of overshoot give half of MAX_STRETCH.
+   Higher = stiffer rubber. */
+const STRETCH_PIVOT_PX = 120;
+
 export function Slider({
   value,
   onChange,
@@ -53,22 +60,77 @@ export function Slider({
   const dragStarted = useRef(false);
   const animTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handlePointerDown = () => {
+  /* ── Rubberband overshoot ──
+     `overshoot` is signed: positive = pulled past max (right), negative
+     = pulled past min (left). It's a raw motion value updated on every
+     drag move; a separate spring (`overshootSpring`) follows it so the
+     track stretches with a soft rebound rather than 1:1. */
+  const overshoot = useMotionValue(0);
+  const overshootSpring = useSpring(overshoot, {
+    stiffness: 380,
+    damping: 32,
+    mass: 0.6,
+  });
+  /* Damped scale: scaleX = 1 + MAX_STRETCH · |o| / (|o| + PIVOT).
+     Always ≥ 1 — the track grows; direction comes from transform-origin. */
+  const trackScaleX = useTransform(overshootSpring, (o) => {
+    const abs = Math.abs(o);
+    return 1 + (MAX_STRETCH * abs) / (abs + STRETCH_PIVOT_PX);
+  });
+  /* Transform origin flips so the track stretches *away* from the
+     overshoot direction (anchored at the opposite edge). */
+  const trackOrigin = useTransform(overshootSpring, (o) =>
+    o >= 0 ? '0% 50%' : '100% 50%',
+  );
+
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const updateOvershoot = (clientX: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    /* Use the *unstretched* width for measurement. Since scaleX is
+       anchored at one edge, the opposite edge's screen position
+       doesn't move — so rect.left/right reflect either the true
+       width or the stretched width depending on direction. Easiest:
+       divide by the current scale to get the un-stretched width. */
+    const scale = trackScaleX.get();
+    const baseWidth = rect.width / scale;
+    if (clientX < rect.left) {
+      overshoot.set(clientX - rect.left);
+    } else if (clientX > rect.left + baseWidth) {
+      overshoot.set(clientX - (rect.left + baseWidth));
+    } else {
+      overshoot.set(0);
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLInputElement>) => {
     dragStarted.current = false;
     setAnimating(true);
     if (animTimeout.current) clearTimeout(animTimeout.current);
+    updateOvershoot(e.clientX);
   };
-  const handlePointerMove = () => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLInputElement>) => {
     if (!dragStarted.current) {
       dragStarted.current = true;
       setAnimating(false);
     }
+    /* Only track overshoot while the pointer is actually held. The
+       native range input still calls onChange with the clamped value. */
+    if ((e.buttons & 1) === 1) {
+      updateOvershoot(e.clientX);
+    }
   };
   const handlePointerUp = () => {
+    overshoot.set(0); // spring back
     if (!dragStarted.current) {
       // Pure click — let the transition play out before clearing.
       animTimeout.current = setTimeout(() => setAnimating(false), 220);
     }
+  };
+  const handlePointerCancel = () => {
+    overshoot.set(0);
   };
 
   return (
@@ -83,7 +145,8 @@ export function Slider({
           {showValue && <span className={styles.value}>{value}</span>}
         </div>
       )}
-      <div
+      <motion.div
+        ref={trackRef}
         className={cn(styles.track, animating && styles.animating)}
         style={
           {
@@ -92,7 +155,9 @@ export function Slider({
                Used to crossfade the dragging-white thumb to the tick
                gray. Binary — the motion spring handles the smoothing. */
             '--edge-mix': inEdgeZone ? '100%' : '0%',
-          } as React.CSSProperties
+            scaleX: trackScaleX,
+            transformOrigin: trackOrigin,
+          } as unknown as React.CSSProperties
         }
       >
         <div className={styles.fill} />
@@ -150,8 +215,10 @@ export function Slider({
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
+          onPointerLeave={handlePointerCancel}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }
