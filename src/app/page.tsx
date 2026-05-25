@@ -57,9 +57,9 @@ function Showcase() {
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
-        <h1 className={styles.heroTitle}>UI Component Library</h1>
+        <h1 className={styles.heroTitle}>Fun Components & Interactions</h1>
         <p className={styles.heroSub}>
-          Orange and some fun interactions.
+          Crafted with hundreds of iterations, subtle motion, and fine tuning the final layer of polish
         </p>
       </header>
 

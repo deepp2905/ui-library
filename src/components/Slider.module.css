@@ -105,7 +105,7 @@
 .thumb {
   position: absolute;
   top: 12px;
-  bottom: 12px;
+  height: 40px;
   width: 4px;
   /* Anchor pill's right edge 6px in from the fill's right edge.
      Clamp so the pill stays at least 6px inside the track on the left

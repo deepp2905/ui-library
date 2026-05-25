@@ -1,7 +1,13 @@
 'use client';
 
 import { useId, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
 import styles from './Slider.module.css';
@@ -197,7 +203,13 @@ export function Slider({
           className={styles.thumb}
           aria-hidden
           animate={{
-            scaleY: inEdgeZone ? 0.25 : 1,
+            /* Animate height directly (not scaleY) so the pill's
+               border-radius stays uniformly round at the small state.
+               Transform-based scaling squashes fixed-px radii flat on
+               the scaled axis. Top is paired so the thumb stays
+               vertically centered as height changes (track is 64px). */
+            height: inEdgeZone ? 10 : 40,
+            top: inEdgeZone ? 27 : 12,
             opacity: inEdgeZone ? 0.5 : 0.75,
           }}
           transition={springSnappy}
