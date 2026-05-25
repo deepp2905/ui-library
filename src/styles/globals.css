@@ -27,6 +27,16 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Text selection: orange background, white text — site-wide. */
+::selection {
+  background: var(--color-primary);
+  color: #fff;
+}
+::-moz-selection {
+  background: var(--color-primary);
+  color: #fff;
+}
+
 button,
 input,
 textarea,

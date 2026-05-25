@@ -101,7 +101,6 @@ function Showcase() {
           <Switch checked={on} onChange={setOn} aria-label="Toggle" />
         </Tile>
 
-
         <Tile>
           <div
             style={{
@@ -118,7 +117,7 @@ function Showcase() {
             <Checkbox
               checked={agree2}
               onChange={setAgree2}
-              label="Finish the design library"
+              label="Polish the interaction details"
             />
             <Checkbox
               checked={agree3}

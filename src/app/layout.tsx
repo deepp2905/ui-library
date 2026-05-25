@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import '@/styles/globals.css';
 
 const description =
@@ -26,6 +27,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Microsoft Clarity — session analytics. Loads after hydration
+            so it doesn't block initial paint. */}
+        <Script id="ms-clarity" strategy="afterInteractive">
+          {`(function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "wwgld63lud");`}
+        </Script>
+      </head>
       <body>{children}</body>
     </html>
   );
