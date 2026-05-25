@@ -41,6 +41,11 @@ function Showcase() {
     const el = gridRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
+      /* Only hijack the wheel when the grid is actually scrolling
+         horizontally (desktop layout). On tablet/mobile the grid is a
+         vertical stack — let the page scroll normally. */
+      const isHorizontalLayout = el.scrollWidth > el.clientWidth;
+      if (!isHorizontalLayout) return;
       // If the user is already scrolling horizontally (shift+wheel or
       // horizontal trackpad swipe), let the native handler do it.
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
@@ -59,9 +64,20 @@ function Showcase() {
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
-        <h1 className={styles.heroTitle}>Fun Components & Interactions</h1>
+        <h1 className={styles.heroTitle}>
+          Fun Components & Interactions crafted with hundreds of iterations,
+          subtle motion, and fine tuning the final layer of polish.
+        </h1>
         <p className={styles.heroSub}>
-          Crafted with hundreds of iterations, subtle motion, and fine tuning the final layer of polish
+          Created by{' '}
+          <a
+            className={styles.heroLink}
+            href="https://deeepatel.com"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Deep Patel
+          </a>
         </p>
       </header>
 
