@@ -31,7 +31,7 @@ function Tile({
 
 function Showcase() {
   const [on, setOn] = useState(true);
-  const [agree1, setAgree1] = useState(false);
+  const [agree1, setAgree1] = useState(true);
   const [agree2, setAgree2] = useState(false);
   const [agree3, setAgree3] = useState(false);
   const [volume, setVolume] = useState(64);
