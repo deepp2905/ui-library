@@ -1,0 +1,74 @@
+.page {
+  min-height: 100vh;
+  width: 100vw;
+  background: #fff;
+  color: var(--color-fg);
+  display: flex;
+}
+
+/* Fixed left panel with the radio-button list of components. */
+.panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  padding: 32px 24px;
+  border-right: 1px solid var(--color-border);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 10;
+}
+
+.panelTitle {
+  font-size: var(--c-text-xs);
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-fg-muted);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: var(--c-text-sm);
+  user-select: none;
+  transition: background var(--motion-fast) var(--ease-out);
+}
+
+.row:hover {
+  background: var(--color-surface-sunken);
+}
+
+.radio {
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+/* Stage that hosts the selected component. Pushed right of the panel,
+   centered both axes, no tile chrome — plain white. */
+.stage {
+  flex: 1;
+  margin-left: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  min-height: 100vh;
+}
