@@ -146,13 +146,13 @@ export function Checkbox({
                      (uncheck) is faster so the strikethrough doesn't
                      overstay its welcome. */
                   pathLength: checked
-                    ? { ...easeOut, duration: 1.2 }
-                    : { ...easeOut, duration: 0.3 },
+                    ? { ...easeOut, duration: 0.8 }
+                    : { ...easeOut, duration: 0.2 },
                   /* Opacity: instant on check; on uncheck, wait for
                      pathLength to finish retracting, then fade in 0.1s. */
                   opacity: checked
                     ? { duration: 0 }
-                    : { duration: 0.1, delay: 0.15 },
+                    : { duration: 0.1, delay: 0.1 },
                 }}
               />
             </svg>

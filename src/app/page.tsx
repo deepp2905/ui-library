@@ -31,7 +31,9 @@ function Tile({
 
 function Showcase() {
   const [on, setOn] = useState(true);
-  const [agree, setAgree] = useState(false);
+  const [agree1, setAgree1] = useState(false);
+  const [agree2, setAgree2] = useState(false);
+  const [agree3, setAgree3] = useState(false);
   const [volume, setVolume] = useState(64);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -85,11 +87,29 @@ function Showcase() {
 
 
         <Tile>
-          <Checkbox
-            checked={agree}
-            onChange={setAgree}
-            label="Checkbox"
-          />          
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--c-space-3)',
+            }}
+          >
+            <Checkbox
+              checked={agree1}
+              onChange={setAgree1}
+              label="Buy more orange juice"
+            />
+            <Checkbox
+              checked={agree2}
+              onChange={setAgree2}
+              label="Finish the design library"
+            />
+            <Checkbox
+              checked={agree3}
+              onChange={setAgree3}
+              label="Ship it before midnight"
+            />
+          </div>
         </Tile>
       </div>
     </main>
