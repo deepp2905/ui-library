@@ -104,27 +104,35 @@
 
 .thumb {
   position: absolute;
-  top: 12px;
-  height: 40px;
+  top: 16px;
+  height: 32px;
   width: 4px;
   /* Anchor pill's right edge 6px in from the fill's right edge.
      Clamp so the pill stays at least 6px inside the track on the left
      when the fill goes to 0. */
   left: max(6px, calc(var(--pct) - 6px - 4px));
   border-radius: var(--c-radius-pill);
-  background: #fff;
-  pointer-events: none;
-  transform-origin: center;
-  z-index: 2;
-}
-
-/* Dragging: white crossfading to tick gray in the edge zone. */
-.track:has(.range:active) .thumb {
+  /* Base color crossfades to gray at the left extreme (--edge-mix
+     toggles to 100% there). Applies in both rest and active states. */
   background: color-mix(
     in srgb,
     var(--color-border-strong, var(--color-border)) var(--edge-mix, 0%),
     #fff
   );
+  opacity: 0.5;
+  pointer-events: none;
+  transform-origin: center;
+  z-index: 2;
+}
+
+/* Hover bumps opacity to 0.75. */
+.track:hover .thumb {
+  opacity: 0.75;
+}
+
+/* Dragging takes priority — bumps to 0.85. */
+.track:has(.range:active) .thumb {
+  opacity: 0.85;
 }
 
 .track:hover .ticks {

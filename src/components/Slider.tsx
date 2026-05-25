@@ -1,13 +1,7 @@
 'use client';
 
 import { useId, useRef, useState } from 'react';
-import {
-  motion,
-  useMotionValue,
-  useMotionValueEvent,
-  useSpring,
-  useTransform,
-} from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
 import styles from './Slider.module.css';
@@ -57,6 +51,9 @@ export function Slider({
   const id = useId();
   const pct = ((value - min) / (max - min)) * 100;
   const inEdgeZone = pct <= 7 || pct >= 95;
+  /* Left extreme gets a special gray color — both at rest and while
+     dragging. Right extreme stays white. */
+  const inLeftEdge = pct <= 7;
 
   /* Brief ease-in when the user clicks the track without dragging.
      `animating` is set true on pointerdown and cleared on the first
@@ -157,10 +154,11 @@ export function Slider({
         style={
           {
             '--pct': `${pct}%`,
-            /* 0 in the middle (pure thumb color), 1 in the edge zone.
-               Used to crossfade the dragging-white thumb to the tick
-               gray. Binary — the motion spring handles the smoothing. */
-            '--edge-mix': inEdgeZone ? '100%' : '0%',
+            /* 100% only at the left extreme — turns the pill from
+               white to --color-border-strong. Applies in both rest
+               and dragging states (color rule), independent of the
+               size/opacity changes driven by inEdgeZone. */
+            '--edge-mix': inLeftEdge ? '100%' : '0%',
             scaleX: trackScaleX,
             transformOrigin: trackOrigin,
           } as unknown as React.CSSProperties
@@ -207,10 +205,9 @@ export function Slider({
                border-radius stays uniformly round at the small state.
                Transform-based scaling squashes fixed-px radii flat on
                the scaled axis. Top is paired so the thumb stays
-               vertically centered as height changes (track is 64px). */
-            height: inEdgeZone ? 10 : 40,
-            top: inEdgeZone ? 27 : 12,
-            opacity: inEdgeZone ? 0.5 : 0.75,
+               vertically centered in the 64px track at every height. */
+            height: inEdgeZone ? 10 : 32,
+            top: inEdgeZone ? 27 : 16,
           }}
           transition={springSnappy}
         />
