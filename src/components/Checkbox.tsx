@@ -3,7 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
-import { springSnappy } from '@/lib/motion';
+import { easeOut } from '@/lib/motion';
 import styles from './Checkbox.module.css';
 
 export interface CheckboxProps {
@@ -105,7 +105,7 @@ export function Checkbox({
             strokeLinejoin="round"
             initial={false}
             animate={{ pathLength: checked ? 1 : 0 }}
-            transition={{ ...springSnappy, stiffness: 380 }}
+            transition={easeOut}
           />
         </motion.svg>
       </span>
@@ -135,12 +135,25 @@ export function Checkbox({
                 initial={false}
                 animate={{
                   pathLength: checked ? 1 : 0,
-                  /* Hide the round line-caps when fully retracted —
-                     otherwise pathLength=0 leaves a tiny dot from the
-                     round cap rendering at the start point. */
+                  /* Fade only after pathLength has fully retracted so
+                     the residual round-cap "dot" at pathLength=0
+                     vanishes cleanly. When checking, opacity flips to
+                     1 instantly before the draw-in. */
                   opacity: checked ? 1 : 0,
                 }}
-                transition={{ ...springSnappy, stiffness: 380 }}
+                transition={{
+                  /* Draw-in (check) is slow + deliberate; retract
+                     (uncheck) is faster so the strikethrough doesn't
+                     overstay its welcome. */
+                  pathLength: checked
+                    ? { ...easeOut, duration: 1.2 }
+                    : { ...easeOut, duration: 0.3 },
+                  /* Opacity: instant on check; on uncheck, wait for
+                     pathLength to finish retracting, then fade in 0.1s. */
+                  opacity: checked
+                    ? { duration: 0 }
+                    : { duration: 0.1, delay: 0.15 },
+                }}
               />
             </svg>
           )}

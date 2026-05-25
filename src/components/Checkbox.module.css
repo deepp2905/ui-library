@@ -57,7 +57,7 @@
 }
 
 .labelChecked {
-  color: var(--color-fg-muted);
+  color: var(--color-fg-subtle);
 }
 
 /* Orange wavy scribble overlaid on the label — same draw-in transition
