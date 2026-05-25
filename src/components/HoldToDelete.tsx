@@ -24,16 +24,26 @@ export interface HoldToDeleteProps {
   className?: string;
 }
 
-const SHRINK_MS = 200; // scale down to nothing
-const INVISIBLE_WAIT_MS = 1200; // time the button stays invisible
+/* ────────────────────────────────────────────────────────────────────
+   TIMING CONSTANTS — one per phase of the interaction.
+   See `runDeleteSequence` below for where each one is used.
+   ──────────────────────────────────────────────────────────────────── */
 
-/* Reverse (release-early) animation duration. Independent of hold
-   duration so a release always feels snappy regardless of fill speed. */
+/* ── Phase 1: SHRINK (button collapses to nothing after hold completes) */
+const SHRINK_MS = 200;
+
+/* ── Phase 2: WAIT (invisible pause between shrink and expand) */
+const INVISIBLE_WAIT_MS = 1600;
+
+/* ── Phase 3: EXPAND uses a spring (no fixed duration) — see runDeleteSequence */
+
+/* ── Release-early reverse: how fast the fill bar drains back to 0
+       when the user lets go before hold completes. */
 const REVERSE_MS = 220;
 
-/* Chards: independent of the shrink/expand timings. */
+/* ── Chards (confetti burst) — timing is independent of shrink/expand. */
 const CHARDS_DELAY_MS = 150; // wait after shrink starts before launching
-const CHARDS_DURATION_MS = 900; // how long each chard's fly-out animation lasts
+const CHARDS_DURATION_MS = 750; // each chard's fly-out duration
 
 /* Cubic-bezier ease-out: fast start, slow finish. The fill bar accelerates
    in then eases into completion — and because the animation's own end is
@@ -71,7 +81,7 @@ const makeShards = (): Shard[] => {
 export function HoldToDelete({
   children = 'Hold to delete',
   onConfirm,
-  holdMs = 900,
+  holdMs = 1600,
   className,
 }: HoldToDeleteProps) {
   const progress = useMotionValue(0);
@@ -103,49 +113,63 @@ export function HoldToDelete({
     playbackRef.current = null;
   };
 
+  /* ──────────────────────────────────────────────────────────────────
+     DELETE SEQUENCE — fires after the long-press fill reaches 1.
+     Runs four phases sequentially: shards spawn (delayed),
+     shrink → wait → expand.
+     ────────────────────────────────────────────────────────────────── */
   const runDeleteSequence = useCallback(async () => {
     onConfirm?.();
     setSequenceActive(true);
 
-    /* Spawn the confetti burst after a delay so the chards launch as
-       the button is mid-dissolve, not at the start. */
+    /* ── PHASE 0: CHARDS (delayed spawn)
+       Schedule the burst CHARDS_DELAY_MS into the shrink so the
+       chards erupt as the button is mid-dissolve, not at t=0. */
     setTimeout(() => {
       const id = burstIdRef.current++;
       setBursts((prev) => [...prev, { id, shards: makeShards() }]);
     }, CHARDS_DELAY_MS);
 
-    /* 1. Shrink with anticipation: scale briefly grows past 1 (wind-up)
-       then plunges to 0.01. Opacity fades to 0 and blur grows to 5px
-       linearly across the full duration. */
+    /* ── PHASE 1: SHRINK
+       Scale collapses from 1 → 0.01 with a "wind-up then crash"
+       cubic-bezier (briefly grows past 1, then plunges). Opacity
+       fades to 0 across the same duration. */
     await controls.start({
       scale: [1, 0.01],
       opacity: 0,
       transition: {
-        // Slow wind-up, fast crash: first control point pulls the
-        // curve into a slow rise above 1 (scale grows past from-value),
-        // second control point yanks it sharply down to target in the
-        // back end. Lingers at the top, then plunges.
-        ease: [1, -0.2, 0.9, 1],
+        ease: [1, -0.2, 0.8, 1],
         duration: SHRINK_MS / 1000,
       },
     });
+
     /* Reset the fill while the button is invisible so the reappear
        shows the outline state, not the filled state. */
     progress.set(0);
-    // 2. Hold at invisible briefly.
+
+    /* ── PHASE 2: WAIT
+       Hold at invisible for INVISIBLE_WAIT_MS. Nothing animates on
+       the button; shards continue flying out in this window. */
     await new Promise((r) => setTimeout(r, INVISIBLE_WAIT_MS));
-    /* 3. Expand back to scale 1, opacity 1, blur 0 — with a bouncy
-       spring so the button pops back into existence. */
+
+    /* ── PHASE 3: EXPAND
+       Spring back to scale 1, opacity 1. Bouncy (damping 36) so the
+       button visibly pops back into existence. */
     await controls.start({
       scale: 1,
       opacity: 1,
-      filter: 'blur(0px)',
-      transition: { ...springSnappy, damping: 48 },
+      transition: { ...springSnappy, damping: 36},
     });
+
     completedRef.current = false;
     setSequenceActive(false);
   }, [controls, progress, onConfirm]);
 
+  /* ──────────────────────────────────────────────────────────────────
+     LONG-PRESS FILL — starts on pointerdown, drives the orange bar
+     left → right over `holdMs`. When it reaches 1, the delete
+     sequence above fires.
+     ────────────────────────────────────────────────────────────────── */
   const startHold = () => {
     if (completedRef.current) return;
     stopProgressAnim();
@@ -164,6 +188,10 @@ export function HoldToDelete({
     });
   };
 
+  /* ──────────────────────────────────────────────────────────────────
+     RELEASE-EARLY — pointerup / pointerleave before hold completes.
+     Reverses the fill bar back to 0 over REVERSE_MS.
+     ────────────────────────────────────────────────────────────────── */
   const releaseHold = () => {
     if (completedRef.current) return;
     stopProgressAnim();
