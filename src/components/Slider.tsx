@@ -15,6 +15,8 @@ export interface SliderProps {
   label?: string;
   /** Show the current value next to the label. */
   showValue?: boolean;
+  /** Render the evenly-spaced tick guides inside the track. */
+  ticks?: boolean;
   disabled?: boolean;
   className?: string;
 }
@@ -35,6 +37,7 @@ export function Slider({
   step = 0.01,
   label,
   showValue = false,
+  ticks = false,
   disabled = false,
   className,
 }: SliderProps) {
@@ -94,32 +97,37 @@ export function Slider({
       >
         <div className={styles.fill} />
         {/* Two layers with opposite clips: ticks over the orange fill
-            render at 50% opacity, ticks over the unfilled track stay at
-            100%. Both layers receive the visibility from `.track:hover`. */}
-        <div
-          className={cn(styles.ticks, styles.ticksOverFill)}
-          aria-hidden
-        >
-          {TICK_POSITIONS.map((pos) => (
-            <span
-              key={pos}
-              className={styles.tick}
-              style={{ left: `${pos}%` }}
-            />
-          ))}
-        </div>
-        <div
-          className={cn(styles.ticks, styles.ticksOverTrack)}
-          aria-hidden
-        >
-          {TICK_POSITIONS.map((pos) => (
-            <span
-              key={pos}
-              className={styles.tick}
-              style={{ left: `${pos}%` }}
-            />
-          ))}
-        </div>
+            render at lower opacity, ticks over the unfilled track stay
+            darker. Both layers receive the visibility from
+            `.track:hover`. Only rendered when `ticks` prop is true. */}
+        {ticks && (
+          <>
+            <div
+              className={cn(styles.ticks, styles.ticksOverFill)}
+              aria-hidden
+            >
+              {TICK_POSITIONS.map((pos) => (
+                <span
+                  key={pos}
+                  className={styles.tick}
+                  style={{ left: `${pos}%` }}
+                />
+              ))}
+            </div>
+            <div
+              className={cn(styles.ticks, styles.ticksOverTrack)}
+              aria-hidden
+            >
+              {TICK_POSITIONS.map((pos) => (
+                <span
+                  key={pos}
+                  className={styles.tick}
+                  style={{ left: `${pos}%` }}
+                />
+              ))}
+            </div>
+          </>
+        )}
         <motion.div
           className={styles.thumb}
           aria-hidden

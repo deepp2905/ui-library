@@ -66,16 +66,17 @@ function Showcase() {
 
 
       <div className={styles.grid} ref={gridRef}>
-        <Tile>
-          <Button confetti>Click me</Button>
-        </Tile>
 
-        <Tile stretch>
-          <Slider value={volume} onChange={setVolume} />
-        </Tile>
+        {/* <Tile>
+          <Button confetti>Click me</Button>
+        </Tile> */}
 
         <Tile>
           <HoldToDelete />
+        </Tile>           
+
+        <Tile stretch>
+          <Slider value={volume} onChange={setVolume} />
         </Tile>
 
         <Tile>
@@ -90,11 +91,6 @@ function Showcase() {
             label="Checkbox"
           />
         </Tile>
-
-        <Tile stretch>
-          <Input label="Email" placeholder="you@example.com" />
-        </Tile>
-
       </div>
     </main>
   );

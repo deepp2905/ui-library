@@ -45,7 +45,27 @@
   color: var(--color-fg-on-primary);
 }
 
+.labelWrap {
+  position: relative;
+  display: inline-flex;
+}
+
 .label {
   font-size: var(--c-text-sm);
   color: var(--color-fg);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.labelChecked {
+  color: var(--color-fg-muted);
+}
+
+/* Orange wavy scribble overlaid on the label — same draw-in transition
+   as the checkmark. Pointer events off so clicking the label still
+   toggles the checkbox. */
+.scribble {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
 }

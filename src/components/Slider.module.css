@@ -85,7 +85,7 @@
 }
 
 .ticksOverTrack .tick {
-  background: var(--color-border-strong, var(--color-border));
+  background: var(--color-border);
 }
 
 .tick {
@@ -96,7 +96,7 @@
   margin-left: -1px;
   background: color-mix(
     in srgb,
-    var(--color-border) 50%,
+    var(--color-border) 15%,
     var(--color-surface-sunken)
   );
   border-radius: 2px;
