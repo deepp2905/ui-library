@@ -12,11 +12,20 @@ export const metadata: Metadata = {
     title: 'Fun Components and Interactions by Deep Patel',
     description,
     type: 'website',
+    images: [
+      {
+        url: '/og.png',
+        width: 1920,
+        height: 1025,
+        alt: 'Fun Components and Interactions by Deep Patel',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Fun Components and Interactions by Deep Patel',
     description,
+    images: ['/og.png'],
   },
 };
 
