@@ -42,13 +42,14 @@
 }
 
 .heroLink {
-  color: inherit;
+  color: var(--color-primary);
   text-decoration: none;
-  transition: color var(--motion-fast) var(--ease-out);
+  font-weight: var(--weight-medium);
+  transition: font-weight 100ms ease-out;
 }
 
 .heroLink:hover {
-  color: var(--color-primary);
+  font-weight: var(--weight-bold);
 }
 
 /* --- Grid: always 2 columns, equal width.

@@ -60,6 +60,7 @@ export function Slider({
      pointermove (so dragging stays 1:1) or after the transition
      completes following pointerup. */
   const [animating, setAnimating] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const dragStarted = useRef(false);
   const animTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -151,6 +152,8 @@ export function Slider({
       <motion.div
         ref={trackRef}
         className={cn(styles.track, animating && styles.animating)}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
         style={
           {
             '--pct': `${pct}%`,
@@ -205,11 +208,13 @@ export function Slider({
                border-radius stays uniformly round at the small state.
                Transform-based scaling squashes fixed-px radii flat on
                the scaled axis. Top is paired so the thumb stays
-               vertically centered in the 64px track at every height. */
-            height: inEdgeZone ? 10 : 32,
-            top: inEdgeZone ? 27 : 16,
+               vertically centered in the 64px track at every height.
+               At rest (no hover) the pill is 1.5× smaller; hover grows
+               it to full size with a snappy spring. */
+            height: hovered ? (inEdgeZone ? 10 : 32) : (inEdgeZone ? 10 / 1.5 : 32 / 1.5),
+            top: hovered ? (inEdgeZone ? 27 : 16) : (inEdgeZone ? 27 + (10 - 10 / 1.5) / 2 : 16 + (32 - 32 / 1.5) / 2),
           }}
-          transition={springSnappy}
+          transition={{ ...springSnappy, damping: 24 }}
         />
         <input
           id={id}
