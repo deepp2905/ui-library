@@ -44,12 +44,6 @@
 .heroLink {
   color: var(--color-primary);
   text-decoration: none;
-  font-weight: var(--weight-medium);
-  transition: font-weight 100ms ease-out;
-}
-
-.heroLink:hover {
-  font-weight: var(--weight-bold);
 }
 
 /* --- Grid: always 2 columns, equal width.
