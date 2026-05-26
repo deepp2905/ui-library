@@ -15,8 +15,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/og.png',
-        width: 1920,
-        height: 1025,
+        width: 1200,
+        height: 630,
         alt: 'Fun Components and Interactions by Deep Patel',
       },
     ],
