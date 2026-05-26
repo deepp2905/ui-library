@@ -88,6 +88,9 @@ function Showcase() {
         {/* <Tile>
           <Button confetti>Click me</Button>
         </Tile> */}
+        <Tile>
+          <Switch checked={on} onChange={setOn} aria-label="Toggle" />
+        </Tile>
 
         <Tile>
           <HoldToDelete />
@@ -95,10 +98,6 @@ function Showcase() {
 
         <Tile stretch>
           <Slider value={volume} onChange={setVolume} />
-        </Tile>
-
-        <Tile>
-          <Switch checked={on} onChange={setOn} aria-label="Toggle" />
         </Tile>
 
         <Tile>

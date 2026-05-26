@@ -12,6 +12,7 @@ import {
 } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
+import { DeleteIcon } from '@/styles/icons';
 import styles from './HoldToDelete.module.css';
 
 export interface HoldToDeleteProps {
@@ -249,8 +250,16 @@ export function HoldToDelete({
           animate={controls}
         >
           <span className={styles.fill} aria-hidden />
-          <span className={styles.label}>{children}</span>
+          <span className={styles.label}>
+            <span className={styles.iconBox} aria-hidden>
+              <DeleteIcon className={styles.icon} />
+            </span>
+            {children}
+          </span>
           <span className={styles.labelOverlay} aria-hidden>
+            <span className={styles.iconBox} aria-hidden>
+              <DeleteIcon className={styles.icon} />
+            </span>
             {children}
           </span>
         </motion.button>
