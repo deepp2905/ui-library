@@ -7,16 +7,12 @@
    ============================================================ */
 
 .page {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 96px 0 0;
   display: flex;
   flex-direction: column;
-  /* overflow-y: auto so the page scrolls when content (or zoom)
-     exceeds the viewport — fixes top-cropping at higher zoom levels. */
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 /* --- Hero --- */

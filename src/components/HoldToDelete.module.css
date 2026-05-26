@@ -98,8 +98,22 @@
   transition: transform 100ms ease-out;
 }
 
+.icon :global(.body) {
+  stroke-linecap: butt;
+}
+
+.root:hover .icon :global(.body),
+.root:active .icon :global(.body) {
+  stroke-linecap: round;
+}
+
 .root:hover .icon :global(.lid) {
   transform: translateY(-2px);
+}
+
+.root:active .icon :global(.lid) {
+  transform: translateY(calc(-2px * (1 - var(--progress, 0))));
+  transition: none;
 }
 
 /* White copy of the same label, absolutely positioned over the button

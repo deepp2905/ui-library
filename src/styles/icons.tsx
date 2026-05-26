@@ -32,7 +32,7 @@ export function DeleteIcon(props: SVGProps<SVGSVGElement>) {
       aria-hidden
       {...props}
     >
-      <path d="M4 5.5v7a1.5 1.5 0 0 0 1.5 1.5h5a1.5 1.5 0 0 0 1.5-1.5v-7" />
+      <path className="body" d="M4 5.5v7a1.5 1.5 0 0 0 1.5 1.5h5a1.5 1.5 0 0 0 1.5-1.5v-7" />
       <g className="lid">
         <line x1="2.5" y1="4" x2="13.5" y2="4" />
         <path d="M6 4V2.5A.5.5 0 0 1 6.5 2h3a.5.5 0 0 1 .5.5V4" />
