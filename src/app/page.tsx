@@ -85,7 +85,7 @@ function Showcase() {
 
         <Tile>
           <HoldToDelete />
-        </Tile>           
+        </Tile>
 
         <Tile stretch>
           <Slider value={volume} onChange={setVolume} />
