@@ -2,11 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
-  Button,
   Checkbox,
-  Counter,
   HoldToDelete,
-  Input,
   Slider,
   Switch,
   ToastProvider,
@@ -81,13 +78,7 @@ function Showcase() {
         </p>
       </header>
 
-
-
       <div className={styles.grid} ref={gridRef}>
-
-        {/* <Tile>
-          <Button confetti>Click me</Button>
-        </Tile> */}
         <Tile>
           <Switch checked={on} onChange={setOn} aria-label="Toggle" />
         </Tile>
