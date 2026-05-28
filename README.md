@@ -1,32 +1,25 @@
 # Fun Components & Interactions
 
-A small library of polished React components and micro-interactions, crafted with subtle motion and fine-tuned detail.
+A little playground of components that feel nice to poke at. Built with hundreds of iterations, a lot of subtle motion, and way too much time spent on the final layer of polish.
 
-**Live demo:** https://fun-components-and-interactions.vercel.app/
+**Go play:** https://fun-components-and-interactions.vercel.app/
 
 ## What's on the homepage
 
-The homepage shows a horizontally-scrolling grid of tiles, each presenting one interactive component:
+A grid of tiles you can scroll sideways, each one a component begging to be touched:
 
-- **Switch** — an animated on/off toggle.
-- **Hold to Delete** — a button you press and hold to confirm deletion, with an animated trash-can icon.
-- **Slider** — a value slider with a springy thumb.
-- **Checkbox** — a stacked group of labeled checkboxes.
+- **Switch** — flick it on and off and watch it settle.
+- **Hold to Delete** — press and *hold*; let go too early and nothing happens. The little trash can reacts as you go.
+- **Slider** — drag it around. The thumb has a springy bounce that overshoots just a touch before landing.
+- **Checkbox** — a tidy stack of checks that tick in with a satisfying little pop.
 
-On desktop the grid scrolls horizontally (the mouse wheel is mapped to horizontal scroll); on tablet and mobile the tiles stack vertically.
+Scroll the grid sideways with your mouse wheel on desktop; on a phone the tiles just stack and scroll like normal.
 
-## Tech stack
-
-- [Next.js](https://nextjs.org/) (App Router)
-- React 18 + TypeScript
-- [Framer Motion](https://www.framer.com/motion/) for animation
-- CSS Modules with design tokens
-
-## Development
+## Running it locally
 
 ```bash
 npm install
-npm run dev      # start the dev server
-npm run build    # production build
-npm run typecheck
+npm run dev
 ```
+
+Then open it up and start clicking things.
