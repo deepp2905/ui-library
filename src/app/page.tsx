@@ -64,7 +64,7 @@ function Showcase() {
       <header className={styles.hero}>
         <h1 className={styles.heroTitle}>
           Fun Components & Interactions crafted with hundreds of iterations,
-          subtle motion, and fine tuning the final layer of polish.
+           fine tuning details and subtle motion.
         </h1>
         <p className={styles.heroSub}>
           Created by{' '}

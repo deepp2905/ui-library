@@ -30,7 +30,7 @@
   font-weight: var(--weight-semibold);
   letter-spacing: -0.02em;
   line-height: 1.2;
-  max-width: 30ch;
+  max-width: 40ch;
 }
 
 .heroSub {
