@@ -41,7 +41,7 @@
 .button::before {
   content: '';
   position: absolute;
-  inset: -25%;
+  inset: 0;
   border-radius: 50%;
   background: var(--color-surface-sunken);
   opacity: 0;
@@ -87,16 +87,31 @@
   stroke: currentColor;
 }
 
-/* --- Sizes --- */
+/* --- Sizes ---
+   Width/height = visible heart size; padding = hover-circle ring.
+   Total hit area = heart × 2.25 (1.5× the previous circle). */
+.button {
+  box-sizing: content-box;
+}
 .sm {
   width: 28px;
   height: 28px;
+  padding: 17.5px;
 }
 .md {
   width: 40px;
   height: 40px;
+  padding: 25px;
 }
 .lg {
   width: 56px;
   height: 56px;
+  padding: 35px;
+}
+
+.sm .svg,
+.md .svg,
+.lg .svg {
+  width: 100%;
+  height: 100%;
 }
