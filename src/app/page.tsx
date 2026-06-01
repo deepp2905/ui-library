@@ -88,13 +88,14 @@ function Showcase() {
           <HoldToDelete />
         </Tile>
 
+        <Tile stretch>
+          <Slider value={volume} onChange={setVolume} />
+        </Tile>
+
         <Tile>
           <Heart size="lg" />
         </Tile>
 
-        <Tile stretch>
-          <Slider value={volume} onChange={setVolume} />
-        </Tile>
 
         <Tile>
           <div
