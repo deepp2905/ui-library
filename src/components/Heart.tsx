@@ -28,18 +28,41 @@ interface Shard {
   angle: number;
   distance: number;
   rotation: number;
+  duration: number;
+  delay: number;
 }
+
+const MIN_DISTANCE = 90;
+const MAX_DISTANCE = 135;
+const MIN_DURATION = 0.45;
+const MAX_DURATION = 0.85;
+const DURATION_JITTER = 0.08;
+const MAX_DELAY = 0.06;
+const DELAY_JITTER = 0.015;
 
 const makeShards = (): Shard[] => {
   const count = 12 + Math.floor(Math.random() * 16);
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    w: 3 + Math.random() * 5,
-    h: 3 + Math.random() * 7,
-    angle: Math.random() * Math.PI * 2,
-    distance: 90 + Math.random() * 45,
-    rotation: (Math.random() - 0.5) * 180,
-  }));
+  return Array.from({ length: count }, (_, i) => {
+    const distance = MIN_DISTANCE + Math.random() * (MAX_DISTANCE - MIN_DISTANCE);
+    const t = (distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE);
+    const durationJitter = (Math.random() - 0.5) * 2 * DURATION_JITTER;
+    const duration = Math.max(
+      0.2,
+      MIN_DURATION + t * (MAX_DURATION - MIN_DURATION) + durationJitter,
+    );
+    const delayJitter = (Math.random() - 0.5) * 2 * DELAY_JITTER;
+    const delay = Math.max(0, t * MAX_DELAY + delayJitter);
+    return {
+      id: i,
+      w: 3 + Math.random() * 5,
+      h: 3 + Math.random() * 7,
+      angle: Math.random() * Math.PI * 2,
+      distance,
+      rotation: (Math.random() - 0.5) * 180,
+      duration,
+      delay,
+    };
+  });
 };
 
 export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
@@ -144,9 +167,14 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
 Heart.displayName = 'Heart';
 
 function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
+  const longestId = shards.reduce(
+    (acc, s) =>
+      s.duration + s.delay > acc.duration + acc.delay ? s : acc,
+    shards[0],
+  ).id;
   return (
     <>
-      {shards.map((s, i) => {
+      {shards.map((s) => {
         const cx = -s.w / 2;
         const cy = -s.h / 2;
         const x = cx + Math.cos(s.angle) * s.distance;
@@ -158,8 +186,12 @@ function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
             style={{ width: s.w, height: s.h }}
             initial={{ x: cx, y: cy, opacity: 1, rotate: 0, scale: 0.6 }}
             animate={{ x, y, opacity: 0, rotate: s.rotation, scale: 1 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            onAnimationComplete={i === 0 ? onDone : undefined}
+            transition={{
+              duration: s.duration,
+              delay: s.delay,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            onAnimationComplete={s.id === longestId ? onDone : undefined}
           />
         );
       })}
