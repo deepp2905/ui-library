@@ -44,7 +44,7 @@
 }
 
 .active {
-  color: var(--color-danger);
+  color: var(--color-primary);
 }
 
 .svg {
