@@ -185,11 +185,23 @@ function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
             className={styles.confettiPiece}
             style={{ width: s.w, height: s.h }}
             initial={{ x: cx, y: cy, opacity: 1, rotate: 0, scale: 0.6 }}
-            animate={{ x, y, opacity: 0, rotate: s.rotation, scale: 1 }}
+            animate={{
+              x,
+              y,
+              opacity: [1, 1, 0],
+              rotate: s.rotation,
+              scale: 1,
+            }}
             transition={{
               duration: s.duration,
               delay: s.delay,
               ease: [0.22, 1, 0.36, 1],
+              opacity: {
+                duration: s.duration,
+                delay: s.delay,
+                times: [0, 0.5, 1],
+                ease: 'linear',
+              },
             }}
             onAnimationComplete={s.id === longestId ? onDone : undefined}
           />
