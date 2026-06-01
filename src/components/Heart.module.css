@@ -40,7 +40,7 @@
 }
 
 .button:hover:not(.active):not(:disabled) .path {
-  fill: currentColor;
+  fill: var(--color-border);
 }
 
 .button:disabled {
