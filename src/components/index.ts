@@ -15,6 +15,9 @@ export type { CounterProps } from './Counter';
 export { HoldToDelete } from './HoldToDelete';
 export type { HoldToDeleteProps } from './HoldToDelete';
 
+export { Heart } from './Heart';
+export type { HeartProps, HeartSize } from './Heart';
+
 export { Input } from './Input';
 export type { InputProps } from './Input';
 

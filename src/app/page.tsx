@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Checkbox,
+  Heart,
   HoldToDelete,
   Slider,
   Switch,
@@ -85,6 +86,10 @@ function Showcase() {
 
         <Tile>
           <HoldToDelete />
+        </Tile>
+
+        <Tile>
+          <Heart size="lg" />
         </Tile>
 
         <Tile stretch>
