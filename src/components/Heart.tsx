@@ -34,8 +34,8 @@ interface Shard {
 
 const MIN_DISTANCE = 90;
 const MAX_DISTANCE = 135;
-const MIN_DURATION = 0.3;
-const MAX_DURATION = 0.4;
+const MIN_DURATION = 0.15;
+const MAX_DURATION = 0.3;
 const DURATION_JITTER = 0.08;
 const MAX_DELAY = 0.06;
 const DELAY_JITTER = 0.015;
@@ -199,7 +199,7 @@ function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
               opacity: {
                 duration: s.duration,
                 delay: s.delay,
-                times: [0, 0.15, 1],
+                times: [0, 0.05, 1],
                 ease: 'linear',
               },
             }}
