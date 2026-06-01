@@ -29,6 +29,7 @@
   background: transparent;
   border: none;
   padding: 0;
+  border-radius: 50%;
   cursor: pointer;
   user-select: none;
   transform-origin: center;
@@ -38,24 +39,8 @@
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-.button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--color-surface-sunken);
-  opacity: 0;
-  transform: scale(0.7);
-  transition:
-    opacity var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out);
-  z-index: -1;
-  pointer-events: none;
-}
-
-.button:hover:not(:disabled)::before {
-  opacity: 1;
-  transform: scale(1);
+.button:hover:not(.active):not(:disabled) .path {
+  fill: currentColor;
 }
 
 .button:disabled {
@@ -96,17 +81,17 @@
 .sm {
   width: 28px;
   height: 28px;
-  padding: 17.5px;
+  padding: 9.625px;
 }
 .md {
   width: 40px;
   height: 40px;
-  padding: 25px;
+  padding: 13.75px;
 }
 .lg {
   width: 56px;
   height: 56px;
-  padding: 35px;
+  padding: 19.25px;
 }
 
 .sm .svg,

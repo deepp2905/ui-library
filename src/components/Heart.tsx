@@ -34,7 +34,7 @@ interface Shard {
 
 const MIN_DISTANCE = 90;
 const MAX_DISTANCE = 135;
-const MIN_DURATION = 0.2;
+const MIN_DURATION = 0.3;
 const MAX_DURATION = 0.4;
 const DURATION_JITTER = 0.08;
 const MAX_DELAY = 0.06;
