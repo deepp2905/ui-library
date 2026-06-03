@@ -122,7 +122,18 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
         disabled={disabled}
         aria-pressed={isActive}
         aria-label={ariaLabel ?? (isActive ? 'Unlike' : 'Like')}
-        whileTap={disabled ? undefined : { scale: 0.86 }}
+        whileTap={
+          disabled
+            ? undefined
+            : {
+                scale: 0.86,
+                // Fast, critically damped press so the dip reaches full
+                // compression even on a brief touch tap. The bouncy rebound
+                // lives on the `animate`/`transition` below, so the overshoot
+                // now reads consistently on both mouse and touch.
+                transition: { type: 'spring', stiffness: 1100, damping: 42, mass: 0.6 },
+              }
+        }
         animate={{ scale: 1 }}
         transition={{ ...springSnappy, damping: 16 }}
         onClick={handleClick}
