@@ -32,6 +32,10 @@
   border-radius: 50%;
   cursor: pointer;
   user-select: none;
+  /* Remove the 300ms tap delay and suppress double-tap zoom on touch. */
+  touch-action: manipulation;
+  /* Hide the default mobile tap highlight; we provide our own feedback. */
+  -webkit-tap-highlight-color: transparent;
   transform-origin: center;
   will-change: transform;
   backface-visibility: hidden;
@@ -39,8 +43,12 @@
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-.button:hover:not(.active):not(:disabled) .path {
-  fill:  var(--color-border);
+/* Guard hover with hover-capable pointers so the fill doesn't stick
+   after a tap on touch devices. */
+@media (hover: hover) {
+  .button:hover:not(.active):not(:disabled) .path {
+    fill: var(--color-border);
+  }
 }
 
 .button:disabled {
