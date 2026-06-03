@@ -135,7 +135,7 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
               }
         }
         animate={{ scale: 1 }}
-        transition={{ ...springSnappy, damping: 16 }}
+        transition={{ ...springSnappy, damping: 10 }}
         onClick={handleClick}
         {...props}
       >
