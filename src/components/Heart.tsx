@@ -122,7 +122,7 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
     const lastTapToggleRef = useRef(0);
 
     const toggleActive = useCallback(() => {
-      if (disabled) return;
+      if (disabled) return isActive;
       const next = !isActive;
       if (!isControlled) setInternalActive(next);
       onActiveChange?.(next);
@@ -131,6 +131,7 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
         const id = burstIdRef.current++;
         setBursts((prev) => [...prev, { id, shards: makeShards() }]);
       }
+      return next;
     }, [confetti, disabled, isActive, isControlled, onActiveChange]);
 
     const handleClick = useCallback(
@@ -181,11 +182,12 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
           // Toggle here rather than on native click: onTap fires reliably for
           // the whole hit area even after the press shrinks the button.
           lastTapToggleRef.current = Date.now();
-          toggleActive();
-          // Bouncy release — the only overshoot. Settle to hover or rest.
+          const nowActive = toggleActive();
+          // Bouncy release on like (the only overshoot); regular snappy
+          // settle on unlike so deactivating doesn't bounce.
           controls.start({
             scale: isHoveredRef.current ? HOVER_SCALE : 1,
-            transition: REBOUND_TRANSITION,
+            transition: nowActive ? REBOUND_TRANSITION : springSnappy,
           });
         }}
         onTapCancel={() => {
