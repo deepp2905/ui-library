@@ -1,10 +1,30 @@
 'use client';
 
 import { forwardRef, useCallback, useRef, useState } from 'react';
-import { AnimatePresence, motion, type HTMLMotionProps } from 'framer-motion';
+import {
+  AnimatePresence,
+  motion,
+  useAnimationControls,
+  type HTMLMotionProps,
+} from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
 import styles from './Heart.module.css';
+
+/** Fast, critically damped press so the dip reaches full compression even
+ *  on a brief touch tap. No bounce here — the overshoot lives on release. */
+const PRESS_TRANSITION = {
+  type: 'spring',
+  stiffness: 1100,
+  damping: 42,
+  mass: 0.6,
+} as const;
+
+/** Bouncy spring for the tap-release rebound — this is the only place the
+ *  scale overshoots. Used when settling back to rest (1) or hover (1.03). */
+const REBOUND_TRANSITION = { ...springSnappy, damping: 10 };
+
+const HOVER_SCALE = 1.03;
 
 export type HeartSize = 'sm' | 'md' | 'lg';
 
@@ -88,6 +108,12 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
     const [bursts, setBursts] = useState<{ id: number; shards: Shard[] }[]>([]);
     const burstIdRef = useRef(0);
 
+    const controls = useAnimationControls();
+    // Track hover via a ref so tap-release knows whether to settle to the
+    // hover scale (1.03) or rest (1). Framer's hover gestures only fire for
+    // a real mouse, so on touch this stays false and release returns to 1.
+    const isHoveredRef = useRef(false);
+
     const handleClick = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
         if (!disabled) {
@@ -122,28 +148,37 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
         disabled={disabled}
         aria-pressed={isActive}
         aria-label={ariaLabel ?? (isActive ? 'Unlike' : 'Like')}
-        whileHover={
-          disabled
-            ? undefined
-            : // Bouncy spring so the press rebound overshoots: while hovered,
-              // the button settles to this hover state (1.03) on release, so
-              // the overshoot has to live here, not on the `animate` target.
-              { scale: 1.03, transition: { ...springSnappy, damping: 10 } }
-        }
-        whileTap={
-          disabled
-            ? undefined
-            : {
-                scale: 0.86,
-                // Fast, critically damped press so the dip reaches full
-                // compression even on a brief touch tap. The bouncy rebound
-                // lives on the `animate`/`transition` below, so the overshoot
-                // now reads consistently on both mouse and touch.
-                transition: {...springSnappy},
-              }
-        }
-        animate={{ scale: 1 }}
-        transition={{ ...springSnappy }}
+        animate={controls}
+        initial={{ scale: 1 }}
+        onHoverStart={() => {
+          isHoveredRef.current = true;
+          // Snappy, no overshoot on hover-in.
+          if (!disabled)
+            controls.start({ scale: HOVER_SCALE, transition: springSnappy });
+        }}
+        onHoverEnd={() => {
+          isHoveredRef.current = false;
+          if (!disabled) controls.start({ scale: 1, transition: springSnappy });
+        }}
+        onTapStart={() => {
+          if (!disabled)
+            controls.start({ scale: 0.86, transition: PRESS_TRANSITION });
+        }}
+        onTap={() => {
+          // Bouncy release — the only overshoot. Settle to hover or rest.
+          if (!disabled)
+            controls.start({
+              scale: isHoveredRef.current ? HOVER_SCALE : 1,
+              transition: REBOUND_TRANSITION,
+            });
+        }}
+        onTapCancel={() => {
+          if (!disabled)
+            controls.start({
+              scale: isHoveredRef.current ? HOVER_SCALE : 1,
+              transition: REBOUND_TRANSITION,
+            });
+        }}
         onClick={handleClick}
         {...props}
       >
