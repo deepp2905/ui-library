@@ -113,22 +113,34 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
     // hover scale (1.03) or rest (1). Framer's hover gestures only fire for
     // a real mouse, so on touch this stays false and release returns to 1.
     const isHoveredRef = useRef(false);
+    // Timestamp of the last gesture-driven toggle. The press shrinks the
+    // button to 0.86, so a pointerup near the padded edge can land outside
+    // the now-smaller element and the native `click` never fires. We toggle
+    // from Framer's onTap (which tracks the pointer globally and always
+    // fires), then guard the native click so a real keyboard activation
+    // (click with no preceding tap) still toggles exactly once.
+    const lastTapToggleRef = useRef(0);
+
+    const toggleActive = useCallback(() => {
+      if (disabled) return;
+      const next = !isActive;
+      if (!isControlled) setInternalActive(next);
+      onActiveChange?.(next);
+
+      if (confetti && next) {
+        const id = burstIdRef.current++;
+        setBursts((prev) => [...prev, { id, shards: makeShards() }]);
+      }
+    }, [confetti, disabled, isActive, isControlled, onActiveChange]);
 
     const handleClick = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!disabled) {
-          const next = !isActive;
-          if (!isControlled) setInternalActive(next);
-          onActiveChange?.(next);
-
-          if (confetti && next) {
-            const id = burstIdRef.current++;
-            setBursts((prev) => [...prev, { id, shards: makeShards() }]);
-          }
-        }
+        // Skip if onTap just handled this interaction (pointer activation);
+        // only toggle here for keyboard activation, where onTap never fired.
+        if (Date.now() - lastTapToggleRef.current > 700) toggleActive();
         onClick?.(e);
       },
-      [confetti, disabled, isActive, isControlled, onActiveChange, onClick],
+      [toggleActive, onClick],
     );
 
     const removeBurst = useCallback((id: number) => {
@@ -165,12 +177,16 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
             controls.start({ scale: 0.86, transition: PRESS_TRANSITION });
         }}
         onTap={() => {
+          if (disabled) return;
+          // Toggle here rather than on native click: onTap fires reliably for
+          // the whole hit area even after the press shrinks the button.
+          lastTapToggleRef.current = Date.now();
+          toggleActive();
           // Bouncy release — the only overshoot. Settle to hover or rest.
-          if (!disabled)
-            controls.start({
-              scale: isHoveredRef.current ? HOVER_SCALE : 1,
-              transition: REBOUND_TRANSITION,
-            });
+          controls.start({
+            scale: isHoveredRef.current ? HOVER_SCALE : 1,
+            transition: REBOUND_TRANSITION,
+          });
         }}
         onTapCancel={() => {
           if (!disabled)
