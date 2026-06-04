@@ -43,15 +43,6 @@
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-/* Guard hover with a hover-capable fine pointer so the grey fill never
-   shows on touch taps. Touch devices report `pointer: coarse` (and often
-   falsely claim `hover: hover`), so we require both. */
-@media (hover: hover) and (pointer: fine) {
-  .button:hover:not(.active):not(:disabled) .path {
-    fill: var(--color-border);
-  }
-}
-
 .button:disabled {
   cursor: not-allowed;
   opacity: 0.55;

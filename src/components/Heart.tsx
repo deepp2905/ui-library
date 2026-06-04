@@ -41,7 +41,7 @@ const MAX_DELAY = 0.06;
 const DELAY_JITTER = 0.015;
 
 const makeShards = (): Shard[] => {
-  const count = 12 + Math.floor(Math.random() * 16);
+  const count = 24 + Math.floor(Math.random() * 8);
   return Array.from({ length: count }, (_, i) => {
     const distance = MIN_DISTANCE + Math.random() * (MAX_DISTANCE - MIN_DISTANCE);
     const t = (distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE);
@@ -122,6 +122,14 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
         disabled={disabled}
         aria-pressed={isActive}
         aria-label={ariaLabel ?? (isActive ? 'Unlike' : 'Like')}
+        whileHover={
+          disabled
+            ? undefined
+            : // Bouncy spring so the press rebound overshoots: while hovered,
+              // the button settles to this hover state (1.03) on release, so
+              // the overshoot has to live here, not on the `animate` target.
+              { scale: 1.03, transition: { ...springSnappy, damping: 10 } }
+        }
         whileTap={
           disabled
             ? undefined
@@ -131,11 +139,11 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
                 // compression even on a brief touch tap. The bouncy rebound
                 // lives on the `animate`/`transition` below, so the overshoot
                 // now reads consistently on both mouse and touch.
-                transition: { type: 'spring', stiffness: 1100, damping: 42, mass: 0.6 },
+                transition: {...springSnappy},
               }
         }
         animate={{ scale: 1 }}
-        transition={{ ...springSnappy, damping: 10 }}
+        transition={{ ...springSnappy }}
         onClick={handleClick}
         {...props}
       >
