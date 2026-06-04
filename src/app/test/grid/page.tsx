@@ -60,8 +60,8 @@ const CELLS: { key: string; render: () => React.ReactNode }[] = [
   { key: 'HoldToDelete', render: () => <HoldToDeleteCell /> },
   { key: 'Slider', render: () => <SliderCell /> },
   { key: 'Switch', render: () => <SwitchCell /> },
-  { key: 'Checkbox', render: () => <CheckboxCell /> },
   { key: 'Heart', render: () => <Heart /> },
+  { key: 'Checkbox', render: () => <CheckboxCell /> },
 ];
 
 function GridPageBody() {
