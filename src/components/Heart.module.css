@@ -61,7 +61,7 @@
   transition:
     fill var(--motion-fast) var(--ease-out),
     stroke var(--motion-fast) var(--ease-out);
-  fill: transparent;
+  fill: #fff;
   stroke: currentColor;
   stroke-width: 2;
   stroke-linejoin: round;
@@ -99,4 +99,19 @@
 .lg .svg {
   width: 100%;
   height: 100%;
+}
+
+/* On touch devices the padded ring is the whole tap target, so make it more
+   generous. The visible heart (svg) stays the same size — only the invisible
+   hit area grows. */
+@media (pointer: coarse) {
+  .sm {
+    padding: 16px;
+  }
+  .md {
+    padding: 22px;
+  }
+  .lg {
+    padding: 28px;
+  }
 }
