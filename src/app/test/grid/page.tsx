@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import {
   Checkbox,
+  Heart,
   HoldToDelete,
   Slider,
   Switch,
@@ -60,6 +61,7 @@ const CELLS: { key: string; render: () => React.ReactNode }[] = [
   { key: 'Slider', render: () => <SliderCell /> },
   { key: 'Switch', render: () => <SwitchCell /> },
   { key: 'Checkbox', render: () => <CheckboxCell /> },
+  { key: 'Heart', render: () => <Heart /> },
 ];
 
 function GridPageBody() {
