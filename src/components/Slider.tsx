@@ -89,6 +89,19 @@ export function Slider({
 
   const trackRef = useRef<HTMLDivElement>(null);
 
+  /* Map a pointer x-position to a clamped, step-snapped value using the
+     *unstretched* track width (scaleX is anchored at one edge). */
+  const valueFromClientX = (clientX: number) => {
+    const el = trackRef.current;
+    if (!el) return value;
+    const rect = el.getBoundingClientRect();
+    const baseWidth = rect.width / trackScaleX.get();
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / baseWidth));
+    let raw = min + ratio * (max - min);
+    if (step > 0) raw = Math.round(raw / step) * step;
+    return Math.min(max, Math.max(min, raw));
+  };
+
   const updateOvershoot = (clientX: number) => {
     const el = trackRef.current;
     if (!el) return;
