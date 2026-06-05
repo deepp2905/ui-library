@@ -123,21 +123,26 @@ export function Slider({
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLInputElement>) => {
+    if (disabled) return;
     dragStarted.current = false;
     setAnimating(true);
     if (animTimeout.current) clearTimeout(animTimeout.current);
+    /* Capture the pointer so a drag begun anywhere on the track keeps
+       following the finger — native range inputs only start a touch
+       drag when the thumb itself is grabbed. */
+    e.currentTarget.setPointerCapture(e.pointerId);
+    onChange(valueFromClientX(e.clientX));
     updateOvershoot(e.clientX);
   };
   const handlePointerMove = (e: React.PointerEvent<HTMLInputElement>) => {
+    /* Only drive the value while the pointer is actually held. */
+    if ((e.buttons & 1) !== 1) return;
     if (!dragStarted.current) {
       dragStarted.current = true;
       setAnimating(false);
     }
-    /* Only track overshoot while the pointer is actually held. The
-       native range input still calls onChange with the clamped value. */
-    if ((e.buttons & 1) === 1) {
-      updateOvershoot(e.clientX);
-    }
+    onChange(valueFromClientX(e.clientX));
+    updateOvershoot(e.clientX);
   };
   const handlePointerUp = () => {
     overshoot.set(0); // spring back
