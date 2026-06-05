@@ -39,6 +39,11 @@
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
+  -webkit-user-select: none;
+  /* Remove the 300ms tap delay and suppress double-tap zoom on touch. */
+  touch-action: manipulation;
+  /* Hide the default mobile tap highlight; the press scale is our feedback. */
+  -webkit-tap-highlight-color: transparent;
   transform-origin: center;
   will-change: transform;
   backface-visibility: hidden;

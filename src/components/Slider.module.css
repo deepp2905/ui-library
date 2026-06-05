@@ -33,6 +33,9 @@
   background: var(--color-surface-sunken);
   overflow: hidden;
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .fill {
@@ -148,6 +151,11 @@
   opacity: 0;
   cursor: pointer;
   z-index: 3;
+  /* Horizontal drags drive the slider; vertical gestures still scroll
+     the page. Without this, touch dragging would scroll instead of
+     moving the thumb. */
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .track:has(.range:disabled) {

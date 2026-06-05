@@ -19,6 +19,11 @@
   color: var(--color-primary);
   line-height: 1;
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Remove the 300ms tap delay and suppress double-tap zoom on touch. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn:hover:not(:disabled) {

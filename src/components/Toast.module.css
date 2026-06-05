@@ -7,6 +7,9 @@
   flex-direction: column;
   gap: var(--c-space-2);
   width: min(765px, calc(100vw - var(--c-space-8)));
+  /* The viewport spans a large fixed region; let taps/clicks pass through
+     its empty areas to the content beneath. Toasts re-enable below. */
+  pointer-events: none;
 }
 
 .toast {
@@ -21,6 +24,7 @@
   border-radius: var(--c-radius-md);
   box-shadow: var(--shadow-md);
   overflow: hidden;
+  pointer-events: auto;
 }
 
 .accent {

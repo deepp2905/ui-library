@@ -6,6 +6,12 @@
   border-radius: var(--c-radius-pill);
   background: var(--color-neutral-300);
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Remove the 300ms tap delay and suppress double-tap zoom on touch. */
+  touch-action: manipulation;
+  /* Hide the default mobile tap highlight; the thumb press is our feedback. */
+  -webkit-tap-highlight-color: transparent;
   transition: background-color var(--motion-base) var(--ease-out);
 }
 
