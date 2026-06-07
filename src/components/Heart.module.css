@@ -36,6 +36,8 @@
   touch-action: manipulation;
   /* Hide the default mobile tap highlight; we provide our own feedback. */
   -webkit-tap-highlight-color: transparent;
+  /* Suppress iOS long-press callout/selection so a held tap stays clean. */
+  -webkit-touch-callout: none;
   transform-origin: center;
   will-change: transform;
   backface-visibility: hidden;

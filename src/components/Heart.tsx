@@ -25,6 +25,15 @@ const PRESS_TRANSITION = {
 const REBOUND_TRANSITION = { ...springSnappy, damping: 10 };
 
 const HOVER_SCALE = 1.03;
+/** Touch has no hover, so the press itself is the affordance: instead of the
+ *  desktop dip (0.86) it grows. Same spring as the desktop press, just upward,
+ *  so a tap reads as an enlarge — not a gray flash. */
+const TOUCH_PRESS_SCALE = 1.12;
+
+/** True for touch/pen pointers — anything that isn't a real mouse. Framer's
+ *  tap event is a PointerEvent; treat an unknown event as touch to be safe. */
+const isTouchPointer = (e: MouseEvent | TouchEvent | PointerEvent) =>
+  'pointerType' in e ? e.pointerType !== 'mouse' : true;
 
 export type HeartSize = 'sm' | 'md' | 'lg';
 
@@ -173,9 +182,12 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
           isHoveredRef.current = false;
           if (!disabled) controls.start({ scale: 1, transition: springSnappy });
         }}
-        onTapStart={() => {
-          if (!disabled)
-            controls.start({ scale: 0.86, transition: PRESS_TRANSITION });
+        onTapStart={(e) => {
+          if (disabled) return;
+          // Mouse dips in (0.86); touch grows (1.12). Same press curve either
+          // way — the release rebound below settles both back to rest.
+          const scale = isTouchPointer(e) ? TOUCH_PRESS_SCALE : 0.86;
+          controls.start({ scale, transition: PRESS_TRANSITION });
         }}
         onTap={() => {
           if (disabled) return;
