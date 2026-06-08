@@ -89,6 +89,12 @@
   --text-xl: 1.375rem;
   --text-2xl: 1.75rem;
 
+  /* Display — oversized hero/page titles. A complete style, not just a
+     size: pair --text-display with its leading and tracking. */
+  --text-display: 3rem;
+  --leading-display: 1.1;
+  --tracking-display: -0.03em;
+
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
