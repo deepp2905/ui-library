@@ -69,9 +69,13 @@
   stroke-linejoin: round;
 }
 
+/* Animate fill/stroke to an explicit color rather than currentColor: the
+   button's `color` is transitioning at the same time, so a currentColor fill
+   would chase it through the muted gray and flash gray on the way to orange.
+   Going straight to --color-primary keeps the fade a clean white → orange. */
 .active .path {
-  fill: currentColor;
-  stroke: currentColor;
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
 }
 
 /* --- Sizes ---
