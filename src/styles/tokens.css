@@ -90,8 +90,10 @@
   --text-2xl: 1.75rem;
 
   /* Display — oversized hero/page titles. A complete style, not just a
-     size: pair --text-display with its leading and tracking. */
-  --text-display: 3rem;
+     size: pair --text-display with its leading and tracking. Fluid via
+     clamp so it scales down on narrow viewports (≈2rem on phones) and
+     caps at 3rem on desktop — no per-breakpoint overrides needed. */
+  --text-display: clamp(2rem, 6vw, 3rem);
   --leading-display: 1.1;
   --tracking-display: -0.03em;
 
