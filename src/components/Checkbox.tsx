@@ -128,7 +128,7 @@ export function Checkbox({
             >
               <motion.path
                 d={scribbleD}
-                stroke="var(--color-primary)"
+                stroke="var(--color-fg-subtle)"
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
