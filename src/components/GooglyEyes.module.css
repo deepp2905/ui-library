@@ -1,0 +1,77 @@
+/* Two eyes on a shared face. Sizing is scaled ~1.5x to sit alongside the
+   other components in the showcase. The pupil and lid are driven by an
+   imperative rAF loop in the component — CSS only sets the stage. */
+
+.wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Suppress the mobile tap highlight + double-tap zoom so a click reads
+     purely as a pupil dilate, matching the other interactive tiles. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.face {
+  display: flex;
+  gap: 27px;
+}
+
+.eye {
+  position: relative;
+  width: 126px;
+  height: 126px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-fg);
+  overflow: hidden;
+  /* Soft inner shadow gives the sclera a slight dome — the light pools
+     toward the top where the glint sits. */
+  box-shadow: inset 0 -9px 18px rgba(12, 10, 9, 0.08);
+}
+
+.pupil {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 45px;
+  height: 45px;
+  margin: -22.5px 0 0 -22.5px;
+  border-radius: 50%;
+  background: var(--color-fg);
+  will-change: transform;
+}
+
+/* The glint NEVER moves — it's the light source, not the eye. */
+.glint {
+  position: absolute;
+  top: 8px;
+  left: 11px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-surface);
+}
+
+.lid {
+  position: absolute;
+  inset: -2px;
+  background: var(--color-primary);
+  transform-origin: center top;
+  transform: scaleY(0);
+  will-change: transform;
+}
+
+.hint {
+  position: absolute;
+  bottom: 24px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-fg-muted);
+}

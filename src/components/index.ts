@@ -12,6 +12,9 @@ export type { CheckboxProps } from './Checkbox';
 export { Counter } from './Counter';
 export type { CounterProps } from './Counter';
 
+export { GooglyEyes } from './GooglyEyes';
+export type { GooglyEyesProps } from './GooglyEyes';
+
 export { HoldToDelete } from './HoldToDelete';
 export type { HoldToDeleteProps } from './HoldToDelete';
 

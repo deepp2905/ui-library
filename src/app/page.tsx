@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Checkbox,
+  GooglyEyes,
   Heart,
   HoldToDelete,
   Slider,
@@ -94,6 +95,19 @@ function Showcase() {
 
         <Tile>
           <Heart size="lg" />
+        </Tile>
+
+        <Tile>
+          <div
+            style={{
+              position: 'relative',
+              flex: 1,
+              alignSelf: 'stretch',
+              width: '100%',
+            }}
+          >
+            <GooglyEyes />
+          </div>
         </Tile>
 
 
