@@ -63,6 +63,7 @@ function Showcase() {
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
+        <GooglyEyes />
         <h1 className={styles.heroTitle}>
           Interactions crafted from hundreds of iterations,
            fine-tuning details and motion.
@@ -95,19 +96,6 @@ function Showcase() {
 
         <Tile>
           <Heart size="lg" />
-        </Tile>
-
-        <Tile>
-          <div
-            style={{
-              position: 'relative',
-              flex: 1,
-              alignSelf: 'stretch',
-              width: '100%',
-            }}
-          >
-            <GooglyEyes />
-          </div>
         </Tile>
 
 

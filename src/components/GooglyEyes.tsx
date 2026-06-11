@@ -1,18 +1,19 @@
 'use client';
 
-/* GooglyEyes — two eyes that track your cursor the way real eyes do:
-   in SACCADES. The pupil doesn't glide — it waits until the target has
-   drifted far enough, then darts with a stiff spring and a tiny overshoot.
+/* GooglyEyes — a tiny pair of eyes that live above the hero heading and
+   follow the cursor anywhere on the page with a smooth, softly-damped
+   spring glide.
 
    Opinions baked in:
-   - saccade threshold: 5px. Below that the eyes hold still (fixation)
+   - tracking is continuous: the pupil retargets every frame and a soft
+     spring smooths it out — gentle lag, no darting, no jitter
    - blinks are asymmetric: lids close in ~70ms, open in ~300ms — fast
      shut, lazy open, like every blink you've ever seen. The open is a
      plain exponential ease (no spring): a bouncing lid edge reads as
      glitchy, not organic
    - the two eyes blink 35ms apart, because perfect sync reads as robotic
    - the highlight dot NEVER moves — it's the light source, not the eye
-   - click → both pupils dilate briefly
+   - click anywhere → both pupils dilate briefly
 
    Unlike the spring-based components, the motion here is too stateful for
    framer-motion's declarative model (per-eye velocity, lids, dilation all
@@ -22,9 +23,9 @@ import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/cn';
 import styles from './GooglyEyes.module.css';
 
-/** Max pupil travel from centre, in px. Scaled to the 64px eye so the
+/** Max pupil travel from centre, in px. Scaled to the 48px eye so the
  *  pupil never clips against the sclera edge. */
-const R = 10;
+const R = 8;
 
 /** Per-eye physics state. Everything is integrated every frame. */
 interface EyeState {
@@ -51,7 +52,6 @@ export interface GooglyEyesProps {
 }
 
 export function GooglyEyes({ className }: GooglyEyesProps) {
-  const wrapRef = useRef<HTMLDivElement>(null);
   const eyeRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
   const pupilRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
   const lidRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
@@ -66,8 +66,6 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
   const raf = useRef(0);
 
   useEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
     const s = st.current;
     const now0 = performance.now();
     s.nextBlink = now0 + 1800;
@@ -88,9 +86,12 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
         e.dilV += 0.06; // gentle dilate
       });
     }
-    wrap.addEventListener('pointermove', onMove);
-    wrap.addEventListener('pointerleave', onLeave);
-    wrap.addEventListener('pointerdown', onClick);
+    /* Listen on window, not the wrap: the eyes are a small flow element
+       in the hero, but they should follow the cursor across the whole
+       page (and react to clicks anywhere — including on the tiles). */
+    window.addEventListener('pointermove', onMove);
+    document.documentElement.addEventListener('pointerleave', onLeave);
+    window.addEventListener('pointerdown', onClick);
 
     function loop() {
       const now = performance.now();
@@ -124,23 +125,19 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
           const r = eyeEl.getBoundingClientRect();
           const cx = r.left + r.width / 2;
           const cy = r.top + r.height / 2;
-          let dx = s.cursor.x - cx;
-          let dy = s.cursor.y - cy;
+          const dx = s.cursor.x - cx;
+          const dy = s.cursor.y - cy;
           const d = Math.hypot(dx, dy) || 1;
           const m = Math.min(R, d * 0.2);
-          dx = (dx / d) * m;
-          dy = (dy / d) * m;
-          // SACCADE: only retarget when the gaze error is big enough
-          if (Math.hypot(dx - e.tx, dy - e.ty) > 9) {
-            e.tx = dx;
-            e.ty = dy;
-          }
+          // Retarget every frame — the spring below does the smoothing.
+          e.tx = (dx / d) * m;
+          e.ty = (dy / d) * m;
         }
 
-        // stiff spring → darting motion with slight overshoot
-        e.vx = (e.vx + (e.tx - e.x) * 0.32) * 0.62;
+        // soft, well-damped spring → smooth glide with a touch of lag
+        e.vx = (e.vx + (e.tx - e.x) * 0.18) * 0.72;
         e.x += e.vx;
-        e.vy = (e.vy + (e.ty - e.y) * 0.32) * 0.62;
+        e.vy = (e.vy + (e.ty - e.y) * 0.18) * 0.72;
         e.y += e.vy;
 
         // blink: fast close, lazy open. Both strokes are plain
@@ -176,25 +173,22 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
 
     return () => {
       cancelAnimationFrame(raf.current);
-      wrap.removeEventListener('pointermove', onMove);
-      wrap.removeEventListener('pointerleave', onLeave);
-      wrap.removeEventListener('pointerdown', onClick);
+      window.removeEventListener('pointermove', onMove);
+      document.documentElement.removeEventListener('pointerleave', onLeave);
+      window.removeEventListener('pointerdown', onClick);
     };
   }, []);
 
   return (
-    <div className={cn(styles.wrap, className)} ref={wrapRef}>
-      <div className={styles.face}>
-        {[0, 1].map((i) => (
-          <div key={i} className={styles.eye} ref={eyeRefs[i]}>
-            <div className={styles.pupil} ref={pupilRefs[i]}>
-              <span className={styles.glint} />
-            </div>
-            <div className={styles.lid} ref={lidRefs[i]} />
+    <div className={cn(styles.face, className)} aria-hidden>
+      {[0, 1].map((i) => (
+        <div key={i} className={styles.eye} ref={eyeRefs[i]}>
+          <div className={styles.pupil} ref={pupilRefs[i]}>
+            <span className={styles.glint} />
           </div>
-        ))}
-      </div>
-      <div className={styles.hint}>move · click · or just wait</div>
+          <div className={styles.lid} ref={lidRefs[i]} />
+        </div>
+      ))}
     </div>
   );
 }
