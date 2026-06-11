@@ -5,9 +5,11 @@
    drifted far enough, then darts with a stiff spring and a tiny overshoot.
 
    Opinions baked in:
-   - saccade threshold: 9px. Below that the eyes hold still (fixation)
-   - blinks are asymmetric: lids close in ~70ms, open in ~280ms with a
-     spring — fast shut, lazy open, like every blink you've ever seen
+   - saccade threshold: 5px. Below that the eyes hold still (fixation)
+   - blinks are asymmetric: lids close in ~70ms, open in ~300ms — fast
+     shut, lazy open, like every blink you've ever seen. The open is a
+     plain exponential ease (no spring): a bouncing lid edge reads as
+     glitchy, not organic
    - the two eyes blink 35ms apart, because perfect sync reads as robotic
    - the highlight dot NEVER moves — it's the light source, not the eye
    - click → both pupils dilate briefly
@@ -20,9 +22,9 @@ import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/cn';
 import styles from './GooglyEyes.module.css';
 
-/** Max pupil travel from centre, in px. Scaled to the 126px eye so the
+/** Max pupil travel from centre, in px. Scaled to the 64px eye so the
  *  pupil never clips against the sclera edge. */
-const R = 22;
+const R = 10;
 
 /** Per-eye physics state. Everything is integrated every frame. */
 interface EyeState {
@@ -33,7 +35,6 @@ interface EyeState {
   tx: number;
   ty: number;
   lid: number;
-  lidV: number;
   closing: boolean;
   blinkAt: number;
   dil: number;
@@ -42,7 +43,7 @@ interface EyeState {
 
 const makeEye = (): EyeState => ({
   x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0,
-  lid: 0, lidV: 0, closing: false, blinkAt: 0, dil: 1, dilV: 0,
+  lid: 0, closing: false, blinkAt: 0, dil: 1, dilV: 0,
 });
 
 export interface GooglyEyesProps {
@@ -84,7 +85,7 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
       s.eyes[0].blinkAt = t;
       s.eyes[1].blinkAt = t + 35;
       s.eyes.forEach((e) => {
-        e.dilV += 0.09; // dilate
+        e.dilV += 0.06; // gentle dilate
       });
     }
     wrap.addEventListener('pointermove', onMove);
@@ -142,7 +143,9 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
         e.vy = (e.vy + (e.ty - e.y) * 0.32) * 0.62;
         e.y += e.vy;
 
-        // blink: fast close, springy open
+        // blink: fast close, lazy open. Both strokes are plain
+        // exponential eases — the open is deliberately spring-free so
+        // the lid edge settles without wobbling.
         if (e.blinkAt && now >= e.blinkAt) {
           e.closing = true;
           e.blinkAt = 0;
@@ -150,10 +153,8 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
         if (e.closing) {
           e.lid += (1 - e.lid) * 0.55;
           if (e.lid > 0.96) e.closing = false;
-          e.lidV = 0;
         } else {
-          e.lidV = (e.lidV + (0 - e.lid) * 0.16) * 0.74;
-          e.lid += e.lidV;
+          e.lid *= 0.82;
         }
 
         // dilation spring back to 1

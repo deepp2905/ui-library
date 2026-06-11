@@ -1,6 +1,8 @@
-/* Two eyes on a shared face. Sizing is scaled ~1.5x to sit alongside the
-   other components in the showcase. The pupil and lid are driven by an
-   imperative rAF loop in the component — CSS only sets the stage. */
+/* Two eyes on a shared face. Kept small and quiet: neutral border like
+   the Checkbox box, white sclera, neutral lid — no accent color, since
+   the library reserves orange for active states. The pupil and lid are
+   driven by an imperative rAF loop in the component — CSS only sets
+   the stage. */
 
 .wrap {
   position: absolute;
@@ -18,29 +20,29 @@
 
 .face {
   display: flex;
-  gap: 27px;
+  gap: 14px;
 }
 
 .eye {
   position: relative;
-  width: 126px;
-  height: 126px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: var(--color-surface);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border-strong);
   overflow: hidden;
-  /* Soft inner shadow gives the sclera a slight dome — the light pools
-     toward the top where the glint sits. */
-  box-shadow: inset 0 -9px 18px rgba(12, 10, 9, 0.08);
+  /* Whisper of an inner shadow so the sclera reads as a dome, not a
+     flat disc. Kept near-invisible. */
+  box-shadow: inset 0 -3px 6px rgba(12, 10, 9, 0.04);
 }
 
 .pupil {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 45px;
-  height: 45px;
-  margin: -22.5px 0 0 -22.5px;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
   border-radius: 50%;
   background: var(--color-fg);
   will-change: transform;
@@ -49,18 +51,20 @@
 /* The glint NEVER moves — it's the light source, not the eye. */
 .glint {
   position: absolute;
-  top: 8px;
-  left: 11px;
-  width: 12px;
-  height: 12px;
+  top: 4px;
+  left: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--color-surface);
 }
 
+/* Lid is a soft neutral — same family as the borders — so a blink
+   reads as a shadow passing over the eye, not a color flash. */
 .lid {
   position: absolute;
   inset: -2px;
-  background: var(--color-primary);
+  background: var(--color-neutral-200);
   transform-origin: center top;
   transform: scaleY(0);
   will-change: transform;
@@ -73,5 +77,5 @@
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--color-fg-muted);
+  color: var(--color-fg-subtle);
 }
