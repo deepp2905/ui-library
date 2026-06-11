@@ -12,8 +12,9 @@ A grid of tiles you can scroll sideways, each one a component begging to be touc
 - **Hold to Delete** — press and *hold*; let go too early and nothing happens. The little trash can reacts as you go.
 - **Slider** — drag it around. The thumb has a springy bounce that overshoots just a touch before landing.
 - **Heart** — tap to like. It dips on press, rebounds with a bouncy overshoot, and bursts a little confetti on the way up.
-- **Googly Eyes** — two eyes that follow your cursor in real saccades: they hold still, then dart. Blink on their own, wander when you leave, and dilate when you click.
 - **Checkbox** — a tidy stack of checks that tick in with a satisfying little pop.
+
+Above the heading, a tiny pair of **googly eyes** follows your cursor around the page, blinks on its own, and dilates when you click anything.
 
 Scroll the grid sideways with your mouse wheel on desktop; on a phone the tiles just stack and scroll like normal.
 
