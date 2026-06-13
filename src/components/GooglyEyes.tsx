@@ -78,17 +78,34 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
     function onLeave() {
       s.cursor = null;
     }
-    function onClick() {
+    /* True when (px, py) lands on one of the eyes. The face is
+       pointer-events: none, so we can't rely on the event target — hit
+       test the click against each eye's circle by hand instead. */
+    function isOverEye(px: number, py: number) {
+      return eyeRefs.some((ref) => {
+        const el = ref.current;
+        if (!el) return false;
+        const r = el.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        return Math.hypot(px - cx, py - cy) <= r.width / 2;
+      });
+    }
+    function onClick(e: PointerEvent) {
+      // Only blink (and dilate) when the click is actually on an eye.
+      // Clicks elsewhere on the page leave the automatic random blink
+      // schedule to do its thing.
+      if (!isOverEye(e.clientX, e.clientY)) return;
       const t = performance.now();
       s.eyes[0].blinkAt = t;
       s.eyes[1].blinkAt = t + 35;
-      s.eyes.forEach((e) => {
-        e.dilV += 0.06; // gentle dilate
+      s.eyes.forEach((eye) => {
+        eye.dilV += 0.06; // gentle dilate
       });
     }
     /* Listen on window, not the wrap: the eyes are a small flow element
        in the hero, but they should follow the cursor across the whole
-       page (and react to clicks anywhere — including on the tiles). */
+       page. Clicks are filtered to the eyes themselves (see onClick). */
     window.addEventListener('pointermove', onMove);
     document.documentElement.addEventListener('pointerleave', onLeave);
     window.addEventListener('pointerdown', onClick);
