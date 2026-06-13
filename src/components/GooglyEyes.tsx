@@ -134,10 +134,13 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
           e.ty = (dy / d) * m;
         }
 
-        // soft, well-damped spring → smooth glide with a touch of lag
-        e.vx = (e.vx + (e.tx - e.x) * 0.18) * 0.72;
+        // soft, well-damped spring → lazy glide that eases into the new
+        // direction over ~12 frames rather than snapping to it. The low
+        // stiffness is what creates the visible lag; the 0.70 damping
+        // bleeds off velocity so it settles without a wobble.
+        e.vx = (e.vx + (e.tx - e.x) * 0.08) * 0.7;
         e.x += e.vx;
-        e.vy = (e.vy + (e.ty - e.y) * 0.18) * 0.72;
+        e.vy = (e.vy + (e.ty - e.y) * 0.08) * 0.7;
         e.y += e.vy;
 
         // blink: fast close, lazy open. Both strokes are plain
