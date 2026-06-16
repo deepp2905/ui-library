@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import {
   Checkbox,
+  GooglyEyes,
   Heart,
   HoldToDelete,
   Slider,
@@ -61,6 +62,7 @@ const CELLS: { key: string; render: () => React.ReactNode }[] = [
   { key: 'Slider', render: () => <SliderCell /> },
   { key: 'Switch', render: () => <SwitchCell /> },
   { key: 'Heart', render: () => <Heart /> },
+  { key: 'GooglyEyes', render: () => <GooglyEyes /> },
   { key: 'Checkbox', render: () => <CheckboxCell /> },
 ];
 
