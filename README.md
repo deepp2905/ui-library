@@ -14,7 +14,7 @@ A grid of tiles you can scroll sideways, each one a component begging to be touc
 - **Heart** — tap to like. It dips on press, rebounds with a bouncy overshoot, and bursts a little confetti on the way up.
 - **Checkbox** — a tidy stack of checks that tick in with a satisfying little pop.
 
-Above the heading, a tiny pair of **googly eyes** follows your cursor around the page, blinks on its own, and dilates when you click anything.
+Above the heading, a tiny pair of **googly eyes** eases after your cursor as it moves around the page and blinks on its own every few seconds. Click directly on the eyes and they blink and dilate on cue.
 
 Scroll the grid sideways with your mouse wheel on desktop; on a phone the tiles just stack and scroll like normal.
 
