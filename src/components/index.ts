@@ -24,6 +24,9 @@ export type { HeartProps, HeartSize } from './Heart';
 export { Input } from './Input';
 export type { InputProps } from './Input';
 
+export { Menu } from './Menu';
+export type { MenuProps, MenuItem } from './Menu';
+
 export { Slider } from './Slider';
 export type { SliderProps } from './Slider';
 

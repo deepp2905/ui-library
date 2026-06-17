@@ -6,6 +6,7 @@ import {
   GooglyEyes,
   Heart,
   HoldToDelete,
+  Menu,
   Slider,
   Switch,
   ToastProvider,
@@ -14,14 +15,23 @@ import styles from './page.module.css';
 
 function Tile({
   stretch = false,
+  top = false,
   children,
 }: {
   stretch?: boolean;
+  /** Anchor content to the top of the tile (e.g. a menu that opens downward). */
+  top?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div
-      className={stretch ? `${styles.tile} ${styles.tileStretch}` : styles.tile}
+      className={[
+        styles.tile,
+        stretch && styles.tileStretch,
+        top && styles.tileTop,
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
       {children}
     </div>
@@ -96,6 +106,10 @@ function Showcase() {
 
         <Tile>
           <Heart size="lg" />
+        </Tile>
+
+        <Tile top>
+          <Menu />
         </Tile>
 
 

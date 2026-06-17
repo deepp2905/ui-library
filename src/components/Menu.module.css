@@ -1,0 +1,137 @@
+.root {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-mono);
+}
+
+/* --- Trigger pill --- */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-3);
+  padding: var(--c-space-3) var(--c-space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-fg);
+  font-family: var(--font-mono);
+  font-size: var(--c-text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+
+.trigger:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.triggerLabel {
+  line-height: 1;
+}
+
+.glyph {
+  width: 1.35em;
+  height: 1.35em;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* --- Overlay panel --- */
+.panel {
+  position: absolute;
+  top: calc(100% + var(--c-space-3));
+  left: 50%;
+  /* Centered on the trigger via the motion x:-50% (see Menu.tsx); the origin
+     keeps the scale-in anchored to the top edge, just under the pill. */
+  transform-origin: top center;
+  width: 280px;
+  max-width: calc(100vw - var(--c-space-8));
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-1);
+  padding: var(--c-space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--c-radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+}
+
+/* --- Items --- */
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--c-space-3);
+  width: 100%;
+  padding: var(--c-space-2) var(--c-space-4);
+  background: transparent;
+  border: none;
+  border-radius: var(--c-radius-md);
+  color: var(--color-fg);
+  font-family: var(--font-mono);
+  font-size: var(--c-text-sm);
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--motion-fast) var(--ease-out);
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--color-surface-sunken);
+}
+
+.arrow {
+  width: 1.25em;
+  height: 1.25em;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Hidden until hover — slides in from the left. */
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.item:hover .arrow,
+.item:focus-visible .arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.itemRight {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-2);
+}
+
+.itemLabel {
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.dot {
+  width: 0.5em;
+  height: 0.5em;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
