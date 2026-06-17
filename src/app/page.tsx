@@ -6,7 +6,6 @@ import {
   GooglyEyes,
   Heart,
   HoldToDelete,
-  Menu,
   Slider,
   Switch,
   ToastProvider,
@@ -106,10 +105,6 @@ function Showcase() {
 
         <Tile>
           <Heart size="lg" />
-        </Tile>
-
-        <Tile top>
-          <Menu />
         </Tile>
 
 
