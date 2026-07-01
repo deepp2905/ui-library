@@ -62,6 +62,14 @@ function Showcase() {
       // deltaMode 1 = lines (classic mouse wheel — multiply to match
       // the browser's own line-to-pixel conversion of ~16px/line).
       const pixels = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+      // Only convert vertical wheel → horizontal scroll while the grid
+      // still has room to scroll in that direction. Once it hits the
+      // start/end edge, let the event fall through so the page can
+      // scroll vertically (e.g. to reach content below the fold).
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+      const atStart = el.scrollLeft <= 0;
+      const atEnd = el.scrollLeft >= maxScrollLeft - 1;
+      if ((pixels < 0 && atStart) || (pixels > 0 && atEnd)) return;
       el.scrollLeft += pixels;
       e.preventDefault();
     };
