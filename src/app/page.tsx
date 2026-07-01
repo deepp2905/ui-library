@@ -62,9 +62,10 @@ function Showcase() {
       // deltaMode 1 = lines (classic mouse wheel — multiply to match
       // the browser's own line-to-pixel conversion of ~16px/line).
       const pixels = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
-      // Once the grid reaches its horizontal edge, let the wheel fall
-      // through so the page can still scroll vertically even while the
-      // pointer is over the tiles.
+      // Only convert vertical wheel → horizontal scroll while the grid
+      // still has room to scroll in that direction. Once it hits the
+      // start/end edge, let the event fall through so the page can
+      // scroll vertically (e.g. to reach content below the fold).
       const maxScrollLeft = el.scrollWidth - el.clientWidth;
       const atStart = el.scrollLeft <= 0;
       const atEnd = el.scrollLeft >= maxScrollLeft - 1;
@@ -72,12 +73,8 @@ function Showcase() {
       el.scrollLeft += pixels;
       e.preventDefault();
     };
-    /* Listen on the grid itself, not the window, so the wheel is only
-       converted to horizontal scrolling while the pointer is actually
-       over the tile row. Anywhere else on the page the wheel falls
-       through to the browser and scrolls vertically as normal. */
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel);
   }, []);
 
   return (
