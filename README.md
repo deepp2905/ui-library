@@ -2,7 +2,7 @@
 
 A little playground of components that feel nice to poke at. Built with hundreds of iterations, a lot of subtle motion, and way too much time spent on the final layer of polish.
 
-**Go play:** https://fun-components-and-interactions.vercel.app/
+**Go play:** https://interactions.deeepatel.com/
 
 ## What's on the homepage
 
