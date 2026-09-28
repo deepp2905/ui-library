@@ -29,22 +29,19 @@ export interface ButtonProps
 
 interface Shard {
   id: number;
-  w: number;
-  h: number;
+  /** Diameter in px — shards are dots. */
+  size: number;
   angle: number;
   distance: number;
-  rotation: number;
 }
 
 const makeShards = (): Shard[] => {
   const count = 12 + Math.floor(Math.random() * 16);
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    w: 3 + Math.random() * 5,
-    h: 3 + Math.random() * 7,
+    size: 3 + Math.random() * 4,
     angle: Math.random() * Math.PI * 2,
     distance: 90 + Math.random() * 45,
-    rotation: (Math.random() - 0.5) * 180,
   }));
 };
 
@@ -142,17 +139,17 @@ function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
   return (
     <>
       {shards.map((s, i) => {
-        const cx = -s.w / 2;
-        const cy = -s.h / 2;
+        const cx = -s.size / 2;
+        const cy = -s.size / 2;
         const x = cx + Math.cos(s.angle) * s.distance;
         const y = cy + Math.sin(s.angle) * s.distance;
         return (
           <motion.span
             key={s.id}
             className={styles.confettiPiece}
-            style={{ width: s.w, height: s.h }}
-            initial={{ x: cx, y: cy, opacity: 1, rotate: 0, scale: 0.6 }}
-            animate={{ x, y, opacity: 0, rotate: s.rotation, scale: 1 }}
+            style={{ width: s.size, height: s.size }}
+            initial={{ x: cx, y: cy, opacity: 1, scale: 0.6 }}
+            animate={{ x, y, opacity: 0, scale: 1 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             onAnimationComplete={i === 0 ? onDone : undefined}
           />
