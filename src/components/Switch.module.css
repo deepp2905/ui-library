@@ -1,7 +1,12 @@
 .track {
   display: inline-flex;
   align-items: center;
-  padding: 4.5px;
+  /* Whole-pixel padding on purpose: with 4.5px the thumb rested on a
+     half pixel. During the toggle it's positioned by transforms (drawn at
+     sub-pixel precision), then snapped to the pixel grid once the
+     animation ends — a visible ~1px jump. Keep (track − thumb) even so
+     every resting position is an integer. */
+  padding: 4px;
   border: none;
   border-radius: var(--c-radius-pill);
   background: var(--color-neutral-300);
@@ -49,10 +54,10 @@
   box-shadow: var(--shadow-xs);
 }
 .md .thumb {
-  width: 30px;
-  height: 30px;
+  width: 31px;
+  height: 31px;
 }
 .sm .thumb {
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
 }
