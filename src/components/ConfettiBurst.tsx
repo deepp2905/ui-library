@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 
    Motion, tuned as secondary feedback that ends with the trigger's own
    settle (~0.4s):
-   - dots fly out on a sharp ease-out: fast launch, hard stop
+   - dots fly out on a quick launch that brakes softly into place
    - far dots start a touch later and travel longer, so the burst
      spreads outward instead of popping flat
    - fully opaque for the first half, then an ease-in fade, so the
@@ -37,7 +37,7 @@ const DURATION_JITTER = 0.03;
 const MAX_DELAY = 0.06;
 const DELAY_JITTER = 0.015;
 
-const BURST_EASE = [0.16, 1, 0.3, 1] as const;
+const BURST_EASE = [0, 0.55, 0.45, 1] as const;
 const FADE_EASE = [0.4, 0, 1, 1] as const;
 
 const clamp = (v: number, lo: number, hi: number) =>
