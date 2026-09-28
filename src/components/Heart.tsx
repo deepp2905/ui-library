@@ -101,7 +101,7 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
 
       if (confetti && next && !reduceMotion) {
         const id = burstIdRef.current++;
-        setBursts((prev) => [...prev, { id, shards: makeShards(24, 31) }]);
+        setBursts((prev) => [...prev, { id, shards: makeShards(24, 31, 0.2, 0.3) }]);
       }
       return next;
     }, [confetti, disabled, isActive, isControlled, onActiveChange, reduceMotion]);

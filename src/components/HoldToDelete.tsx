@@ -112,7 +112,7 @@ export function HoldToDelete({
     if (!reduceMotion) {
       setTimeout(() => {
         const id = burstIdRef.current++;
-        setBursts((prev) => [...prev, { id, shards: makeShards(24, 39) }]);
+        setBursts((prev) => [...prev, { id, shards: makeShards(24, 39, 0.6, 0.6) }]);
       }, CHARDS_DELAY_MS);
     }
 

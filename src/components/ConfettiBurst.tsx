@@ -6,8 +6,7 @@ import { motion } from 'framer-motion';
    Shared confetti burst — used by Heart and HoldToDelete so the two
    read as the same gesture. Internal; not exported from the library.
 
-   Motion, tuned as secondary feedback that ends with the trigger's own
-   settle (~0.4s):
+   Motion (flight duration is set per caller via makeShards):
    - dots fly out on a quick launch that brakes softly into place
    - far dots start a touch later and travel longer, so the burst
      spreads outward instead of popping flat
@@ -28,11 +27,10 @@ export interface Shard {
 
 const MIN_DISTANCE = 90;
 const MAX_DISTANCE = 135;
-/* Durations map to distance (near → MIN, far → MAX), plus a little
-   jitter, clamped to [MIN, MAX]. Jitter stays small relative to the
-   0.1s range so dots don't pile up on the bounds. */
-const MIN_DURATION = 0.3;
-const MAX_DURATION = 0.4;
+/* Durations map to distance (near → min, far → max), plus a little
+   jitter, clamped to [min, max]. Jitter stays small relative to a
+   ~0.1s range so dots don't pile up on the bounds. Pass min === max
+   for one fixed duration. */
 const DURATION_JITTER = 0.03;
 const MAX_DELAY = 0.06;
 const DELAY_JITTER = 0.015;
@@ -43,8 +41,14 @@ const FADE_EASE = [0.4, 0, 1, 1] as const;
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
 
-/** Build one burst of `minCount`–`maxCount` dots. */
-export function makeShards(minCount: number, maxCount: number): Shard[] {
+/** Build one burst of `minCount`–`maxCount` dots, each flying for
+ *  `minDuration`–`maxDuration` seconds depending on distance. */
+export function makeShards(
+  minCount: number,
+  maxCount: number,
+  minDuration: number,
+  maxDuration: number,
+): Shard[] {
   const count = minCount + Math.floor(Math.random() * (maxCount - minCount + 1));
   return Array.from({ length: count }, (_, i) => {
     const distance =
@@ -52,9 +56,9 @@ export function makeShards(minCount: number, maxCount: number): Shard[] {
     const t = (distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE);
     const durationJitter = (Math.random() - 0.5) * 2 * DURATION_JITTER;
     const duration = clamp(
-      MIN_DURATION + t * (MAX_DURATION - MIN_DURATION) + durationJitter,
-      MIN_DURATION,
-      MAX_DURATION,
+      minDuration + t * (maxDuration - minDuration) + durationJitter,
+      minDuration,
+      maxDuration,
     );
     const delayJitter = (Math.random() - 0.5) * 2 * DELAY_JITTER;
     const delay = Math.max(0, t * MAX_DELAY + delayJitter);
