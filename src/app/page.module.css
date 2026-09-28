@@ -151,7 +151,13 @@
 
   .tile {
     min-height: 360px;
-    padding: 28px;
+    padding: 40px;
     border-radius: 16px;
+  }
+
+  /* Narrower slider on phones. Two classes so this beats the Slider's
+     own 378px max-width regardless of stylesheet order. */
+  .tileStretch .slider {
+    max-width: 250px;
   }
 }

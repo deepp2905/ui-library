@@ -50,7 +50,13 @@ function SwitchDemo() {
 
 function SliderDemo() {
   const [volume, setVolume] = useState(64);
-  return <Slider value={volume} onChange={setVolume} />;
+  return (
+    <Slider
+      value={volume}
+      onChange={setVolume}
+      className={styles.slider}
+    />
+  );
 }
 
 function ChecklistDemo() {
