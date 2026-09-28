@@ -110,9 +110,9 @@
   stroke-linecap: butt;
 }
 
-/* Hover (mouse only — on touch, :hover sticks after a tap and would
-   leave the lid hanging open) lifts the lid. */
-@media (hover: hover) {
+/* Hover lifts the lid — mouse only, and not at tablet/mobile widths
+   (on touch, :hover sticks after a tap and would leave the lid open). */
+@media (hover: hover) and (min-width: 1025px) {
   .root:hover .icon :global(.body) {
     stroke-linecap: round;
   }

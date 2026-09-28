@@ -8,6 +8,7 @@ import {
   type HTMLMotionProps,
 } from 'framer-motion';
 import { cn } from '@/lib/cn';
+import { canHover } from '@/lib/hover';
 import { springSnappy } from '@/lib/motion';
 import styles from './Heart.module.css';
 
@@ -117,7 +118,8 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
     const controls = useAnimationControls();
     // Track hover via a ref so tap-release knows whether to settle to the
     // hover scale (1.03) or rest (1). Framer's hover gestures only fire for
-    // a real mouse, so on touch this stays false and release returns to 1.
+    // a real mouse, and we skip them at tablet/mobile widths, so there this
+    // stays false and release returns to 1.
     const isHoveredRef = useRef(false);
     // Timestamp of the last gesture-driven toggle. The press shrinks the
     // button to 0.86, so a pointerup near the padded edge can land outside
@@ -170,12 +172,15 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
         animate={controls}
         initial={{ scale: 1 }}
         onHoverStart={() => {
+          // No hover grow at tablet/mobile widths, even with a mouse.
+          if (!canHover()) return;
           isHoveredRef.current = true;
           // Snappy, no overshoot on hover-in.
           if (!disabled)
             controls.start({ scale: HOVER_SCALE, transition: springSnappy });
         }}
         onHoverEnd={() => {
+          if (!isHoveredRef.current) return;
           isHoveredRef.current = false;
           if (!disabled) controls.start({ scale: 1, transition: springSnappy });
         }}

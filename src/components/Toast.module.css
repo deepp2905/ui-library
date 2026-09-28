@@ -74,7 +74,7 @@
   line-height: 1;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (min-width: 1025px) {
   .close:hover {
     color: var(--color-fg);
   }

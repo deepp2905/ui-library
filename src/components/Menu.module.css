@@ -27,7 +27,7 @@
     box-shadow var(--motion-fast) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (min-width: 1025px) {
   .trigger:hover {
     border-color: var(--color-border-strong);
     box-shadow: var(--shadow-sm);
@@ -117,9 +117,9 @@
   transform: translateX(0);
 }
 
-/* Hover only where a real hover exists — on touch, :hover sticks to the
-   last tapped item. */
-@media (hover: hover) {
+/* Hover only where a real hover exists and outside the tablet/mobile
+   breakpoints — on touch, :hover sticks to the last tapped item. */
+@media (hover: hover) and (min-width: 1025px) {
   .item:hover {
     background: var(--color-surface-sunken);
   }

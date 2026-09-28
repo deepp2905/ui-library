@@ -51,8 +51,10 @@
   transition: background var(--motion-fast) var(--ease-out);
 }
 
-.row:hover {
-  background: var(--color-surface-sunken);
+@media (hover: hover) and (min-width: 1025px) {
+  .row:hover {
+    background: var(--color-surface-sunken);
+  }
 }
 
 .radio {

@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '@/lib/cn';
+import { canHover } from '@/lib/hover';
 import { springSnappy } from '@/lib/motion';
 import styles from './Slider.module.css';
 
@@ -60,8 +61,9 @@ export function Slider({
      pointermove (so dragging stays 1:1) or after the transition
      completes following pointerup. */
   const [animating, setAnimating] = useState(false);
-  /* `hovered` is mouse-only — touch has no hover, and pointerenter/leave
-     from a finger would leave the thumb stuck in its grown state on iOS.
+  /* `hovered` is mouse-only and off at tablet/mobile widths — touch has
+     no hover, and pointerenter/leave from a finger would leave the thumb
+     stuck in its grown state on iOS.
      `dragging` covers every pointer type, so a finger drag grows the
      thumb just like a mouse hover does. */
   const [hovered, setHovered] = useState(false);
@@ -192,7 +194,7 @@ export function Slider({
         data-active={active || undefined}
         data-dragging={dragging || undefined}
         onPointerEnter={(e) => {
-          if (e.pointerType === 'mouse') setHovered(true);
+          if (e.pointerType === 'mouse' && canHover()) setHovered(true);
         }}
         onPointerLeave={(e) => {
           if (e.pointerType === 'mouse') setHovered(false);
