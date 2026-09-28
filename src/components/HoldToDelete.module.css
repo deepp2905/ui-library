@@ -6,6 +6,14 @@
 .tapTarget {
   display: inline-flex;
   transform-origin: center;
+  /* Keep the button on its own compositor layer at rest too. The button
+     usually lands on a fractional y (it's centred below text whose line
+     heights aren't whole pixels). Without a layer, the label is snapped
+     to the pixel grid at rest, but the press `scale(0.96)` promotes it
+     and draws it at the true sub-pixel position, so the text visibly
+     drops ~0.5–1px on press and pops back on release. With a permanent
+     layer both states rasterize the same way. */
+  will-change: transform;
 }
 
 /* Confetti overlay — sits behind the button so shards can fly outward
