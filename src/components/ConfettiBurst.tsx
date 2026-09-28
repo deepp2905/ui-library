@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
      spreads outward instead of popping flat
    - fully opaque for the first half, then an ease-in fade, so the
      burst's outer edge reads before it dissolves
-   - dots shrink 1 → 0.5 as they go — sparks burning out
+   - dots grow 0.6 → 1 as they leave the centre
    ──────────────────────────────────────────────────────────────────── */
 
 export interface Shard {
@@ -95,8 +95,8 @@ export function ConfettiBurst({
             key={s.id}
             className={className}
             style={{ width: s.size, height: s.size }}
-            initial={{ x: c, y: c, opacity: 1, scale: 1 }}
-            animate={{ x, y, opacity: [1, 1, 0], scale: 0.5 }}
+            initial={{ x: c, y: c, opacity: 1, scale: 0.6 }}
+            animate={{ x, y, opacity: [1, 1, 0], scale: 1 }}
             transition={{
               duration: s.duration,
               delay: s.delay,
