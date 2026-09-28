@@ -5,11 +5,13 @@ import {
   AnimatePresence,
   motion,
   useAnimationControls,
+  useReducedMotion,
   type HTMLMotionProps,
 } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { canHover } from '@/lib/hover';
 import { springSnappy } from '@/lib/motion';
+import { ConfettiBurst, makeShards, type Shard } from './ConfettiBurst';
 import styles from './Heart.module.css';
 
 /** Fast, critically damped press so the dip reaches full compression even
@@ -51,47 +53,6 @@ export interface HeartProps
   confetti?: boolean;
 }
 
-interface Shard {
-  id: number;
-  /** Diameter in px — shards are dots. */
-  size: number;
-  angle: number;
-  distance: number;
-  duration: number;
-  delay: number;
-}
-
-const MIN_DISTANCE = 90;
-const MAX_DISTANCE = 135;
-const MIN_DURATION = 0.15;
-const MAX_DURATION = 0.3;
-const DURATION_JITTER = 0.08;
-const MAX_DELAY = 0.06;
-const DELAY_JITTER = 0.015;
-
-const makeShards = (): Shard[] => {
-  const count = 24 + Math.floor(Math.random() * 8);
-  return Array.from({ length: count }, (_, i) => {
-    const distance = MIN_DISTANCE + Math.random() * (MAX_DISTANCE - MIN_DISTANCE);
-    const t = (distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE);
-    const durationJitter = (Math.random() - 0.5) * 2 * DURATION_JITTER;
-    const duration = Math.max(
-      0.2,
-      MIN_DURATION + t * (MAX_DURATION - MIN_DURATION) + durationJitter,
-    );
-    const delayJitter = (Math.random() - 0.5) * 2 * DELAY_JITTER;
-    const delay = Math.max(0, t * MAX_DELAY + delayJitter);
-    return {
-      id: i,
-      size: 3 + Math.random() * 4,
-      angle: Math.random() * Math.PI * 2,
-      distance,
-      duration,
-      delay,
-    };
-  });
-};
-
 export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
   (
     {
@@ -114,6 +75,9 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
 
     const [bursts, setBursts] = useState<{ id: number; shards: Shard[] }[]>([]);
     const burstIdRef = useRef(0);
+    /* With the OS "Reduce Motion" setting on, skip the burst entirely —
+       the colour fill and the press are feedback enough. */
+    const reduceMotion = useReducedMotion();
 
     const controls = useAnimationControls();
     // Track hover via a ref so tap-release knows whether to settle to the
@@ -135,12 +99,12 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
       if (!isControlled) setInternalActive(next);
       onActiveChange?.(next);
 
-      if (confetti && next) {
+      if (confetti && next && !reduceMotion) {
         const id = burstIdRef.current++;
-        setBursts((prev) => [...prev, { id, shards: makeShards() }]);
+        setBursts((prev) => [...prev, { id, shards: makeShards(24, 31) }]);
       }
       return next;
-    }, [confetti, disabled, isActive, isControlled, onActiveChange]);
+    }, [confetti, disabled, isActive, isControlled, onActiveChange, reduceMotion]);
 
     const handleClick = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -236,9 +200,10 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
         <span className={styles.confettiLayer} aria-hidden>
           <AnimatePresence>
             {bursts.map((burst) => (
-              <Burst
+              <ConfettiBurst
                 key={burst.id}
                 shards={burst.shards}
+                className={styles.confettiPiece}
                 onDone={() => removeBurst(burst.id)}
               />
             ))}
@@ -251,47 +216,3 @@ export const Heart = forwardRef<HTMLButtonElement, HeartProps>(
 );
 
 Heart.displayName = 'Heart';
-
-function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
-  const longestId = shards.reduce(
-    (acc, s) =>
-      s.duration + s.delay > acc.duration + acc.delay ? s : acc,
-    shards[0],
-  ).id;
-  return (
-    <>
-      {shards.map((s) => {
-        const cx = -s.size / 2;
-        const cy = -s.size / 2;
-        const x = cx + Math.cos(s.angle) * s.distance;
-        const y = cy + Math.sin(s.angle) * s.distance;
-        return (
-          <motion.span
-            key={s.id}
-            className={styles.confettiPiece}
-            style={{ width: s.size, height: s.size }}
-            initial={{ x: cx, y: cy, opacity: 1, scale: 0.6 }}
-            animate={{
-              x,
-              y,
-              opacity: [1, 1, 0],
-              scale: 1,
-            }}
-            transition={{
-              duration: s.duration,
-              delay: s.delay,
-              ease: [0, 0.55, 0.45, 1],
-              opacity: {
-                duration: s.duration,
-                delay: s.delay,
-                times: [0, 0.05, 1],
-                ease: 'linear',
-              },
-            }}
-            onAnimationComplete={s.id === longestId ? onDone : undefined}
-          />
-        );
-      })}
-    </>
-  );
-}
