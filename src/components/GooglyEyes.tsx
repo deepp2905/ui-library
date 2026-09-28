@@ -71,6 +71,29 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
     s.nextBlink = now0 + 1800;
     s.nextWander = now0 + 2200;
 
+    /* Eye centres in viewport coords. Measured lazily and only re-read
+       after a scroll/resize — reading layout every frame for both eyes
+       is wasted work on phones, since nothing else moves the eyes. */
+    let centres: { x: number; y: number; r: number }[] | null = null;
+    const invalidate = () => {
+      centres = null;
+    };
+    function getCentres() {
+      if (!centres) {
+        centres = eyeRefs.map((ref) => {
+          const el = ref.current;
+          if (!el) return { x: 0, y: 0, r: 0 };
+          const r = el.getBoundingClientRect();
+          return {
+            x: r.left + r.width / 2,
+            y: r.top + r.height / 2,
+            r: r.width / 2,
+          };
+        });
+      }
+      return centres;
+    }
+
     function onMove(e: PointerEvent) {
       s.cursor = { x: e.clientX, y: e.clientY };
       s.lastMove = performance.now();
@@ -82,14 +105,9 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
        pointer-events: none, so we can't rely on the event target — hit
        test the click against each eye's circle by hand instead. */
     function isOverEye(px: number, py: number) {
-      return eyeRefs.some((ref) => {
-        const el = ref.current;
-        if (!el) return false;
-        const r = el.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        return Math.hypot(px - cx, py - cy) <= r.width / 2;
-      });
+      return getCentres().some(
+        (c) => c.r > 0 && Math.hypot(px - c.x, py - c.y) <= c.r,
+      );
     }
     function onClick(e: PointerEvent) {
       // Only blink (and dilate) when the click is actually on an eye.
@@ -109,6 +127,33 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
     window.addEventListener('pointermove', onMove);
     document.documentElement.addEventListener('pointerleave', onLeave);
     window.addEventListener('pointerdown', onClick);
+    window.addEventListener('scroll', invalidate, { passive: true, capture: true });
+    window.addEventListener('resize', invalidate);
+
+    /* Only run the rAF loop while the eyes are on screen and the tab is
+       visible. On a phone the hero scrolls away almost immediately, and
+       an always-on 60–120fps loop is a steady battery/CPU drain that
+       competes with the interactions further down the page. */
+    let onScreen = true;
+    let running = false;
+    const start = () => {
+      if (running || !onScreen || document.hidden) return;
+      running = true;
+      raf.current = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf.current);
+    };
+    const io = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      if (onScreen) start();
+      else stop();
+    });
+    const face = eyeRefs[0].current?.parentElement;
+    if (face) io.observe(face);
+    const onVisibility = () => (document.hidden ? stop() : start());
+    document.addEventListener('visibilitychange', onVisibility);
 
     function loop() {
       const now = performance.now();
@@ -139,11 +184,9 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
 
         // desired pupil offset toward cursor
         if (!idle && s.cursor) {
-          const r = eyeEl.getBoundingClientRect();
-          const cx = r.left + r.width / 2;
-          const cy = r.top + r.height / 2;
-          const dx = s.cursor.x - cx;
-          const dy = s.cursor.y - cy;
+          const c = getCentres()[i];
+          const dx = s.cursor.x - c.x;
+          const dy = s.cursor.y - c.y;
           const d = Math.hypot(dx, dy) || 1;
           const m = Math.min(R, d * 0.2);
           // Retarget every frame — the spring below does the smoothing.
@@ -187,12 +230,16 @@ export function GooglyEyes({ className }: GooglyEyesProps) {
         }
       });
 
-      raf.current = requestAnimationFrame(loop);
+      if (running) raf.current = requestAnimationFrame(loop);
     }
-    loop();
+    start();
 
     return () => {
-      cancelAnimationFrame(raf.current);
+      stop();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('scroll', invalidate, { capture: true });
+      window.removeEventListener('resize', invalidate);
       window.removeEventListener('pointermove', onMove);
       document.documentElement.removeEventListener('pointerleave', onLeave);
       window.removeEventListener('pointerdown', onClick);

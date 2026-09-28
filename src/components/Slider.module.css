@@ -36,6 +36,8 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  /* Any touch on the track belongs to the slider — never to page scroll. */
+  touch-action: none;
 }
 
 .fill {
@@ -128,17 +130,20 @@
   z-index: 2;
 }
 
-/* Hover bumps opacity to 0.75. */
-.track:hover .thumb {
+/* Hover (mouse) or an active drag (any pointer) bumps opacity to 0.75.
+   Driven by data attributes set from JS rather than :hover / :active:
+   touch browsers leave :hover stuck on after a tap, and iOS Safari
+   doesn't reliably apply :active. */
+.track[data-active] .thumb {
   opacity: 0.75;
 }
 
 /* Dragging takes priority — bumps to 0.85. */
-.track:has(.range:active) .thumb {
+.track[data-dragging] .thumb {
   opacity: 0.85;
 }
 
-.track:hover .ticks {
+.track[data-active] .ticks {
   opacity: 1;
 }
 
@@ -151,10 +156,11 @@
   opacity: 0;
   cursor: pointer;
   z-index: 3;
-  /* Horizontal drags drive the slider; vertical gestures still scroll
-     the page. Without this, touch dragging would scroll instead of
-     moving the thumb. */
-  touch-action: pan-y;
+  /* Claim the whole gesture: a drag that starts on the slider always
+     drives the slider, even if it drifts vertically. With `pan-y` the
+     browser would take over mid-drag, fire pointercancel and freeze the
+     thumb wherever the finger happened to be. */
+  touch-action: none;
   -webkit-tap-highlight-color: transparent;
 }
 

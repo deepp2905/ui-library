@@ -110,16 +110,26 @@
   stroke-linecap: butt;
 }
 
-.root:hover .icon :global(.body),
-.root:active .icon :global(.body) {
+/* Hover (mouse only — on touch, :hover sticks after a tap and would
+   leave the lid hanging open) lifts the lid. */
+@media (hover: hover) {
+  .root:hover .icon :global(.body) {
+    stroke-linecap: round;
+  }
+
+  .root:hover .icon :global(.lid) {
+    transform: translateY(-2px);
+  }
+}
+
+/* While held (any pointer) the lid closes as the fill advances.
+   `data-pressed` is set from JS instead of relying on :active, which
+   iOS Safari doesn't apply reliably. */
+.root[data-pressed] .icon :global(.body) {
   stroke-linecap: round;
 }
 
-.root:hover .icon :global(.lid) {
-  transform: translateY(-2px);
-}
-
-.root:active .icon :global(.lid) {
+.root[data-pressed] .icon :global(.lid) {
   transform: translateY(calc(-2px * (1 - var(--progress, 0))));
   transition: none;
 }

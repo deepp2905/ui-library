@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
@@ -60,8 +60,17 @@ export function Slider({
      pointermove (so dragging stays 1:1) or after the transition
      completes following pointerup. */
   const [animating, setAnimating] = useState(false);
+  /* `hovered` is mouse-only — touch has no hover, and pointerenter/leave
+     from a finger would leave the thumb stuck in its grown state on iOS.
+     `dragging` covers every pointer type, so a finger drag grows the
+     thumb just like a mouse hover does. */
   const [hovered, setHovered] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const active = hovered || dragging;
   const dragStarted = useRef(false);
+  /* Pointer id of the drag in progress (null when idle). Used instead of
+     `e.buttons`, which isn't reliable for touch/pen across browsers. */
+  const dragPointer = useRef<number | null>(null);
   const animTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* ── Rubberband overshoot ──
@@ -90,70 +99,80 @@ export function Slider({
   const trackRef = useRef<HTMLDivElement>(null);
 
   /* Map a pointer x-position to a clamped, step-snapped value using the
-     *unstretched* track width (scaleX is anchored at one edge). */
-  const valueFromClientX = (clientX: number) => {
-    const el = trackRef.current;
-    if (!el) return value;
-    const rect = el.getBoundingClientRect();
-    const baseWidth = rect.width / trackScaleX.get();
-    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / baseWidth));
-    let raw = min + ratio * (max - min);
-    if (step > 0) raw = Math.round(raw / step) * step;
-    return Math.min(max, Math.max(min, raw));
-  };
-
-  const updateOvershoot = (clientX: number) => {
+     *unstretched* track width (scaleX is anchored at one edge), and
+     update the rubberband overshoot from the same measurement — one
+     layout read per pointer event. */
+  const trackFromClientX = (clientX: number) => {
     const el = trackRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    /* Use the *unstretched* width for measurement. Since scaleX is
-       anchored at one edge, the opposite edge's screen position
-       doesn't move — so rect.left/right reflect either the true
-       width or the stretched width depending on direction. Easiest:
-       divide by the current scale to get the un-stretched width. */
-    const scale = trackScaleX.get();
-    const baseWidth = rect.width / scale;
-    if (clientX < rect.left) {
-      overshoot.set(clientX - rect.left);
-    } else if (clientX > rect.left + baseWidth) {
-      overshoot.set(clientX - (rect.left + baseWidth));
-    } else {
-      overshoot.set(0);
-    }
+    /* Since scaleX is anchored at one edge, the opposite edge's screen
+       position doesn't move — divide by the current scale to get the
+       un-stretched width. */
+    const baseWidth = rect.width / trackScaleX.get();
+    const right = rect.left + baseWidth;
+
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / baseWidth));
+    let raw = min + ratio * (max - min);
+    if (step > 0) raw = Math.round(raw / step) * step;
+    const next = Math.min(max, Math.max(min, raw));
+    if (next !== value) onChange(next);
+
+    if (clientX < rect.left) overshoot.set(clientX - rect.left);
+    else if (clientX > right) overshoot.set(clientX - right);
+    else overshoot.set(0);
+  };
+
+  const endDrag = () => {
+    dragPointer.current = null;
+    setDragging(false);
+    overshoot.set(0); // spring back
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLInputElement>) => {
-    if (disabled) return;
+    if (disabled || dragPointer.current !== null) return;
+    /* Only the primary mouse button starts a drag. */
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragPointer.current = e.pointerId;
     dragStarted.current = false;
+    setDragging(true);
     setAnimating(true);
     if (animTimeout.current) clearTimeout(animTimeout.current);
     /* Capture the pointer so a drag begun anywhere on the track keeps
        following the finger — native range inputs only start a touch
        drag when the thumb itself is grabbed. */
     e.currentTarget.setPointerCapture(e.pointerId);
-    onChange(valueFromClientX(e.clientX));
-    updateOvershoot(e.clientX);
+    trackFromClientX(e.clientX);
   };
   const handlePointerMove = (e: React.PointerEvent<HTMLInputElement>) => {
     /* Only drive the value while the pointer is actually held. */
-    if ((e.buttons & 1) !== 1) return;
+    if (e.pointerId !== dragPointer.current) return;
     if (!dragStarted.current) {
       dragStarted.current = true;
       setAnimating(false);
     }
-    onChange(valueFromClientX(e.clientX));
-    updateOvershoot(e.clientX);
+    trackFromClientX(e.clientX);
   };
-  const handlePointerUp = () => {
-    overshoot.set(0); // spring back
+  const handlePointerUp = (e: React.PointerEvent<HTMLInputElement>) => {
+    if (e.pointerId !== dragPointer.current) return;
+    endDrag();
     if (!dragStarted.current) {
       // Pure click — let the transition play out before clearing.
       animTimeout.current = setTimeout(() => setAnimating(false), 220);
     }
   };
-  const handlePointerCancel = () => {
-    overshoot.set(0);
+  const handlePointerCancel = (e: React.PointerEvent<HTMLInputElement>) => {
+    if (e.pointerId !== dragPointer.current) return;
+    endDrag();
+    setAnimating(false);
   };
+
+  useEffect(
+    () => () => {
+      if (animTimeout.current) clearTimeout(animTimeout.current);
+    },
+    [],
+  );
 
   return (
     <div className={cn(styles.field, className)}>
@@ -170,8 +189,14 @@ export function Slider({
       <motion.div
         ref={trackRef}
         className={cn(styles.track, animating && styles.animating)}
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
+        data-active={active || undefined}
+        data-dragging={dragging || undefined}
+        onPointerEnter={(e) => {
+          if (e.pointerType === 'mouse') setHovered(true);
+        }}
+        onPointerLeave={(e) => {
+          if (e.pointerType === 'mouse') setHovered(false);
+        }}
         style={
           {
             '--pct': `${pct}%`,
@@ -189,7 +214,7 @@ export function Slider({
         {/* Two layers with opposite clips: ticks over the orange fill
             render at lower opacity, ticks over the unfilled track stay
             darker. Both layers receive the visibility from
-            `.track:hover`. Only rendered when `ticks` prop is true. */}
+            `.track[data-active]`. Only rendered when `ticks` prop is true. */}
         {ticks && (
           <>
             <div
@@ -229,8 +254,8 @@ export function Slider({
                vertically centered in the 64px track at every height.
                At rest (no hover) the pill is 1.5× smaller; hover grows
                it to full size with a snappy spring. */
-            height: hovered ? (inEdgeZone ? 10 : 32) : (inEdgeZone ? 10 / 1.5 : 32 / 1.5),
-            top: hovered ? (inEdgeZone ? 27 : 16) : (inEdgeZone ? 27 + (10 - 10 / 1.5) / 2 : 16 + (32 - 32 / 1.5) / 2),
+            height: active ? (inEdgeZone ? 10 : 32) : (inEdgeZone ? 10 / 1.5 : 32 / 1.5),
+            top: active ? (inEdgeZone ? 27 : 16) : (inEdgeZone ? 27 + (10 - 10 / 1.5) / 2 : 16 + (32 - 32 / 1.5) / 2),
           }}
           transition={{ ...springSnappy, damping: 24 }}
         />
@@ -243,12 +268,21 @@ export function Slider({
           step={step}
           value={value}
           disabled={disabled}
-          onChange={(e) => onChange(Number(e.target.value))}
+          onChange={(e) => {
+            /* Pointer drags are driven by the handlers above. Ignore the
+               native range's own updates meanwhile — on iOS Safari and
+               Android Chrome it also reacts to a touch on its (invisible)
+               thumb, computing a slightly different value and making the
+               fill jitter between the two. Keyboard input still flows
+               through here. */
+            if (dragPointer.current !== null) return;
+            onChange(Number(e.target.value));
+          }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
-          onPointerLeave={handlePointerCancel}
+          onLostPointerCapture={handlePointerCancel}
         />
       </motion.div>
     </div>

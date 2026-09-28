@@ -171,8 +171,16 @@ export function HoldToDelete({
      left → right over `holdMs`. When it reaches 1, the delete
      sequence above fires.
      ────────────────────────────────────────────────────────────────── */
-  const startHold = () => {
+  const startHold = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (completedRef.current) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    /* Keep the hold alive when a finger drifts off the button — on a
+       phone the contact patch easily slides a few px past the edge during
+       a 1.6s press. Mouse keeps the classic "leave to cancel" behaviour. */
+    if (e.pointerType !== 'mouse') {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    e.currentTarget.dataset.pressed = '';
     stopProgressAnim();
 
     /* Duration scales with remaining progress so resuming from a partial
@@ -194,6 +202,7 @@ export function HoldToDelete({
      Reverses the fill bar back to 0 over REVERSE_MS.
      ────────────────────────────────────────────────────────────────── */
   const releaseHold = () => {
+    delete rootRef.current?.dataset.pressed;
     if (completedRef.current) return;
     stopProgressAnim();
     if (progress.get() > 0) {
@@ -247,6 +256,10 @@ export function HoldToDelete({
           onPointerUp={releaseHold}
           onPointerLeave={releaseHold}
           onPointerCancel={releaseHold}
+          /* Android Chrome fires contextmenu on a long press, which can
+             pop a menu and cancel the pointer mid-hold. The whole
+             interaction *is* a long press, so swallow it. */
+          onContextMenu={(e) => e.preventDefault()}
           animate={controls}
         >
           <span className={styles.fill} aria-hidden />

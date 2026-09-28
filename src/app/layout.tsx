@@ -1,6 +1,27 @@
 import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import Script from 'next/script';
 import '@/styles/globals.css';
+
+/* Self-hosted via next/font instead of a CSS @import from Google Fonts.
+   The @import was a render-blocking chain (HTML → globals.css → Google
+   CSS → font files) that delayed first paint most on slow mobile
+   networks; next/font inlines the @font-face, preloads the file from our
+   own origin and adds a size-matched fallback so text doesn't shift. */
+const geist = Geist({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-geist',
+  display: 'swap',
+});
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-geist-mono',
+  display: 'swap',
+  // Only used by Counter / Menu, which aren't on the homepage.
+  preload: false,
+});
 
 const description =
   'Fun Components & Interactions crafted with hundreds of iterations, subtle motion, and fine tuning the final layer of polish.';
@@ -35,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <head>
         {/* Microsoft Clarity — session analytics. Loads after hydration
             so it doesn't block initial paint. */}

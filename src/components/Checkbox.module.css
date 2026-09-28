@@ -10,6 +10,23 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* On touch screens, grow the invisible hit area to ~42px tall (the box is
+   30px) so a slightly-off tap between rows still lands on a checkbox.
+   A pseudo-element on the <label> counts as the label, so tapping it
+   toggles the input. Kept to 6px so stacked rows (12px gap) don't
+   overlap. Nothing visual changes. */
+@media (pointer: coarse) {
+  .root {
+    position: relative;
+  }
+
+  .root::before {
+    content: '';
+    position: absolute;
+    inset: -6px 0;
+  }
+}
+
 .disabled {
   opacity: 0.5;
   cursor: not-allowed;

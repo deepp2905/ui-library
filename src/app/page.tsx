@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import {
   Checkbox,
   GooglyEyes,
@@ -37,12 +38,53 @@ function Tile({
   );
 }
 
-function Showcase() {
+/* Each demo owns its own state so interacting with one tile only
+   re-renders that tile. With state lifted into Showcase, every slider
+   pointermove (up to 120/s on ProMotion phones) re-rendered the whole
+   page — including the Switch, whose `layout` animation re-measures the
+   DOM on each render. */
+function SwitchDemo() {
   const [on, setOn] = useState(true);
+  return <Switch checked={on} onChange={setOn} aria-label="Toggle" />;
+}
+
+function SliderDemo() {
+  const [volume, setVolume] = useState(64);
+  return <Slider value={volume} onChange={setVolume} />;
+}
+
+function ChecklistDemo() {
   const [agree1, setAgree1] = useState(true);
   const [agree2, setAgree2] = useState(false);
   const [agree3, setAgree3] = useState(false);
-  const [volume, setVolume] = useState(64);
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--c-space-3)',
+      }}
+    >
+      <Checkbox
+        checked={agree1}
+        onChange={setAgree1}
+        label="Buy more orange juice"
+      />
+      <Checkbox
+        checked={agree2}
+        onChange={setAgree2}
+        label="Polish the interaction details"
+      />
+      <Checkbox
+        checked={agree3}
+        onChange={setAgree3}
+        label="Ship it before midnight"
+      />
+    </div>
+  );
+}
+
+function Showcase() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,8 +115,23 @@ function Showcase() {
       el.scrollLeft += pixels;
       e.preventDefault();
     };
-    window.addEventListener('wheel', onWheel, { passive: false });
-    return () => window.removeEventListener('wheel', onWheel);
+    /* A non-passive wheel listener makes the browser wait on the main
+       thread before every scroll, so only attach it while the grid is
+       in its horizontal (desktop) layout — matches page.module.css. */
+    const horizontal = window.matchMedia('(min-width: 1025px)');
+    const sync = () => {
+      if (horizontal.matches) {
+        window.addEventListener('wheel', onWheel, { passive: false });
+      } else {
+        window.removeEventListener('wheel', onWheel);
+      }
+    };
+    sync();
+    horizontal.addEventListener('change', sync);
+    return () => {
+      horizontal.removeEventListener('change', sync);
+      window.removeEventListener('wheel', onWheel);
+    };
   }, []);
 
   return (
@@ -100,7 +157,7 @@ function Showcase() {
 
       <div className={styles.grid} ref={gridRef}>
         <Tile>
-          <Switch checked={on} onChange={setOn} aria-label="Toggle" />
+          <SwitchDemo />
         </Tile>
 
         <Tile>
@@ -108,38 +165,15 @@ function Showcase() {
         </Tile>
 
         <Tile stretch>
-          <Slider value={volume} onChange={setVolume} />
+          <SliderDemo />
         </Tile>
 
         <Tile>
           <Heart size="lg" />
         </Tile>
 
-
         <Tile>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--c-space-3)',
-            }}
-          >
-            <Checkbox
-              checked={agree1}
-              onChange={setAgree1}
-              label="Buy more orange juice"
-            />
-            <Checkbox
-              checked={agree2}
-              onChange={setAgree2}
-              label="Polish the interaction details"
-            />
-            <Checkbox
-              checked={agree3}
-              onChange={setAgree3}
-              label="Ship it before midnight"
-            />
-          </div>
+          <ChecklistDemo />
         </Tile>
       </div>
     </main>
@@ -148,8 +182,14 @@ function Showcase() {
 
 export default function Page() {
   return (
-    <ToastProvider>
-      <Showcase />
-    </ToastProvider>
+    /* reducedMotion="user": when the OS "Reduce Motion" setting is on
+       (iOS Settings → Accessibility, Android "Remove animations"), Framer
+       skips transform/layout animations and keeps opacity fades —
+       matching what globals.css already does for CSS transitions. */
+    <MotionConfig reducedMotion="user">
+      <ToastProvider>
+        <Showcase />
+      </ToastProvider>
+    </MotionConfig>
   );
 }

@@ -45,8 +45,6 @@
   /* Hide the default mobile tap highlight; the press scale is our feedback. */
   -webkit-tap-highlight-color: transparent;
   transform-origin: center;
-  will-change: transform;
-  backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
   isolation: isolate;
   transition: color var(--motion-fast) var(--ease-out);

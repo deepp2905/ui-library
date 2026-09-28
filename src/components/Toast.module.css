@@ -74,6 +74,8 @@
   line-height: 1;
 }
 
-.close:hover {
-  color: var(--color-fg);
+@media (hover: hover) {
+  .close:hover {
+    color: var(--color-fg);
+  }
 }

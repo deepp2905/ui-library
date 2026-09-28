@@ -39,8 +39,10 @@
   /* Suppress iOS long-press callout/selection so a held tap stays clean. */
   -webkit-touch-callout: none;
   transform-origin: center;
-  will-change: transform;
-  backface-visibility: hidden;
+  /* No permanent will-change here: Safari would rasterize the heart once
+     at 1x and then scale that bitmap, so the 1.12x touch press looks
+     blurry. Framer's transform animation gets its own layer while it
+     runs anyway. */
   color: var(--color-fg-muted, var(--color-fg));
   transition: color var(--motion-fast) var(--ease-out);
 }
