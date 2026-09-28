@@ -8,11 +8,13 @@ import {
   useAnimationControls,
   useMotionValue,
   useMotionValueEvent,
+  useReducedMotion,
   type AnimationPlaybackControls,
 } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { springSnappy } from '@/lib/motion';
 import { DeleteIcon } from '@/styles/icons';
+import { ConfettiBurst, makeShards, type Shard } from './ConfettiBurst';
 import styles from './HoldToDelete.module.css';
 
 export interface HoldToDeleteProps {
@@ -44,7 +46,7 @@ const REVERSE_MS = 220;
 
 /* ── Chards (confetti burst) — timing is independent of shrink/expand. */
 const CHARDS_DELAY_MS = 150; // wait after shrink starts before launching
-const CHARDS_DURATION_MS = 750; // each chard's fly-out duration
+/* Fly-out timing and easing are shared with Heart — see ConfettiBurst. */
 
 /* Cubic-bezier ease-out: fast start, slow finish. The fill bar accelerates
    in then eases into completion — and because the animation's own end is
@@ -57,24 +59,6 @@ type AnimateFn = (
   opts: { duration: number; ease: typeof FILL_EASE; onComplete?: () => void },
 ) => AnimationPlaybackControls;
 const animateMV = animate as unknown as AnimateFn;
-
-interface Shard {
-  id: number;
-  /** Diameter in px — shards are dots. */
-  size: number;
-  angle: number;
-  distance: number;
-}
-
-const makeShards = (): Shard[] => {
-  const count = 24 + Math.floor(Math.random() * 16);
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    size: 3 + Math.random() * 4,
-    angle: Math.random() * Math.PI * 2,
-    distance: 90 + Math.random() * 45,
-  }));
-};
 
 export function HoldToDelete({
   children = 'Hold to delete',
@@ -91,6 +75,8 @@ export function HoldToDelete({
 
   const [bursts, setBursts] = useState<{ id: number; shards: Shard[] }[]>([]);
   const burstIdRef = useRef(0);
+  /* With the OS "Reduce Motion" setting on, skip the burst entirely. */
+  const reduceMotion = useReducedMotion();
   /* Suppress the press-springback `whileTap` on the outer wrapper while
      the delete sequence is running. Otherwise a release mid-sequence
      re-triggers the gesture's scale spring and overrides the controls. */
@@ -123,10 +109,12 @@ export function HoldToDelete({
     /* ── PHASE 0: CHARDS (delayed spawn)
        Schedule the burst CHARDS_DELAY_MS into the shrink so the
        chards erupt as the button is mid-dissolve, not at t=0. */
-    setTimeout(() => {
-      const id = burstIdRef.current++;
-      setBursts((prev) => [...prev, { id, shards: makeShards() }]);
-    }, CHARDS_DELAY_MS);
+    if (!reduceMotion) {
+      setTimeout(() => {
+        const id = burstIdRef.current++;
+        setBursts((prev) => [...prev, { id, shards: makeShards(24, 39) }]);
+      }, CHARDS_DELAY_MS);
+    }
 
     /* ── PHASE 1: SHRINK
        Scale collapses from 1 → 0.01 with a "wind-up then crash"
@@ -161,7 +149,7 @@ export function HoldToDelete({
 
     completedRef.current = false;
     setSequenceActive(false);
-  }, [controls, progress, onConfirm]);
+  }, [controls, progress, onConfirm, reduceMotion]);
 
   /* ──────────────────────────────────────────────────────────────────
      LONG-PRESS FILL — starts on pointerdown, drives the orange bar
@@ -217,9 +205,10 @@ export function HoldToDelete({
       <span className={styles.confettiLayer} aria-hidden>
         <AnimatePresence>
           {bursts.map((burst) => (
-            <Burst
+            <ConfettiBurst
               key={burst.id}
               shards={burst.shards}
+              className={styles.confettiPiece}
               onDone={() => removeBurst(burst.id)}
             />
           ))}
@@ -275,32 +264,5 @@ export function HoldToDelete({
         </motion.button>
       </motion.span>
     </span>
-  );
-}
-
-function Burst({ shards, onDone }: { shards: Shard[]; onDone: () => void }) {
-  return (
-    <>
-      {shards.map((s, i) => {
-        const cx = -s.size / 2;
-        const cy = -s.size / 2;
-        const x = cx + Math.cos(s.angle) * s.distance;
-        const y = cy + Math.sin(s.angle) * s.distance;
-        return (
-          <motion.span
-            key={s.id}
-            className={styles.confettiPiece}
-            style={{ width: s.size, height: s.size }}
-            initial={{ x: cx, y: cy, opacity: 1, scale: 0.6 }}
-            animate={{ x, y, opacity: 0, scale: 1 }}
-            transition={{
-              duration: CHARDS_DURATION_MS / 1000,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            onAnimationComplete={i === 0 ? onDone : undefined}
-          />
-        );
-      })}
-    </>
   );
 }
