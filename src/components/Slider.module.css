@@ -24,6 +24,11 @@
   color: var(--color-fg-muted);
 }
 
+.surface {
+  position: relative;
+  width: 100%;
+}
+
 .track {
   position: relative;
   width: 100%;
@@ -164,7 +169,17 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.track:has(.range:disabled) {
+/* Keep the hit area outside the clipped, stretching visual track.
+   Small screens and touch devices get 24px of invisible space per end. */
+@media (max-width: 1024px), (pointer: coarse) {
+  .range {
+    left: -24px;
+    right: -24px;
+    width: calc(100% + 48px);
+  }
+}
+
+.surface:has(.range:disabled) .track {
   opacity: 0.5;
   cursor: not-allowed;
 }

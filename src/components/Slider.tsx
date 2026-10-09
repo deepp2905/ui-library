@@ -98,20 +98,15 @@ export function Slider({
     o >= 0 ? '0% 50%' : '100% 50%',
   );
 
-  const trackRef = useRef<HTMLDivElement>(null);
+  const surfaceRef = useRef<HTMLDivElement>(null);
 
-  /* Map a pointer x-position to a clamped, step-snapped value using the
-     *unstretched* track width (scaleX is anchored at one edge), and
-     update the rubberband overshoot from the same measurement — one
-     layout read per pointer event. */
+  /* Measure the untransformed surface so the extra touch area and the
+     track's rubberband stretch never change the value's coordinates. */
   const trackFromClientX = (clientX: number) => {
-    const el = trackRef.current;
+    const el = surfaceRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    /* Since scaleX is anchored at one edge, the opposite edge's screen
-       position doesn't move — divide by the current scale to get the
-       un-stretched width. */
-    const baseWidth = rect.width / trackScaleX.get();
+    const baseWidth = rect.width;
     const right = rect.left + baseWidth;
 
     const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / baseWidth));
@@ -188,79 +183,83 @@ export function Slider({
           {showValue && <span className={styles.value}>{value}</span>}
         </div>
       )}
-      <motion.div
-        ref={trackRef}
-        className={cn(styles.track, animating && styles.animating)}
-        data-active={active || undefined}
-        data-dragging={dragging || undefined}
+      <div
+        ref={surfaceRef}
+        className={styles.surface}
         onPointerEnter={(e) => {
           if (e.pointerType === 'mouse' && canHover()) setHovered(true);
         }}
         onPointerLeave={(e) => {
           if (e.pointerType === 'mouse') setHovered(false);
         }}
-        style={
-          {
-            '--pct': `${pct}%`,
-            /* 100% only at the left extreme — turns the pill from
-               white to --color-border-strong. Applies in both rest
-               and dragging states (color rule), independent of the
-               size/opacity changes driven by inEdgeZone. */
-            '--edge-mix': inLeftEdge ? '100%' : '0%',
-            scaleX: trackScaleX,
-            transformOrigin: trackOrigin,
-          } as unknown as React.CSSProperties
-        }
       >
-        <div className={styles.fill} />
-        {/* Two layers with opposite clips: ticks over the orange fill
-            render at lower opacity, ticks over the unfilled track stay
-            darker. Both layers receive the visibility from
-            `.track[data-active]`. Only rendered when `ticks` prop is true. */}
-        {ticks && (
-          <>
-            <div
-              className={cn(styles.ticks, styles.ticksOverFill)}
-              aria-hidden
-            >
-              {TICK_POSITIONS.map((pos) => (
-                <span
-                  key={pos}
-                  className={styles.tick}
-                  style={{ left: `${pos}%` }}
-                />
-              ))}
-            </div>
-            <div
-              className={cn(styles.ticks, styles.ticksOverTrack)}
-              aria-hidden
-            >
-              {TICK_POSITIONS.map((pos) => (
-                <span
-                  key={pos}
-                  className={styles.tick}
-                  style={{ left: `${pos}%` }}
-                />
-              ))}
-            </div>
-          </>
-        )}
         <motion.div
-          className={styles.thumb}
-          aria-hidden
-          animate={{
-            /* Animate height directly (not scaleY) so the pill's
-               border-radius stays uniformly round at the small state.
-               Transform-based scaling squashes fixed-px radii flat on
-               the scaled axis. Top is paired so the thumb stays
-               vertically centered in the 64px track at every height.
-               At rest (no hover) the pill is 1.5× smaller; hover grows
-               it to full size with a snappy spring. */
-            height: active ? (inEdgeZone ? 10 : 32) : (inEdgeZone ? 10 / 1.5 : 32 / 1.5),
-            top: active ? (inEdgeZone ? 27 : 16) : (inEdgeZone ? 27 + (10 - 10 / 1.5) / 2 : 16 + (32 - 32 / 1.5) / 2),
-          }}
-          transition={{ ...springSnappy, damping: 24 }}
-        />
+          className={cn(styles.track, animating && styles.animating)}
+          data-active={active || undefined}
+          data-dragging={dragging || undefined}
+          style={
+            {
+              '--pct': `${pct}%`,
+              /* 100% only at the left extreme — turns the pill from
+                 white to --color-border-strong. Applies in both rest
+                 and dragging states (color rule), independent of the
+                 size/opacity changes driven by inEdgeZone. */
+              '--edge-mix': inLeftEdge ? '100%' : '0%',
+              scaleX: trackScaleX,
+              transformOrigin: trackOrigin,
+            } as unknown as React.CSSProperties
+          }
+        >
+          <div className={styles.fill} />
+          {/* Two layers with opposite clips: ticks over the orange fill
+              render at lower opacity, ticks over the unfilled track stay
+              darker. Both layers receive the visibility from
+              `.track[data-active]`. Only rendered when `ticks` prop is true. */}
+          {ticks && (
+            <>
+              <div
+                className={cn(styles.ticks, styles.ticksOverFill)}
+                aria-hidden
+              >
+                {TICK_POSITIONS.map((pos) => (
+                  <span
+                    key={pos}
+                    className={styles.tick}
+                    style={{ left: `${pos}%` }}
+                  />
+                ))}
+              </div>
+              <div
+                className={cn(styles.ticks, styles.ticksOverTrack)}
+                aria-hidden
+              >
+                {TICK_POSITIONS.map((pos) => (
+                  <span
+                    key={pos}
+                    className={styles.tick}
+                    style={{ left: `${pos}%` }}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          <motion.div
+            className={styles.thumb}
+            aria-hidden
+            animate={{
+              /* Animate height directly (not scaleY) so the pill's
+                 border-radius stays uniformly round at the small state.
+                 Transform-based scaling squashes fixed-px radii flat on
+                 the scaled axis. Top is paired so the thumb stays
+                 vertically centered in the 64px track at every height.
+                 At rest (no hover) the pill is 1.5× smaller; hover grows
+                 it to full size with a snappy spring. */
+              height: active ? (inEdgeZone ? 10 : 32) : (inEdgeZone ? 10 / 1.5 : 32 / 1.5),
+              top: active ? (inEdgeZone ? 27 : 16) : (inEdgeZone ? 27 + (10 - 10 / 1.5) / 2 : 16 + (32 - 32 / 1.5) / 2),
+            }}
+            transition={{ ...springSnappy, damping: 24 }}
+          />
+        </motion.div>
         <input
           id={id}
           type="range"
@@ -286,7 +285,7 @@ export function Slider({
           onPointerCancel={handlePointerCancel}
           onLostPointerCapture={handlePointerCancel}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }
