@@ -170,12 +170,12 @@
 }
 
 /* Keep the hit area outside the clipped, stretching visual track.
-   Small screens and touch devices get 24px of invisible space per end. */
+   Small screens and touch devices get 48px of invisible space per end. */
 @media (max-width: 1024px), (pointer: coarse) {
   .range {
-    left: -24px;
-    right: -24px;
-    width: calc(100% + 48px);
+    left: -48px;
+    right: -48px;
+    width: calc(100% + 96px);
   }
 }
 
