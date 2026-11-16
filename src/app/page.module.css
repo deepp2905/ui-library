@@ -83,6 +83,20 @@
   border-radius: 24px;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
+}
+
+/* Quiet name in the bottom-left corner. Absolutely positioned so the
+   component below stays centred in the tile, unaffected by the label. */
+.tileTitle {
+  position: absolute;
+  bottom: 28px;
+  left: 32px;
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  color: var(--color-fg-muted);
+  pointer-events: none;
 }
 
 /* Stretch variant for components that need full inner width
@@ -96,6 +110,37 @@
    overlay (e.g. the Menu) has the full tile height to expand into. */
 .tileTop {
   align-items: flex-start;
+}
+
+/* Desktop (> 1024px): fit the page to the viewport so the wheel only
+   ever scrolls the tiles sideways, never the page. The grid takes the
+   height left under the hero (size containment keeps its content from
+   pushing it taller) and tiles size to it, capped at their design size
+   of 625px. The floor keeps every component unclipped; only windows
+   shorter than that floor allow some vertical scroll. */
+@media (min-width: 1025px) {
+  .grid {
+    container-type: size;
+    min-height: calc(var(--tile-min) + 64px);
+  }
+
+  /* A definite height (not just min-height) so the grid's flex-grown
+     height is definite too; otherwise 100cqh resolves to 0. */
+  .page {
+    --tile-min: 400px;
+    height: 100vh;
+    height: 100svh;
+  }
+
+  /* 100cqh doesn't subtract the grid's horizontal scrollbar, so leave
+     room for it (thin scrollbars are ~10px; classic Windows ones 17px).
+     Without this the centred tile overflows and its top border clips. */
+  .tile {
+    --tile-size: clamp(var(--tile-min), calc(100cqh - 20px), 625px);
+    width: var(--tile-size);
+    height: var(--tile-size);
+    padding: clamp(40px, 10cqh, 60px);
+  }
 }
 
 /* ============================================================
@@ -131,6 +176,11 @@
     min-height: 480px;
     padding: 40px;
     border-radius: 20px;
+  }
+
+  .tileTitle {
+    bottom: 20px;
+    left: 24px;
   }
 }
 

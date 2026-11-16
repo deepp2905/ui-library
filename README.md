@@ -1,5 +1,7 @@
 # Fun Components & Interactions
 
+![Switch, Hold to Delete, Slider and Checklist tiles from Fun Components & Interactions](public/og.png)
+
 A UI playground by Deep Patel for exploring how small details make interfaces feel better: a switch settling into place, a slider responding to a drag, or a heart celebrating a click. The project includes a live showcase and reusable React components with their styles and animation code.
 
 **[Explore the live demo](https://interactions.deeepatel.com/)** · **[About the creator](https://deeepatel.com)**
@@ -91,9 +93,10 @@ Built with **Next.js 15 (App Router), React 18, TypeScript, Framer Motion, and C
 
 | Location | What to look for |
 | --- | --- |
-| `src/app/page.tsx` and `page.module.css` | Homepage content, demo state, tile layout, and scrolling behavior. |
+| `src/app/_components/Showcase.tsx` and `src/app/page.module.css` | Homepage content, demo state, tile layout, and scrolling behavior. `src/app/page.tsx` wraps it with structured data. |
 | `src/app/test/` | The component stage and comparison grid. |
-| `src/app/layout.tsx` | Global styles, fonts, page metadata, and Microsoft Clarity analytics. |
+| `src/app/layout.tsx` | Global styles, fonts, site-wide metadata, and Microsoft Clarity analytics. |
+| `src/lib/site.ts` | Site identity: name, URL, description, interaction list, and FAQ. SEO files read from here. |
 | `src/components/` | Component behavior in `.tsx` files and appearance in `.module.css` files. |
 | `src/components/index.ts` | The shared list of component and type exports. |
 | `src/styles/tokens.css` | Shared colors, spacing, typography, corner radii, shadows, and CSS motion values. |
@@ -101,7 +104,8 @@ Built with **Next.js 15 (App Router), React 18, TypeScript, Framer Motion, and C
 | `src/styles/icons.tsx` | Shared SVG icons. |
 | `src/lib/motion.ts` | Shared spring and transition presets; individual components also define their own motion values. |
 | `src/lib/hover.ts` | Rules for enabling hover effects on desktop pointers. |
-| `public/` | Static assets, including the social sharing image. |
+| `public/` | Static assets: the social sharing image and PWA icons. |
+| `scripts/brand-assets.mjs` | Regenerates icons and social images. |
 
 ## Change the design or add an interaction
 
@@ -114,6 +118,34 @@ Built with **Next.js 15 (App Router), React 18, TypeScript, Framer Motion, and C
 The homepage uses `MotionConfig reducedMotion="user"`, and global CSS shortens CSS animations when reduced motion is requested. Heart and Hold to Delete also include component-specific handling. Check each interaction when extending it; reduced-motion handling differs across the collection and demo pages.
 
 Dark-theme tokens are available by setting `data-theme="dark"` on the `<html>` element. There is currently no theme switch in the UI.
+
+## SEO and brand files
+
+The site's name, URL, description, interaction list and FAQ live in `src/lib/site.ts`. Every file below reads from it, so update copy there.
+
+| File | Purpose |
+| --- | --- |
+| `src/app/layout.tsx` | Base URL, title template, description, canonical URL, Open Graph and Twitter tags, robots directives, theme colour. |
+| `src/app/page.tsx` | JSON-LD structured data (WebSite, Person, WebApplication, FAQPage) in the homepage HTML. |
+| `src/app/_components/Tile.tsx` | Each demo tile's `<h2>` title, so the server-rendered HTML names every interaction. |
+| `src/app/robots.ts` → `/robots.txt` | Allows all crawlers, with AI search and training bots named explicitly. |
+| `src/app/sitemap.ts` → `/sitemap.xml` | Lists the homepage, the only indexable page. |
+| `src/app/manifest.ts` → `/manifest.webmanifest` | Web app manifest with name, colours and PWA icons. |
+| `src/app/llms.txt/route.ts` → `/llms.txt` | Plain-text summary for answer engines and LLMs: what it is, how to use it, how it works, FAQ. |
+| `src/app/test/layout.tsx` | Marks the `/test` demo pages `noindex`. |
+| `src/app/icon.svg`, `favicon.ico`, `apple-icon.png` | Browser tab icon (SVG plus 16/32/48 ICO) and the opaque iOS home-screen icon. |
+| `public/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | Android / PWA install icons. |
+| `public/og.png` | 1200×630 social preview, also the README image above. |
+| `.github/social-preview.png` | 1280×640 image to upload in GitHub's repository settings. |
+| `src/app/og-capture/` | Development-only page the social images are captured from. It returns 404 in production. |
+
+To regenerate the images after changing `icon.svg` or a captured component, start `npm run dev` and run:
+
+```bash
+node scripts/brand-assets.mjs --capture
+```
+
+Without `--capture` it rebuilds only the icons. The capture uses an installed Edge or Chrome; set `BROWSER_PATH` to use another browser.
 
 ## Project commands
 
